@@ -1,0 +1,72 @@
+version: "3.7"
+services:
+  nginx:
+    image: nginx:1.16-alpine
+    container_name: nginx_wrp
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./api:/var/www/api
+      - ./client:/var/www/client
+      - ./docker/nginx:/etc/nginx/conf.d/
+      - ./docker/certs:/etc/nginx/certs
+    networks:
+      - wrp_network
+
+  db:
+    image: mysql:5.7.22
+    container_name: db_wrp
+    restart: unless-stopped
+    tty: true
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_DATABASE: wrp_app_db
+      MYSQL_ROOT_PASSWORD: wrp_app_password
+      MYSQL_PASSWORD: wrp_app_password
+      MYSQL_USER: wrp_app_user
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - ./db_data:/var/lib/mysql
+      - ./docker/mysql:/etc/mysql/conf.d
+    networks:
+      - wrp_network
+
+  api:
+    build:
+      args:
+        user: vlad
+        uid: 1000
+      context: ./docker
+      dockerfile: Dockerfile
+    tty: true
+    container_name: api_wrp
+    restart: unless-stopped
+    working_dir: /var/www/api
+    volumes:
+      - ./api:/var/www/api
+    networks:
+      - wrp_network
+
+  client:
+    image: node:current-alpine
+    container_name: client_wrp
+    tty: true
+    volumes:
+      - ./client:/client
+    working_dir: /client
+    environment:
+      NODE_ENV: development
+    command: npm run serve
+    networks:
+      - wrp_network
+
+volumes:
+  db_data:
+
+networks:
+  wrp_network:
+    driver: bridge
