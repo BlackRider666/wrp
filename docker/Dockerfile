@@ -35,6 +35,9 @@ RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 RUN docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ && \
     docker-php-ext-install -j$(nproc) gd
 
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
+RUN apt-get install -y nodejs
+
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8

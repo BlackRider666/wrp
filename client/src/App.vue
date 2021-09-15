@@ -1,26 +1,24 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <v-app>
+    <v-dialog content-class="loading" transition="0" v-model="$store.state.showLoading" fullscreen>
+      <Loading/>
+    </v-dialog>
+    <notification-snackbar/>
+    <router-view></router-view>
+  </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Loading from "./components/loading/Loading";
+import NotificationSnackbar from "./components/notification/Notification";
 
 export default {
   name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+  components: {NotificationSnackbar, Loading},
+  data: function() {
+    return {}
+  },
+  methods: {
+  },
+};
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>

@@ -165,7 +165,9 @@ return [
         /*
          * Package Service Providers...
          */
-
+        \BlackParadise\LaravelAdmin\DashboardServiceProvider::class,
+        Spatie\Permission\PermissionServiceProvider::class,
+        Barryvdh\Debugbar\ServiceProvider::class,
         /*
          * Application Service Providers...
          */

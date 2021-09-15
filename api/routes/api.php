@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\API\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,10 +12,14 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::get('/ping', function () {
-    return 'pong';
-});
-
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group(['prefix' => 'auth'], function () {
+    Route::post('login', [ AuthController::class, 'login']);
+    Route::post('register', [ AuthController::class, 'register']);
+    Route::group(['prefix' => 'user', 'middleware' => 'auth:sanctum'], function () {
+        Route::get('/', [ AuthController::class, 'user']);
+        Route::post('update', [ AuthController::class, 'update']);
+        Route::post('update-photo', [ AuthController::class, 'updatePhoto']);
+        Route::post('change-password', [ AuthController::class, 'changePassword']);
+    });
+    Route::post('logout', [ AuthController::class, 'logout'])->middleware('auth:sanctum');
 });
