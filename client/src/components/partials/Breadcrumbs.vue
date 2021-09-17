@@ -23,7 +23,6 @@
       </v-breadcrumbs>
     </div>
   </div>
-  <div v-else class="mt-5"></div>
 </template>
 
 <script>

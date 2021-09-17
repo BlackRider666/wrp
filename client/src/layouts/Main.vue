@@ -2,8 +2,8 @@
   <div style="height: 100%">
     <AppHeader />
     <v-main class="main-content">
-      <v-container>
-        <v-row class="mb-10">
+      <v-container fluid class="px-0">
+        <v-row>
           <v-col cols="12" class="py-0">
             <Breadcrumbs/>
             <router-view />
