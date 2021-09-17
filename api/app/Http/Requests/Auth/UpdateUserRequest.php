@@ -28,7 +28,6 @@ class UpdateUserRequest extends FormRequest
             'second_name'   => 'required|string|max:255',
             'surname'       => 'required|string|max:255',
             'email'         => 'required|string|email|max:255|unique:users,email,'.request()->user()->getKey(),
-            'password'      => 'required|string|max:255|confirm',
             'phone'         => 'required|string|max:255',
             'desc'          => 'required|string',
         ];

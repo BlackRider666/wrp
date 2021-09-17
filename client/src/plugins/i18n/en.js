@@ -16,7 +16,8 @@ export default {
     ukrainian: 'Ukrainian',
     uploads: 'Uploads',
     label: {
-        views: 'Views'
+        views: 'Views',
+        account: 'Account',
     },
     footer: {
         'all-reserved': 'All right reserved'

@@ -5,7 +5,7 @@
           tile
         >
           <v-img
-              src="https://picsum.photos/1280/720?random"
+              src="https://picsum.photos/1280/720?random&id=666"
           >
             <v-card-title class="white--text mt-8">
               <p>Some text</p>
@@ -18,7 +18,7 @@
             tile
         >
           <v-img
-              src="https://picsum.photos/1280/720?random"
+              src="https://picsum.photos/1280/720?random&id=777"
           >
             <v-card-text class="white--text mt-8">
               <v-row>
@@ -284,7 +284,7 @@
                         class="ma-4"
                         flat
                     >
-                      <v-img :src="organizer.logo" class="rounded-circle"/>
+                      <v-img :src="organizer.logo+'&id=11'+organizer.key" class="rounded-circle"/>
                     </v-card>
                   </v-slide-item>
                 </v-slide-group>
@@ -302,9 +302,6 @@
               <v-slide-group
                   :show-arrows="true"
               >
-                <template v-slot:prev>
-                  <v-btn text @click="prev()"><v-icon>mdi-chevron-left</v-icon></v-btn>
-                </template>
                 <v-slide-item
                     v-for="partner in partners"
                     :key="partner.key"
@@ -313,12 +310,9 @@
                       class="ma-4"
                       flat
                   >
-                    <v-img :src="partner.logo" class="rounded-circle" width=""/>
+                    <v-img :src="partner.logo+'&id='+partner.key" class="rounded-circle" width=""/>
                   </v-card>
                 </v-slide-item>
-                <template v-slot:next>
-                  <v-btn text @click="next()"><v-icon>mdi-chevron-right</v-icon></v-btn>
-                </template>
               </v-slide-group>
               </v-card-text>
             </v-card>
