@@ -61,191 +61,24 @@
               </v-card-title>
               <v-card-text>
                 <v-row>
-                  <v-col cols="4">
+                  <v-col cols="4" v-for="n in news" :key="n.id">
                     <v-card
                         class="mx-auto"
                     >
                       <v-img
                           class="white--text align-end"
                           height="200px"
-                          src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
+                          :src="n.main_photo_url"
                       >
-                        <v-card-title>Top 10 Australian beaches</v-card-title>
+                        <v-card-title>n.title</v-card-title>
                       </v-img>
 
                       <v-card-subtitle class="pb-0">
-                        Number 10
+                        {{ n.tag }}
                       </v-card-subtitle>
 
                       <v-card-text class="text--primary">
-                        <div>Whitehaven Beach</div>
-
-                        <div>Whitsunday Island, Whitsunday Islands</div>
-                      </v-card-text>
-
-                      <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn
-                            color="primary"
-                            text
-                        >
-                          Read more
-                        </v-btn>
-                      </v-card-actions>
-                    </v-card>
-                  </v-col>
-                  <v-col cols="4">
-                    <v-card
-                        class="mx-auto"
-                    >
-                      <v-img
-                          class="white--text align-end"
-                          height="200px"
-                          src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
-                      >
-                        <v-card-title>Top 10 Australian beaches</v-card-title>
-                      </v-img>
-
-                      <v-card-subtitle class="pb-0">
-                        Number 10
-                      </v-card-subtitle>
-
-                      <v-card-text class="text--primary">
-                        <div>Whitehaven Beach</div>
-
-                        <div>Whitsunday Island, Whitsunday Islands</div>
-                      </v-card-text>
-
-                      <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn
-                            color="primary"
-                            text
-                        >
-                          Read more
-                        </v-btn>
-                      </v-card-actions>
-                    </v-card>
-                  </v-col>
-                  <v-col cols="4">
-                    <v-card
-                        class="mx-auto"
-                    >
-                      <v-img
-                          class="white--text align-end"
-                          height="200px"
-                          src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
-                      >
-                        <v-card-title>Top 10 Australian beaches</v-card-title>
-                      </v-img>
-
-                      <v-card-subtitle class="pb-0">
-                        Number 10
-                      </v-card-subtitle>
-
-                      <v-card-text class="text--primary">
-                        <div>Whitehaven Beach</div>
-
-                        <div>Whitsunday Island, Whitsunday Islands</div>
-                      </v-card-text>
-
-                      <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn
-                            color="primary"
-                            text
-                        >
-                          Read more
-                        </v-btn>
-                      </v-card-actions>
-                    </v-card>
-                  </v-col>
-                  <v-col cols="4">
-                    <v-card
-                        class="mx-auto"
-                    >
-                      <v-img
-                          class="white--text align-end"
-                          height="200px"
-                          src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
-                      >
-                        <v-card-title>Top 10 Australian beaches</v-card-title>
-                      </v-img>
-
-                      <v-card-subtitle class="pb-0">
-                        Number 10
-                      </v-card-subtitle>
-
-                      <v-card-text class="text--primary">
-                        <div>Whitehaven Beach</div>
-
-                        <div>Whitsunday Island, Whitsunday Islands</div>
-                      </v-card-text>
-
-                      <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn
-                            color="primary"
-                            text
-                        >
-                          Read more
-                        </v-btn>
-                      </v-card-actions>
-                    </v-card>
-                  </v-col>
-                  <v-col cols="4">
-                    <v-card
-                        class="mx-auto"
-                    >
-                      <v-img
-                          class="white--text align-end"
-                          height="200px"
-                          src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
-                      >
-                        <v-card-title>Top 10 Australian beaches</v-card-title>
-                      </v-img>
-
-                      <v-card-subtitle class="pb-0">
-                        Number 10
-                      </v-card-subtitle>
-
-                      <v-card-text class="text--primary">
-                        <div>Whitehaven Beach</div>
-
-                        <div>Whitsunday Island, Whitsunday Islands</div>
-                      </v-card-text>
-
-                      <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn
-                            color="primary"
-                            text
-                        >
-                          Read more
-                        </v-btn>
-                      </v-card-actions>
-                    </v-card>
-                  </v-col>
-                  <v-col cols="4">
-                    <v-card
-                        class="mx-auto"
-                    >
-                      <v-img
-                          class="white--text align-end"
-                          height="200px"
-                          src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
-                      >
-                        <v-card-title>Top 10 Australian beaches</v-card-title>
-                      </v-img>
-
-                      <v-card-subtitle class="pb-0">
-                        Number 10
-                      </v-card-subtitle>
-
-                      <v-card-text class="text--primary">
-                        <div>Whitehaven Beach</div>
-
-                        <div>Whitsunday Island, Whitsunday Islands</div>
+                        <div>{{n.sub_title}}</div>
                       </v-card-text>
 
                       <v-card-actions>
@@ -278,13 +111,13 @@
                 >
                   <v-slide-item
                       v-for="organizer in organizers"
-                      :key="organizer.key"
+                      :key="organizer.id"
                   >
                     <v-card
                         class="ma-4"
                         flat
                     >
-                      <v-img :src="organizer.logo+'&id=11'+organizer.key" class="rounded-circle"/>
+                      <v-img :src="organizer.logo_url" class="rounded-circle" :alt="organizer.title" width="100px"/>
                     </v-card>
                   </v-slide-item>
                 </v-slide-group>
@@ -304,13 +137,13 @@
               >
                 <v-slide-item
                     v-for="partner in partners"
-                    :key="partner.key"
+                    :key="partner.id"
                 >
                   <v-card
                       class="ma-4"
                       flat
                   >
-                    <v-img :src="partner.logo+'&id='+partner.key" class="rounded-circle" width=""/>
+                    <v-img :src="partner.logo_url" class="rounded-circle" width="100px" :alt="partner.title"/>
                   </v-card>
                 </v-slide-item>
               </v-slide-group>
@@ -323,64 +156,26 @@
 </template>
 
 <script>
+import {mapState} from "vuex";
+
 export default {
   name: "Dashboard",
   data() {
     return {
-      partners: [
-        {
-          key:1,
-          logo: 'https://picsum.photos/128/128?random'
-        },
-        {
-          key:2,
-          logo: 'https://picsum.photos/128/128?random'
-        },
-        {
-          key:3,
-          logo: 'https://picsum.photos/128/128?random'
-        },
-        {
-          key:4,
-          logo: 'https://picsum.photos/128/128?random'
-        },
-        {
-          key:5,
-          logo: 'https://picsum.photos/128/128?random'
-        },
-        {
-          key:6,
-          logo: 'https://picsum.photos/128/128?random'
-        },
-      ],
-      organizers: [
-        {
-          key:1,
-          logo: 'https://picsum.photos/128/128?random'
-        },
-        {
-          key:2,
-          logo: 'https://picsum.photos/128/128?random'
-        },
-        {
-          key:3,
-          logo: 'https://picsum.photos/128/128?random'
-        },
-        {
-          key:4,
-          logo: 'https://picsum.photos/128/128?random'
-        },
-        {
-          key:5,
-          logo: 'https://picsum.photos/128/128?random'
-        },
-        {
-          key:6,
-          logo: 'https://picsum.photos/128/128?random'
-        },
-      ],
     };
   },
+  mounted() {
+    this.$store.dispatch('news/downloadNews');
+    this.$store.dispatch('organizer/downloadOrganizers');
+    this.$store.dispatch('partner/downloadPartners');
+  },
+  computed: {
+    ...mapState({
+      news: (state) => state.news.news,
+      partners: (state) => state.partner.partners,
+      organizers: (state) => state.organizer.organizers,
+    }),
+  }
 }
 </script>
 

@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\NewsController;
+use App\Http\Controllers\API\OrganizerController;
+use App\Http\Controllers\API\PartnerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,3 +26,6 @@ Route::group(['prefix' => 'auth'], function () {
     });
     Route::post('logout', [ AuthController::class, 'logout'])->middleware('auth:sanctum');
 });
+Route::get('news',[NewsController::class, 'index']);
+Route::get('organizers',[OrganizerController::class, 'index']);
+Route::get('partners',[PartnerController::class, 'index']);

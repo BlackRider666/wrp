@@ -42,7 +42,7 @@
             </li>
             @foreach(config('bpadmin.dashboard.entities') as $key => $entity)
                 <li class="{{request()->is('admin/'.$key.'/*')|| request()->is('admin/'.$key)?'active':''}}">
-                    <a href="{{url('/admin/'.$key)}}" title="ucfirst($key)">
+                    <a href="{{url('/admin/'.$key)}}" title="{{ucfirst($key)}}">
                         <i class="fal {{$entity['icon']}}"></i>
                         <span class="nav-link-text">{{ucfirst($key)}}</span>
                     </a>

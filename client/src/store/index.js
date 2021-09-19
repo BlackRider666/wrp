@@ -3,6 +3,9 @@ import Vuex from 'vuex'
 import i18n from '@/plugins/i18n/i18n';
 import auth from './modules/auth';
 import account from './modules/account'
+import news from "./modules/news";
+import organizer from "./modules/organizer";
+import partner from "./modules/partner";
 
 const notifier = require('./modules/notifier/index').default;
 
@@ -46,6 +49,9 @@ const store = new Vuex.Store({
         notifier: notifier.store,
         auth,
         account,
+        news,
+        organizer,
+        partner,
     }
 });
 
