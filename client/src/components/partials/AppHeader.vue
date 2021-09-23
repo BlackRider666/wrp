@@ -6,6 +6,7 @@
   >
     <v-app-bar-nav-icon>Wrp</v-app-bar-nav-icon>
     <v-spacer></v-spacer>
+    <v-btn v-if="isLoggedIn" :to="{name:'Create Article'}" color="primary">Add Article</v-btn>
     <v-divider vertical color="white" inset class="mr-2"></v-divider>
     <LanguageSwitcher/>
     <template v-if="isLoggedIn">

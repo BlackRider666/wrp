@@ -54,6 +54,21 @@ const router = new VueRouter({
                         pageTitle: 'faq',
                     }
                 },
+                {
+                    path: '/article-create',
+                    name: 'Create Article',
+                    component: () => import('../views/Article/Create.vue'),
+                },
+                {
+                    path: '/articles',
+                    name: 'Articles',
+                    component: () => import('../views/Article/Index.vue'),
+                },
+                {
+                    path: '/articles/{:article_id}',
+                    name: 'Article',
+                    component: () => import('../views/Article/Show.vue'),
+                },
             ],
         },
         {

@@ -6,6 +6,8 @@ import account from './modules/account'
 import news from "./modules/news";
 import organizer from "./modules/organizer";
 import partner from "./modules/partner";
+import article from "./modules/article";
+import user from "./modules/user";
 
 const notifier = require('./modules/notifier/index').default;
 
@@ -52,6 +54,8 @@ const store = new Vuex.Store({
         news,
         organizer,
         partner,
+        article,
+        user,
     }
 });
 
