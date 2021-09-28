@@ -8,7 +8,7 @@
               src="https://picsum.photos/1280/720?random&id=666"
           >
             <v-card-title class="white--text mt-8">
-              <p>Some text</p>
+              <p>{{$t('home.first-text','Some text')}}</p>
             </v-card-title>
           </v-img>
         </v-card>
@@ -23,7 +23,7 @@
             <v-card-text class="white--text mt-8">
               <v-row>
                 <v-col cols="12">
-                  <p>Auth Info</p>
+                  <p>{{$t('home.auth-info','Auth info')}}</p>
                 </v-col>
                 <v-col cols="4" offset="4">
                   <v-btn
@@ -31,7 +31,7 @@
                       outlined
                       color="primary"
                       :to="{name:'login'}"
-                  >Sign In</v-btn>
+                  >{{$t('btn.sign-in','Sign In')}}</v-btn>
                 </v-col>
               </v-row>
             </v-card-text>
@@ -45,10 +45,10 @@
               flat
             >
               <v-card-title class="heading font-weight-medium">
-                About us
+                {{$t('home.about-us.title','About us')}}
               </v-card-title>
               <v-card-text>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ut tortor tellus. Donec maximus curs us pulvinar. Proin vehicula eros mauris, sit amet rutrum libero vestibulum ac. Morbi ullamcorper eu lacus vulputate consect. Etur vivamus sagittis accumsan quam eu malesuada. Proin et ante vel libero ultrices cursus. Donec felis leo, cu rsus eget hendrerit at, congue nec enim.
+                {{$t('home.about-us.message','Some long text')}}
               </v-card-text>
             </v-card>
          </v-col>
@@ -57,7 +57,7 @@
                 flat
             >
               <v-card-title class="heading font-weight-medium">
-                News
+                {{$t('home.news.title','News')}}
               </v-card-title>
               <v-card-text>
                 <v-row>
@@ -87,7 +87,7 @@
                             color="primary"
                             text
                         >
-                          Read more
+                          {{$t('btn.read-more','Read more')}}
                         </v-btn>
                       </v-card-actions>
                     </v-card>
@@ -103,7 +103,7 @@
                 flat
             >
               <v-card-title class="heading font-weight-medium">
-                Organizers
+                {{$t('home.organizers.title','Organizers')}}
               </v-card-title>
               <v-card-text>
                 <v-slide-group
@@ -129,7 +129,7 @@
                 flat
             >
               <v-card-title class="heading font-weight-medium">
-                Partners
+                {{$t('home.partners.title','Partners')}}
               </v-card-title>
               <v-card-text>
               <v-slide-group

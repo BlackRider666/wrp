@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import i18n from '@/plugins/i18n/i18n';
+import l10s from './modules/l10s';
 import auth from './modules/auth';
 import account from './modules/account'
 import news from "./modules/news";
@@ -17,34 +17,13 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
     state: {
         showLoading: false,
-        activeLangCode: i18n.locale,
-        locales: [
-            {
-                titleTKey: 'ukrainian',
-                flag: 'ua',
-                iso: 'ua'
-            },
-            {
-                titleTKey: 'english',
-                flag: 'us',
-                iso: 'us'
-            }
-        ],
     },
     getters: {
-        getActiveLanguage: (state) => {
-            return state.locales.find(item => item.iso === state.activeLangCode)
-        }
     },
     mutations: {
         SET_SHOW_LOADING(store, val) {
             store.showLoading = val;
         },
-        SET_ACTIVE_LANGUAGE(state, language) {
-            localStorage.setItem('activeLocaleCode', language.iso);
-            state.activeLocaleCode = language.iso;
-            i18n.locale = language.iso;
-        }
     },
     actions: {
     },
@@ -58,6 +37,7 @@ const store = new Vuex.Store({
         article,
         user,
         organization,
+        l10s,
     }
 });
 

@@ -7,13 +7,13 @@
     >
       <v-card-title class="d-flex align-center justify-center">
         <router-link class="d-flex align-center auth__logo py-5" :to="{name: 'dashboard'}">
-          <h2 class="text-2xl font-weight-semibold">WRP</h2>
+          <h2 class="text-2xl font-weight-semibold">{{$t('main.company-name','WRP')}}</h2>
         </router-link>
       </v-card-title>
       <v-card-text>
         <v-row justify="center">
           <v-col cols="6" align="center">
-            <div class="headline">{{$t('register.create-acc')}}</div>
+            <div class="headline">{{$t('register.title', 'Create Account')}}</div>
           </v-col>
         </v-row>
         <v-form
@@ -24,21 +24,21 @@
         >
           <v-text-field
               v-model="user.first_name"
-              :label="$t('placeholder.first_name')"
+              :label="$t('placeholder.first_name', 'First Name')"
               outlined
               prepend-inner-icon="mdi-account-outline"
               :rules="[rules.required]"
           />
           <v-text-field
               v-model="user.second_name"
-              :label="$t('placeholder.second_name')"
+              :label="$t('placeholder.second_name', 'Second Name')"
               outlined
               prepend-inner-icon="mdi-account-outline"
               :rules="[rules.required]"
           />
           <v-text-field
               v-model="user.surname"
-              :label="$t('placeholder.surname')"
+              :label="$t('placeholder.surname', 'Surname')"
               outlined
               prepend-inner-icon="mdi-account-outline"
               :rules="[rules.required]"
@@ -47,13 +47,13 @@
               v-model="user.email"
               outlined
               prepend-inner-icon="mdi-email-outline"
-              :label="$t('placeholder.email')"
+              :label="$t('placeholder.email', 'Email')"
               :rules="[rules.required, rules.email]"
               type="email"
           />
           <v-text-field
               v-model="user.phone"
-              :label="$t('placeholder.phone')"
+              :label="$t('placeholder.phone', 'Phone')"
               outlined
               prepend-inner-icon="mdi-phone"
               :rules="[rules.required, rules.phone]"
@@ -65,7 +65,7 @@
               prepend-inner-icon="mdi-lock"
               color="primary"
               :type="passwordType"
-              :label="$t('placeholder.password')"
+              :label="$t('placeholder.password', 'Password')"
           >
             <template v-slot:append>
               <v-icon color="secondary" v-if="passwordType === 'password'" @click="passwordType = 'text'">mdi-eye</v-icon>
@@ -75,7 +75,7 @@
           <v-text-field
               v-model="user.password_confirmation"
               :type="passwordType"
-              :label="$t('placeholder.password_confirmation')"
+              :label="$t('placeholder.password_confirmation', 'Confirm Password')"
               color="primary"
               outlined
               prepend-inner-icon="mdi-lock"
@@ -84,7 +84,7 @@
           <v-row class="mt-3">
             <v-col class="text-md-left">
               <v-btn outlined color="primary" :to="{name: 'login'}">
-                {{$t('btn.go-back-to-login')}}
+                {{$t('btn.back-to-login', 'Back to Login')}}
               </v-btn>
             </v-col>
             <v-col class="text-md-right">

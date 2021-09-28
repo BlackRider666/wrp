@@ -1,7 +1,7 @@
 <template>
   <div v-if="$route.meta && 'pageTitle' in $route.meta">
     <div class="d-flex align-center px-3 breadcrumbs">
-      <div class="title text--text pr-3" v-if="$route.meta && 'pageTitle' in $route.meta">{{$t($route.meta.pageTitle)}}</div>
+      <div class="title text--text pr-3" v-if="$route.meta && 'pageTitle' in $route.meta">{{$t($route.meta.pageTitle, 'PageTitle')}}</div>
       <v-divider vertical v-if="$route.meta && 'pageTitle' in $route.meta"></v-divider>
       <v-breadcrumbs class="pl-2" :items="navItems">
         <template v-slot:divider>
@@ -16,7 +16,7 @@
               <v-icon color="primary" class="icon-home">mdi-home-outline</v-icon>
             </template>
             <template v-else>
-              {{ $t(item.title) }}
+              {{ $t(item.title, item.title) }}
             </template>
           </v-breadcrumbs-item>
         </template>

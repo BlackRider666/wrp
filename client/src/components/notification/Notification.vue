@@ -7,7 +7,7 @@
       <template v-if="message">
         <div>{{ message }}</div>
       </template>
-      <v-btn dark text @click="show = false">{{ $t('btn.close') }}</v-btn>
+      <v-btn dark text @click="show = false">{{ $t('btn.close', 'Close') }}</v-btn>
     </v-snackbar>
   </div>
 </template>

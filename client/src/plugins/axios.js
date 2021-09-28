@@ -42,10 +42,9 @@ axios.interceptors.response.use(
                 case 422:
                     break
                 case 429:
-                    vm.$vs.notify({
-                        title: 'Error',
-                        text: 'Too many requests',
-                        color: 'error'});
+                    vm.$notify('Error',
+                        'error',
+                        'Too many requests'                        );
                     break
                 default:
 

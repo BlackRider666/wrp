@@ -3,13 +3,13 @@
     <v-col cols="12">
       <v-card>
         <v-card-title>
-          Account Settings
+          {{$t('account.title','Account Settings')}}
         </v-card-title>
         <v-card-text>
           <v-row>
             <v-col cols="6">
               <v-toolbar dense color="primary">
-                Common
+                {{$t('account.common-title','Common')}}
                 <v-spacer/>
                 <v-btn icon @click="showCommonSheet">
                   <v-icon v-if="showCommon">mdi-chevron-up</v-icon>
@@ -28,21 +28,21 @@
                   <v-card-text>
                     <v-text-field
                         v-model="user.first_name"
-                        :label="$t('placeholder.first_name')"
+                        :label="$t('placeholder.first_name', 'First Name')"
                         outlined
                         prepend-inner-icon="mdi-account-outline"
                         :rules="[rules.required]"
                     />
                     <v-text-field
                         v-model="user.second_name"
-                        :label="$t('placeholder.second_name')"
+                        :label="$t('placeholder.second_name', 'Second Name')"
                         outlined
                         prepend-inner-icon="mdi-account-outline"
                         :rules="[rules.required]"
                     />
                     <v-text-field
                         v-model="user.surname"
-                        :label="$t('placeholder.surname')"
+                        :label="$t('placeholder.surname', 'Surname')"
                         outlined
                         prepend-inner-icon="mdi-account-outline"
                         :rules="[rules.required]"
@@ -51,20 +51,20 @@
                         v-model="user.email"
                         outlined
                         prepend-inner-icon="mdi-email-outline"
-                        :label="$t('placeholder.email')"
+                        :label="$t('placeholder.email', 'Email')"
                         type="email"
                         disabled
                     />
                     <v-text-field
                         v-model="user.phone"
-                        :label="$t('placeholder.phone')"
+                        :label="$t('placeholder.phone', 'Phone')"
                         outlined
                         prepend-inner-icon="mdi-phone"
                         :rules="[rules.required, rules.phone]"
                     />
                     <v-textarea
                         v-model="user.desc"
-                        :label="$t('placeholder.desc')"
+                        :label="$t('placeholder.desc', 'Desc')"
                         outlined
                         prepend-inner-icon="mdi-card-text-outline"
                         :rules="[rules.required]"
@@ -72,7 +72,7 @@
                   </v-card-text>
                   <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="primary" type="submit">Update</v-btn>
+                    <v-btn color="primary" type="submit">{{$t('btn.update','Update')}}</v-btn>
                   </v-card-actions>
                 </v-card>
                 </v-form>
@@ -82,7 +82,7 @@
               <v-row>
                 <v-col cols="12">
                   <v-toolbar dense color="primary">
-                    Avatar
+                    {{$t('avatar.title','Avatar')}}
                     <v-spacer/>
                     <v-btn icon @click="showAvatarSheet">
                       <v-icon v-if="showAvatar">mdi-chevron-up</v-icon>
@@ -111,7 +111,7 @@
                             placeholder="Pick an avatar"
                             prepend-inner-icon="mdi-camera"
                             prepend-icon=""
-                            label="Avatar"
+                            :label="$t('placeholder.avatar','Avatar')"
                             outlined
                             v-model="avatar"
                             @change="changeAvatarFile"
@@ -119,7 +119,7 @@
                       </v-card-text>
                       <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="primary" type="submit">Update</v-btn>
+                        <v-btn color="primary" type="submit">{{$t('btn.update','Update')}}</v-btn>
                       </v-card-actions>
                     </v-card>
                     </v-form>
@@ -127,7 +127,7 @@
                 </v-col>
                 <v-col cols="12">
                   <v-toolbar dense color="primary">
-                    Change password
+                    {{$t('change-password.title','Change password')}}
                     <v-spacer/>
                     <v-btn icon @click="showChangePasswordSheet">
                       <v-icon v-if="changePassword">mdi-chevron-up</v-icon>
@@ -151,7 +151,7 @@
                             prepend-inner-icon="mdi-lock"
                             color="primary"
                             :type="changePasswordRequest.passwordType"
-                            :label="$t('placeholder.password')"
+                            :label="$t('placeholder.password', 'Password')"
                         >
                           <template v-slot:append>
                             <v-icon color="secondary" v-if="changePasswordRequest.passwordType === 'password'" @click="changePasswordRequest.passwordType = 'text'">mdi-eye</v-icon>
@@ -161,7 +161,7 @@
                         <v-text-field
                             v-model="changePasswordRequest.password_confirmation"
                             :type="changePasswordRequest.passwordType"
-                            :label="$t('placeholder.password_confirmation')"
+                            :label="$t('placeholder.password_confirmation', 'Confirm Password')"
                             color="primary"
                             outlined
                             prepend-inner-icon="mdi-lock"
@@ -170,7 +170,7 @@
                       </v-card-text>
                       <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="primary" type="submit">Change</v-btn>
+                        <v-btn color="primary" type="submit">{{$t('btn.change','Change')}}</v-btn>
                       </v-card-actions>
                     </v-card>
                     </v-form>
@@ -180,7 +180,7 @@
               </v-col>
             <v-col cols="12">
               <v-toolbar dense color="primary">
-                Works
+                {{$t('works.title','Works')}}
                 <v-spacer/>
                 <v-btn
                     icon
@@ -202,25 +202,25 @@
                   <template v-slot:top>
                       <v-dialog v-model="editWorkDialog" max-width="500px">
                         <v-card>
-                          <v-card-title>Edit</v-card-title>
+                          <v-card-title>{{$t('works.edit.title','Edit')}}</v-card-title>
                           <v-card-text v-if="selectedWork">
                           </v-card-text>
                           <v-card-actions>
                             <v-spacer></v-spacer>
-                            <v-btn color="darken-1" text @click="closeWorkEdit">Cancel</v-btn>
-                            <v-btn color="darken-1" text @click="editWork">Update</v-btn>
+                            <v-btn color="darken-1" text @click="closeWorkEdit">{{$t('btn.cancel','Cancel')}}</v-btn>
+                            <v-btn color="darken-1" text @click="editWork">{{$t('btn.update','Update')}}</v-btn>
                             <v-spacer></v-spacer>
                           </v-card-actions>
                         </v-card>
                       </v-dialog>
                     <v-dialog v-model="deleteWorkDialog" max-width="500px">
                       <v-card>
-                        <v-card-title>Delete</v-card-title>
-                        <v-card-text>Are you sure you want to delete this work?</v-card-text>
+                        <v-card-title>{{$t('works.delete.title','Delete')}}</v-card-title>
+                        <v-card-text>{{$t('works.delete.message','Are you sure you want to delete this work?')}}</v-card-text>
                         <v-card-actions>
                           <v-spacer></v-spacer>
-                          <v-btn color="darken-1" text @click="closeWorkDelete">Cancel</v-btn>
-                          <v-btn color="error" text @click="deleteWork">Delete</v-btn>
+                          <v-btn color="darken-1" text @click="closeWorkDelete">{{$t('btn.cancel','Cancel')}}</v-btn>
+                          <v-btn color="error" text @click="deleteWork">{{$t('btn.delete','Delete')}}</v-btn>
                           <v-spacer></v-spacer>
                         </v-card-actions>
                       </v-card>
@@ -245,7 +245,7 @@
               </v-sheet>
               <v-dialog v-model="createWorkDialog" max-width="500px">
                 <v-card v-if="newWork">
-                  <v-card-title>Create</v-card-title>
+                  <v-card-title>{{$t('works.create.title','Create')}}</v-card-title>
                   <v-card-text>
                     <v-autocomplete
                         v-model="newWork.organization"
@@ -253,8 +253,8 @@
                         hide-no-data
                         item-text="name"
                         item-value="id"
-                        label="Organization"
-                        placeholder="Organization"
+                        :label="$t('works.placeholder.organization','Organization')"
+                        :placeholder="$t('works.placeholder.organization','Organization')"
                         prepend-inner-icon="mdi-database-search"
                         :search-input.sync="organizationSearch"
                         return-object
@@ -266,8 +266,8 @@
                         hide-no-data
                         item-text="name"
                         item-value="id"
-                        label="Structure Unit"
-                        placeholder="Structure Unit"
+                        :label="$t('works.placeholder.structure-unit','Structure Unit')"
+                        :placeholder="$t('works.placeholder.structure-unit','Structure Unit')"
                         prepend-inner-icon="mdi-database-search"
                         :search-input.sync="structureUnitSearch"
                         return-object
@@ -275,7 +275,7 @@
                     ></v-autocomplete>
                     <v-text-field
                         v-model="newWork.position"
-                        :label="$t('placeholder.work.position')"
+                        :label="$t('works.placeholder.position','Position')"
                         outlined
                         prepend-inner-icon="mdi-card-text-outline"
                     />
@@ -289,7 +289,7 @@
                       <template v-slot:activator="{ on }">
                         <v-text-field
                             :value="newWork.start"
-                            :label="$t('placeholder.work.start')"
+                            :label="$t('works.placeholder.start', 'Worked from')"
                             prepend-inner-icon="mdi-calendar"
                             readonly
                             v-on="on"
@@ -308,7 +308,7 @@
                       <template v-slot:activator="{ on }">
                         <v-text-field
                             :value="newWork.finish"
-                            :label="$t('placeholder.work.start')"
+                            :label="$t('works.placeholder.finish','Worked Until')"
                             prepend-inner-icon="mdi-calendar"
                             readonly
                             v-on="on"
@@ -319,9 +319,9 @@
                     </v-menu>
                   </v-card-text>
                   <v-card-actions>
-                    <v-btn color="darken-1" text @click="closeCreateWorkDialog">Cancel</v-btn>
+                    <v-btn color="darken-1" text @click="closeCreateWorkDialog">{{$t('btn.cancel','Cancel')}}</v-btn>
                     <v-spacer></v-spacer>
-                    <v-btn color="primary" text @click="createWork">Create</v-btn>
+                    <v-btn color="primary" text @click="createWork">{{$t('btn.create','Create')}}</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-dialog>

@@ -10,33 +10,21 @@
           </v-col>
         </v-row>
       </v-container>
-      <Footer :text="$t('footer.all-reserved')"/>
+      <Footer :text="$t('footer.all-reserved', 'All rights reserved')"/>
     </v-main>
   </div>
 </template>
 
 <script>
 import AppHeader from "@/components/partials/AppHeader";
-import NavigationMenu from "@/components/partials/NavigationMenu";
 import Breadcrumbs from "@/components/partials/Breadcrumbs";
 import Footer from "@/components/partials/Footer";
 
 export default {
   name: "Main",
-  components: {AppHeader, NavigationMenu, Breadcrumbs, Footer},
+  components: {AppHeader, Breadcrumbs, Footer},
   data() {
     return {
-      navigationOptions: {
-        color: "#fff",
-        mobileShowValue: false,
-        items: [
-          {
-            title: 'channels.title',
-            icon: "mdi-youtube-subscription",
-            to: '/'
-          },
-        ],
-      },
     }
   },
 }

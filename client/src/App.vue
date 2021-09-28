@@ -18,6 +18,20 @@ export default {
   data: function() {
     return {}
   },
+  beforeCreate() {
+    this.$store.dispatch('l10s/getActiveLocales');
+    this.$store.dispatch('l10s/getAllTranslations', this.$store.getters['l10s/getActiveLocale'])
+        .then((result) => {
+          this.l10s.setAllTranslations(result);
+        });
+    this.l10s.onUntranslatedKeyFound((key, value) => {
+      this.$store.dispatch('l10s/createNewTranslationKey', {
+        key,
+        value,
+        iso_code: this.$store.getters['l10s/getActiveLocale'],
+      });
+    });
+  },
   methods: {
   },
 };

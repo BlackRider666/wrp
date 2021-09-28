@@ -5,11 +5,10 @@ import store from './store';
 import vuetify from './plugins/vuetify';
 import './plugins/axios';
 import loading from './plugins/loading';
-import VueI18n from "vue-i18n";
-import i18n from './plugins/i18n/i18n';
+import l10s from './plugins/l10s';
 import FlagIcon from 'vue-flag-icon';
 
-Vue.use(VueI18n);
+Vue.use(l10s);
 Vue.use(loading);
 Vue.use(FlagIcon);
 
@@ -18,7 +17,6 @@ Vue.config.productionTip = false;
 new Vue({
   router,
   store,
-  i18n,
   vuetify,
   render: (h) => h(App),
 }).$mount('#app');

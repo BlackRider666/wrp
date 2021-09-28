@@ -4,7 +4,7 @@
       <v-card>
         <v-card-title>
           <v-toolbar dense color="primary">
-            Create Article
+            {{$t('articles.create.title','Create Article')}}
           </v-toolbar>
         </v-card-title>
         <v-card-text>
@@ -20,14 +20,14 @@
               <v-card-text>
                 <v-text-field
                     v-model="article.title"
-                    :label="$t('placeholder.title')"
+                    :label="$t('articles.placeholder.title','Title')"
                     outlined
                     prepend-inner-icon="mdi-card-text-outline"
                     :rules="[rules.required]"
                 />
                 <v-select
                   v-model="article.category_id"
-                  :label="$t('placeholder.category')"
+                  :label="$t('articles.placeholder.category','Category')"
                   outlined
                   prepend-inner-icon="mdi-shape-outline"
                   :rules="[rules.required]"
@@ -37,14 +37,14 @@
                 ></v-select>
                 <v-text-field
                   v-model="article.year"
-                  :label="$t('placeholder.year')"
+                  :label="$t('articles.placeholder.year', 'Year')"
                   outlined
                   prepend-inner-icon="mdi-calendar-range"
                   :rules="[rules.required]"
                 ></v-text-field>
                 <v-select
                     v-model="article.authors"
-                    :label="$t('placeholder.authors')"
+                    :label="$t('articles.placeholder.authors','Authors')"
                     outlined
                     prepend-inner-icon="mdi-shape-outline"
                     :rules="[rules.required]"
@@ -56,7 +56,7 @@
                 <v-text-field
                     v-if="checkCategory(['article','conference','section'])"
                     v-model="article.journal"
-                    :label="$t(checkCategoryTitleLabelTranslate())"
+                    :label="$t(checkCategoryTitleLabelTranslate(), 'Journal')"
                     outlined
                     prepend-inner-icon="mdi-card-text-outline"
                     :rules="[rules.required]"
@@ -64,7 +64,7 @@
                 <v-text-field
                     v-if="checkCategory(['article','conference','section', 'book','conference'])"
                     v-model="article.part"
-                    :label="$t('placeholder.part')"
+                    :label="$t('articles.placeholder.part', 'Part')"
                     outlined
                     prepend-inner-icon="mdi-card-text-outline"
                     :rules="[rules.required]"
@@ -72,7 +72,7 @@
                 <v-text-field
                     v-if="checkCategory(['article','conference'])"
                     v-model="article.number"
-                    :label="$t('placeholder.number')"
+                    :label="$t('articles.placeholder.number', 'Number')"
                     outlined
                     prepend-inner-icon="mdi-card-text-outline"
                     :rules="[rules.required]"
@@ -80,7 +80,7 @@
                 <v-text-field
                     v-if="checkCategory(['article','conference','section', 'book','conference','guidelines'])"
                     v-model="article.pages"
-                    :label="$t('placeholder.pages')"
+                    :label="$t('articles.placeholder.pages', 'Pages')"
                     outlined
                     prepend-inner-icon="mdi-card-text-outline"
                     :rules="[rules.required]"
@@ -88,7 +88,7 @@
                 <v-text-field
                     v-if="checkCategory(['article','section','guidelines'])"
                     v-model="article.publisher"
-                    :label="$t('placeholder.publisher')"
+                    :label="$t('articles.placeholder.publisher', 'Publisher')"
                     outlined
                     prepend-inner-icon="mdi-card-text-outline"
                     :rules="[rules.required]"
@@ -96,7 +96,7 @@
                 <v-select
                     v-if="checkCategory(['patent'])"
                     v-model="article.country"
-                    :label="$t('placeholder.country')"
+                    :label="$t('articles.placeholder.country', 'Country')"
                     outlined
                     prepend-inner-icon="mdi-shape-outline"
                     :rules="[rules.required]"
@@ -105,7 +105,7 @@
                 <v-text-field
                     v-if="checkCategory(['patent'])"
                     v-model="article.patent_number"
-                    :label="$t('placeholder.patent_number')"
+                    :label="$t('articles.placeholder.patent_number', 'Patent Number')"
                     outlined
                     prepend-inner-icon="mdi-card-text-outline"
                     :rules="[rules.required]"
@@ -113,7 +113,7 @@
                 <v-text-field
                     v-if="checkCategory(['patent'])"
                     v-model="article.app_number"
-                    :label="$t('placeholder.app_number')"
+                    :label="$t('articles.placeholder.app_number','App Number')"
                     outlined
                     prepend-inner-icon="mdi-card-text-outline"
                     :rules="[rules.required]"
@@ -121,7 +121,7 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="primary" type="submit">Create</v-btn>
+                <v-btn color="primary" type="submit">{{$t('btn.create','Create')}}</v-btn>
               </v-card-actions>
             </v-card>
             </v-form>
@@ -188,7 +188,7 @@ export default {
       this.$store.dispatch('article/createArticle', this.article)
       .then( () => {
         this.$loadingClose();
-        this.$notify('','success', 'Success');
+        this.$notify('','success', this.$t('messages.success','Success'));
 
         this.$router.push({name:'Articles'});
       })
@@ -207,13 +207,13 @@ export default {
       let category = this.categories.find( (c) => c.id === this.article.category_id);
       if (!category) return;
       if (category.tech_name === 'article') {
-        return 'placeholder.journal';
+        return 'articles.placeholder.journal';
       }
       if (category.tech_name === 'section') {
-        return 'placeholder.book';
+        return 'articles.placeholder.book';
       }
       if (category.tech_name === 'conference') {
-        return 'placeholder.conference';
+        return 'articles.placeholder.conference';
       }
     }
   },

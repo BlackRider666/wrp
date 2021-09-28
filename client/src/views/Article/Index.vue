@@ -10,34 +10,34 @@
           >
             <template v-slot:top>
               <v-toolbar dense flat>
-                <span class="text-h5">Articles</span>
+                <span class="text-h5">{{$t('articles.index.title','Articles')}}</span>
                 <v-spacer></v-spacer>
-                <v-btn :to="{name:'Create Article'}" color="primary">Add Article</v-btn>
+                <v-btn :to="{name:'Create Article'}" color="primary">{{$t('articles.create.btn.add','Add Article')}}</v-btn>
               </v-toolbar>
                 <v-dialog v-model="dialogDelete" max-width="500px">
                   <v-card>
-                    <v-card-title>Delete</v-card-title>
-                    <v-card-text>Are you sure you want to delete this item?</v-card-text>
+                    <v-card-title>{{$t('articles.delete.title','Delete')}}</v-card-title>
+                    <v-card-text>{{$t('articles.delete.message','Are you sure you want to delete this item?')}}</v-card-text>
                     <v-card-actions>
-                      <v-btn color="darken-1" text @click="closeDelete">Cancel</v-btn>
+                      <v-btn color="darken-1" text @click="closeDelete">{{$t('btn.cancel','Cancel')}}</v-btn>
                       <v-spacer></v-spacer>
-                      <v-btn color="error" text @click="deleteItemConfirm">Delete</v-btn>
+                      <v-btn color="error" text @click="deleteItemConfirm">{{$t('btn.delete','Delete')}}</v-btn>
                     </v-card-actions>
                   </v-card>
                 </v-dialog>
                 <v-dialog v-model="dialogEdit" max-width="500px">
                   <v-card>
-                    <v-card-title>Edit</v-card-title>
+                    <v-card-title>{{$t('articles.edit.title','Edit')}}</v-card-title>
                     <v-card-text v-if="selectedItem">
                       <v-text-field
                           v-model="selectedItem.title"
-                          :label="$t('placeholder.title')"
+                          :label="$t('articles.placeholder.title', 'Title')"
                           outlined
                           prepend-inner-icon="mdi-card-text-outline"
                       />
                       <v-select
                           v-model="selectedItem.category_id"
-                          :label="$t('placeholder.category')"
+                          :label="$t('articles.placeholder.category','Category')"
                           outlined
                           prepend-inner-icon="mdi-shape-outline"
                           :items="categories"
@@ -46,13 +46,13 @@
                       ></v-select>
                       <v-text-field
                           v-model="selectedItem.year"
-                          :label="$t('placeholder.year')"
+                          :label="$t('articles.placeholder.year', 'year')"
                           outlined
                           prepend-inner-icon="mdi-calendar-range"
                       ></v-text-field>
                       <v-select
                           v-model="selectedItem.authors"
-                          :label="$t('placeholder.category')"
+                          :label="$t('articles.placeholder.authors', 'Authors')"
                           outlined
                           prepend-inner-icon="mdi-shape-outline"
                           :items="authors"
@@ -62,9 +62,9 @@
                       ></v-select>
                     </v-card-text>
                     <v-card-actions>
-                      <v-btn color="darken-1" text @click="closeEdit">Cancel</v-btn>
+                      <v-btn color="darken-1" text @click="closeEdit">{{$t('btn.cancel','Cancel')}}</v-btn>
                       <v-spacer></v-spacer>
-                      <v-btn color="darken-1" text @click="editItemConfirm">Update</v-btn>
+                      <v-btn color="darken-1" text @click="editItemConfirm">{{$t('btn.update','Update')}}</v-btn>
                     </v-card-actions>
                   </v-card>
                 </v-dialog>
@@ -99,10 +99,10 @@ export default {
   data() {
     return {
       headers: [
-        { text: 'Title', value: 'title' },
-        { text: 'Category', value: 'category.title' },
-        { text: 'Year', value: 'year' },
-        { text: 'Actions', value: 'actions', sortable: false },
+        { text: this.$t('articles.placeholder.title','Title'), value: 'title' },
+        { text: this.$t('articles.placeholder.category','Category'), value: 'category.title' },
+        { text: this.$t('articles.placeholder.year','Year'), value: 'year' },
+        { text: this.$t('articles.placeholder.actions','Actions'), value: 'actions', sortable: false },
       ],
       dialogEdit: false,
       dialogDelete: false,
@@ -137,7 +137,7 @@ export default {
       this.$store.dispatch('article/deleteArticle', this.selectedItem.id)
           .then( () => {
             this.$loadingClose();
-            this.$notify('','success', 'Success');
+            this.$notify('','success', this.$t('messages.success','Success'));
             this.closeDelete()
           });
     },
@@ -147,7 +147,7 @@ export default {
       this.$store.dispatch('article/updateArticle', this.selectedItem)
           .then( () => {
             this.$loadingClose();
-            this.$notify('','success', 'Success');
+            this.$notify('','success', this.$t('messages.success','Success'));
             this.closeEdit()
           });
     },

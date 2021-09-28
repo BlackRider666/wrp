@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\Article\ArticleController;
 use App\Http\Controllers\API\Article\CategoryController;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\Locale\LocaleController;
 use App\Http\Controllers\API\NewsController;
 use App\Http\Controllers\API\Organization\OrganizationController;
 use App\Http\Controllers\API\Organization\StructuralUnitController;
@@ -47,4 +48,9 @@ Route::group(['prefix' => 'article', 'middleware' => 'auth:sanctum'], function (
 Route::group(['prefix' => 'organizations', 'middleware' => 'auth:sanctum'], function () {
     Route::get('/', [OrganizationController::class,'index']);
     Route::get('/structure-units', [StructuralUnitController::class,'index']);
+});
+Route::group(['prefix' => 'locales'], function () {
+    Route::get('/',[LocaleController::class,'index']);
+    Route::get('/active',[LocaleController::class,'getActive']);
+    Route::post('/', [LocaleController::class, 'store']);
 });

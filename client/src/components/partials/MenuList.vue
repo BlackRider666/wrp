@@ -18,7 +18,7 @@
         >
           <flag style="max-width: 16px;" v-if="options.titleFlag" :iso="options.titleFlag" class="mr-2" />
           <span v-if="options.title" v-html="options.title"></span>
-          <span v-if="options.titleTKey" :class="options.titleClass">{{ $t(options.titleTKey) }}</span>
+          <span v-if="options.titleTKey" :class="options.titleClass">{{ $t(options.titleTKey,options.titleTDefault) }}</span>
           <img v-if="options.titleImage" :class="options.titleClass" :src="options.titleImage"/>
           <template v-if="options.titleIcon">
             <feather-icon v-if="options.iconsType && options.iconsType === 'feather'" :icon="options.titleIcon"/>
@@ -38,7 +38,7 @@
         >
           <v-card-title>
             <div v-if="options.subheader" v-html="options.subheader"></div>
-            <div v-if="options.subheaderTKey">{{ $t(options.subheaderTKey) }}</div>
+            <div v-if="options.subheaderTKey">{{ $t(options.subheaderTKey,options.subheaderTDefault) }}</div>
           </v-card-title>
         </v-card>
       </template>
@@ -56,7 +56,7 @@
             <flag v-if="item.flag" :iso="item.flag" class="mr-2" />
             <v-list-item-content>
               <v-list-item-subtitle :class="item.subtitleClass" v-if="item.title" v-html="item.title"></v-list-item-subtitle>
-              <v-list-item-subtitle :class="item.subtitleClass" v-if="item.titleTKey">{{$t(item.titleTKey)}}</v-list-item-subtitle>
+              <v-list-item-subtitle :class="item.subtitleClass" v-if="item.titleTKey">{{$t(item.titleTKey,item.titleTDefault)}}</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
           <div :class="{'list-divider': item.divider}"></div>

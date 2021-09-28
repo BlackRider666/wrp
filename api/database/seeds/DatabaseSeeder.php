@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             SuperAdminSeeder::class,
             RolesSeeder::class,
             ArticleCategorySeeder::class,
+            LocaleSeeder::class,
         ]);
     }
 }

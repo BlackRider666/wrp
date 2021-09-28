@@ -9,7 +9,7 @@
           color="primary"
           indeterminate
       ></v-progress-circular>
-      <div class="pt-4 title">{{$t('please-waiting')}}</div>
+      <div class="pt-4 title">{{$t('loading.please-waiting', 'Please waiting')}}</div>
     </v-layout>
   </v-container>
 </template>

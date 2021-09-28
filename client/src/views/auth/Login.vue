@@ -7,13 +7,13 @@
     >
       <v-card-title class="d-flex align-center justify-center">
         <router-link class="d-flex align-center auth__logo py-5" :to="{name: 'dashboard'}">
-          <h2 class="text-2xl font-weight-semibold">WRP</h2>
+          <h2 class="text-2xl font-weight-semibold">{{$t('main.company-name','WRP')}}</h2>
         </router-link>
       </v-card-title>
       <v-card-text>
             <v-row justify="center">
               <v-col cols="6" align="center">
-                <div class="headline">{{$t('login.welcome')}}</div>
+                <div class="headline">{{$t('login.welcome', 'Welcome')}}</div>
               </v-col>
             </v-row>
             <v-form
@@ -26,7 +26,7 @@
                   v-model="user.email"
                   outlined
                   prepend-inner-icon="mdi-email-outline"
-                  :label="$t('placeholder.email')"
+                  :label="$t('placeholder.email', 'Email')"
                   :rules="[rules.required, rules.email]"
                   type="email"
               />
@@ -38,7 +38,7 @@
                   prepend-inner-icon="mdi-lock"
                   color="primary"
                   :type="passwordType"
-                  :label="$t('placeholder.password')"
+                  :label="$t('placeholder.password', 'Password')"
               >
                 <template v-slot:append>
                   <v-icon color="secondary" v-if="passwordType === 'password'" @click="passwordType = 'text'">mdi-eye</v-icon>
@@ -48,10 +48,10 @@
 
               <div class="d-flex justify-space-between">
                 <v-btn @click="$router.push({name: 'register'})" class="mt-3" color="primary" outlined>
-                  {{$t('btn.register')}}
+                  {{$t('btn.register', 'Register')}}
                 </v-btn>
                 <v-btn type="submit" class="mt-3" color="primary">
-                  {{$t('btn.login')}}
+                  {{$t('btn.login', 'Login')}}
                 </v-btn>
               </div>
             </v-form>

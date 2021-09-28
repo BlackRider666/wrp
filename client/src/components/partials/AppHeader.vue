@@ -4,9 +4,18 @@
       :tile="false"
       fixed
   >
-    <v-app-bar-nav-icon>Wrp</v-app-bar-nav-icon>
+    <router-link
+        class="text-decoration-none"
+        :to="{name:'dashboard'}"
+    ><v-app-bar-nav-icon>{{$t('main.company-name', 'WRP')}}</v-app-bar-nav-icon>
+    </router-link>
     <v-spacer></v-spacer>
-    <v-btn v-if="isLoggedIn" :to="{name:'Create Article'}" color="primary" icon><v-icon>mdi-plus</v-icon></v-btn>
+    <router-link
+        class="text-decoration-none"
+        :to="{name:'Create Article'}"
+    >
+      <v-btn v-if="isLoggedIn" color="primary" icon><v-icon>mdi-plus</v-icon></v-btn>
+    </router-link>
     <v-divider vertical color="white" inset class="mr-2"></v-divider>
     <LanguageSwitcher/>
     <template v-if="isLoggedIn">
@@ -34,7 +43,8 @@ export default {
             image: this.account.avatar_url || null,
           },
           {
-            titleTKey: "label.account",
+            titleTKey: "header.menu.account",
+            titleTDefault: "Account",
             icon: "mdi-account-outline",
             to: {
               name:'account',
@@ -42,7 +52,8 @@ export default {
             divider: true,
           },
           {
-            titleTKey: "label.articles",
+            titleTKey: "header.menu.articles",
+            titleTDefault: "Articles",
             icon: "mdi-book-open-variant",
             to: {
               name:'Articles',
@@ -50,7 +61,8 @@ export default {
             divider: true,
           },
           {
-            titleTKey: "logout",
+            titleTKey: "header.menu.logout",
+            titleTDefault: "Logout",
             icon: "mdi-logout",
             to: {
               name:'logout',
