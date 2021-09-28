@@ -16,6 +16,14 @@ class Article extends Model
         'title',
         'category_id',
         'year',
+        'journal',
+        'part',
+        'number',
+        'pages',
+        'publisher',
+        'country',
+        'patent_number',
+        'app_number',
     ];
 
     protected $casts = [

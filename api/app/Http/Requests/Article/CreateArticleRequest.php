@@ -28,7 +28,15 @@ class CreateArticleRequest extends FormRequest
             'category_id' => 'required|int|exists:categories,id',
             'year'        => 'required|date_format:Y',
             'authors'     => 'required|array',
-            'authors.*'   => 'required|int|exists:users,id'
+            'authors.*'   => 'required|int|exists:users,id',
+            'journal'     => 'nullable|string|max:255',
+            'part'        => 'nullable|string|max:255',
+            'number'      => 'nullable|string|max:255',
+            'pages'       => 'nullable|string|max:255',
+            'publisher'   => 'nullable|string|max:255',
+            'country'     => 'nullable|string|max:255',
+            'patent_number' => 'nullable|string|max:255',
+            'app_number'    => 'nullable|string|max:255',
         ];
     }
 }

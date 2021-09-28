@@ -10,6 +10,7 @@
         <v-card-text>
           <v-sheet outlined>
             <v-form
+                ref="form"
                 lazy-validation
                 align="center"
                 @submit.prevent="createArticle"
@@ -43,7 +44,7 @@
                 ></v-text-field>
                 <v-select
                     v-model="article.authors"
-                    :label="$t('placeholder.category')"
+                    :label="$t('placeholder.authors')"
                     outlined
                     prepend-inner-icon="mdi-shape-outline"
                     :rules="[rules.required]"
@@ -52,6 +53,71 @@
                     item-value="id"
                     multiple
                 ></v-select>
+                <v-text-field
+                    v-if="checkCategory(['article','conference','section'])"
+                    v-model="article.journal"
+                    :label="$t(checkCategoryTitleLabelTranslate())"
+                    outlined
+                    prepend-inner-icon="mdi-card-text-outline"
+                    :rules="[rules.required]"
+                />
+                <v-text-field
+                    v-if="checkCategory(['article','conference','section', 'book','conference'])"
+                    v-model="article.part"
+                    :label="$t('placeholder.part')"
+                    outlined
+                    prepend-inner-icon="mdi-card-text-outline"
+                    :rules="[rules.required]"
+                />
+                <v-text-field
+                    v-if="checkCategory(['article','conference'])"
+                    v-model="article.number"
+                    :label="$t('placeholder.number')"
+                    outlined
+                    prepend-inner-icon="mdi-card-text-outline"
+                    :rules="[rules.required]"
+                />
+                <v-text-field
+                    v-if="checkCategory(['article','conference','section', 'book','conference','guidelines'])"
+                    v-model="article.pages"
+                    :label="$t('placeholder.pages')"
+                    outlined
+                    prepend-inner-icon="mdi-card-text-outline"
+                    :rules="[rules.required]"
+                />
+                <v-text-field
+                    v-if="checkCategory(['article','section','guidelines'])"
+                    v-model="article.publisher"
+                    :label="$t('placeholder.publisher')"
+                    outlined
+                    prepend-inner-icon="mdi-card-text-outline"
+                    :rules="[rules.required]"
+                />
+                <v-select
+                    v-if="checkCategory(['patent'])"
+                    v-model="article.country"
+                    :label="$t('placeholder.country')"
+                    outlined
+                    prepend-inner-icon="mdi-shape-outline"
+                    :rules="[rules.required]"
+                    :items="countries"
+                ></v-select>
+                <v-text-field
+                    v-if="checkCategory(['patent'])"
+                    v-model="article.patent_number"
+                    :label="$t('placeholder.patent_number')"
+                    outlined
+                    prepend-inner-icon="mdi-card-text-outline"
+                    :rules="[rules.required]"
+                />
+                <v-text-field
+                    v-if="checkCategory(['patent'])"
+                    v-model="article.app_number"
+                    :label="$t('placeholder.app_number')"
+                    outlined
+                    prepend-inner-icon="mdi-card-text-outline"
+                    :rules="[rules.required]"
+                />
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
@@ -78,10 +144,28 @@ export default {
         category_id: null,
         year: '',
         authors: [],
+        journal: null,
+        part: null,
+        number: null,
+        pages: null,
+        publisher: null,
+        country: null,
+        patent_number: null,
+        app_number: null,
       },
       rules: {
         required: value => !!value || 'Required.',
       },
+      countries:[
+        {
+          text:'Ukraine',
+          value:'Ukraine',
+        },
+        {
+          text:'USA',
+          value:'USA',
+        },
+      ],
     };
   },
   computed: {
@@ -96,16 +180,42 @@ export default {
     this.article.authors.push(this.$store.getters['account/getAccount'].id);
   },
   methods: {
-    createArticle() {
+    createArticle(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!this.$refs.form.validate()) return;
       this.$loading();
       this.$store.dispatch('article/createArticle', this.article)
-          .then( () => {
-            this.$loadingClose();
-            this.$notify('','success', 'Success');
+      .then( () => {
+        this.$loadingClose();
+        this.$notify('','success', 'Success');
 
-            this.$router.push({name:'Articles'});
-          });
+        this.$router.push({name:'Articles'});
+      })
+      .catch( (error) => {
+          console.log(error);
+      });
     },
+    checkCategory(arr) {
+      let category = this.categories.find( (c) => c.id === this.article.category_id);
+      if (!category) {
+        return false;
+      }
+      return arr.includes(category.tech_name);
+    },
+    checkCategoryTitleLabelTranslate() {
+      let category = this.categories.find( (c) => c.id === this.article.category_id);
+      if (!category) return;
+      if (category.tech_name === 'article') {
+        return 'placeholder.journal';
+      }
+      if (category.tech_name === 'section') {
+        return 'placeholder.book';
+      }
+      if (category.tech_name === 'conference') {
+        return 'placeholder.conference';
+      }
+    }
   },
 }
 </script>
