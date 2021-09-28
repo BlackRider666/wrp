@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\User\Work;
+namespace App\Http\Requests\Article;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateWorkRequest extends FormRequest
+class UpdateArticleRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +13,7 @@ class UpdateWorkRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return request()->user() !== null;
+        return true;
     }
 
     /**
@@ -25,11 +25,10 @@ class UpdateWorkRequest extends FormRequest
     {
         return [
             'title' =>  'required|string|max:255',
-            'start' =>  'required|date',
-            'finish'    =>  'nullable|date|after:start',
-            'position'  =>  'required|string|max:255',
-            'organization' => 'required|string|max:255',
-            'structural_unit' => 'required|string|max:255',
+            'category_id' => 'required|int|exists:categories,id',
+            'year'        => 'required|date_format:Y',
+            'authors'     => 'required|array',
+            'authors.*'   => 'required|int|exists:users,id'
         ];
     }
 }

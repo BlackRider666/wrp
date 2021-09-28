@@ -18,6 +18,10 @@ class Article extends Model
         'year',
     ];
 
+    protected $casts = [
+        'year'  =>  'date:Y',
+    ];
+
     /**
      * @return BelongsTo
      */

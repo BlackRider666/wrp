@@ -47,6 +47,30 @@ const actions = {
                 })
         }))
     },
+    updateArticle({commit}, payload) {
+        return new Promise(((resolve, reject) => {
+            axios.post('article/'+payload.id, payload)
+                .then(res => {
+                    commit("UPDATE_ARTICLE", res.data.article);
+                    resolve(res.data.article)
+                })
+                .catch(errors => {
+                    reject(errors.response.data)
+                })
+        }))
+    },
+    deleteArticle({commit}, payload) {
+        return new Promise(((resolve, reject) => {
+            axios.delete('article/'+payload)
+                .then(res => {
+                    commit("REMOVE_ARTICLE", payload);
+                    resolve(res.data)
+                })
+                .catch(errors => {
+                    reject(errors.response.data)
+                })
+        }))
+    },
 };
 
 const mutations = {
@@ -58,6 +82,14 @@ const mutations = {
     },
     UPDATE_ARTICLES (state, articles) {
         state.articles = articles
+    },
+    UPDATE_ARTICLE (state, article) {
+        let item = state.articles.find((i) => i.id === article.id)
+        item = article;
+        state.articles = [...state.articles.filter( (i) => i.id !== article.id), item];
+    },
+    REMOVE_ARTICLE (state, article) {
+        state.articles = state.articles.filter( (i) => i.id !== article);
     },
 };
 

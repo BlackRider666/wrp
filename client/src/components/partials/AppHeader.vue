@@ -6,7 +6,7 @@
   >
     <v-app-bar-nav-icon>Wrp</v-app-bar-nav-icon>
     <v-spacer></v-spacer>
-    <v-btn v-if="isLoggedIn" :to="{name:'Create Article'}" color="primary">Add Article</v-btn>
+    <v-btn v-if="isLoggedIn" :to="{name:'Create Article'}" color="primary" icon><v-icon>mdi-plus</v-icon></v-btn>
     <v-divider vertical color="white" inset class="mr-2"></v-divider>
     <LanguageSwitcher/>
     <template v-if="isLoggedIn">
@@ -38,6 +38,14 @@ export default {
             icon: "mdi-account-outline",
             to: {
               name:'account',
+            },
+            divider: true,
+          },
+          {
+            titleTKey: "label.articles",
+            icon: "mdi-book-open-variant",
+            to: {
+              name:'Articles',
             },
             divider: true,
           },

@@ -28,6 +28,8 @@ class CreateWorkRequest extends FormRequest
             'start' =>  'required|date',
             'finish'    =>  'nullable|date|after:start',
             'position'  =>  'required|string|max:255',
+            'organization.id' => 'nullable|int',
+            'structural_unit.id' => 'nullable|int',
         ];
     }
 }

@@ -178,6 +178,154 @@
                 </v-col>
               </v-row>
               </v-col>
+            <v-col cols="12">
+              <v-toolbar dense color="primary">
+                Works
+                <v-spacer/>
+                <v-btn
+                    icon
+                    @click="openCreateWorkDialog"
+                ><v-icon>mdi-plus</v-icon>
+                </v-btn>
+                <v-btn icon @click="showWorksSheet">
+                  <v-icon v-if="worksSheet">mdi-chevron-up</v-icon>
+                  <v-icon v-else>mdi-chevron-down</v-icon>
+                </v-btn>
+              </v-toolbar>
+              <v-sheet v-if="worksSheet" outlined>
+                <v-data-table
+                    :headers="worksHeaders"
+                    :items="works"
+                    class="elevation-1"
+                    dense
+                >
+                  <template v-slot:top>
+                      <v-dialog v-model="editWorkDialog" max-width="500px">
+                        <v-card>
+                          <v-card-title>Edit</v-card-title>
+                          <v-card-text v-if="selectedWork">
+                          </v-card-text>
+                          <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn color="darken-1" text @click="closeWorkEdit">Cancel</v-btn>
+                            <v-btn color="darken-1" text @click="editWork">Update</v-btn>
+                            <v-spacer></v-spacer>
+                          </v-card-actions>
+                        </v-card>
+                      </v-dialog>
+                    <v-dialog v-model="deleteWorkDialog" max-width="500px">
+                      <v-card>
+                        <v-card-title>Delete</v-card-title>
+                        <v-card-text>Are you sure you want to delete this work?</v-card-text>
+                        <v-card-actions>
+                          <v-spacer></v-spacer>
+                          <v-btn color="darken-1" text @click="closeWorkDelete">Cancel</v-btn>
+                          <v-btn color="error" text @click="deleteWork">Delete</v-btn>
+                          <v-spacer></v-spacer>
+                        </v-card-actions>
+                      </v-card>
+                    </v-dialog>
+                  </template>
+                  <template v-slot:item.actions="{ item }">
+                    <v-icon
+                        small
+                        class="mr-2"
+                        @click="openWorkEdit(item)"
+                    >
+                      mdi-pencil
+                    </v-icon>
+                    <v-icon
+                        small
+                        @click="openWorkDelete(item)"
+                    >
+                      mdi-delete
+                    </v-icon>
+                  </template>
+                </v-data-table>
+              </v-sheet>
+              <v-dialog v-model="createWorkDialog" max-width="500px">
+                <v-card v-if="newWork">
+                  <v-card-title>Create</v-card-title>
+                  <v-card-text>
+                    <v-autocomplete
+                        v-model="newWork.organization"
+                        :items="organizations"
+                        hide-no-data
+                        item-text="name"
+                        item-value="id"
+                        label="Organization"
+                        placeholder="Organization"
+                        prepend-inner-icon="mdi-database-search"
+                        :search-input.sync="organizationSearch"
+                        return-object
+                        outlined
+                    ></v-autocomplete>
+                    <v-autocomplete
+                        v-model="newWork.structureUnit"
+                        :items="structureUnits"
+                        hide-no-data
+                        item-text="name"
+                        item-value="id"
+                        label="Structure Unit"
+                        placeholder="Structure Unit"
+                        prepend-inner-icon="mdi-database-search"
+                        :search-input.sync="structureUnitSearch"
+                        return-object
+                        outlined
+                    ></v-autocomplete>
+                    <v-text-field
+                        v-model="newWork.position"
+                        :label="$t('placeholder.work.position')"
+                        outlined
+                        prepend-inner-icon="mdi-card-text-outline"
+                    />
+                    <v-menu ref="menu"
+                            v-model="menuStart"
+                            :close-on-content-click="false"
+                            transition="scale-transition"
+                            offset-y
+                            min-width="290px"
+                    >
+                      <template v-slot:activator="{ on }">
+                        <v-text-field
+                            :value="newWork.start"
+                            :label="$t('placeholder.work.start')"
+                            prepend-inner-icon="mdi-calendar"
+                            readonly
+                            v-on="on"
+                            outlined
+                        />
+                      </template>
+                      <v-date-picker v-model="newWork.start" no-title scrollable @input="menuStart = false"/>
+                    </v-menu>
+                    <v-menu ref="menu"
+                            v-model="menuFinish"
+                            :close-on-content-click="false"
+                            transition="scale-transition"
+                            offset-y
+                            min-width="290px"
+                    >
+                      <template v-slot:activator="{ on }">
+                        <v-text-field
+                            :value="newWork.finish"
+                            :label="$t('placeholder.work.start')"
+                            prepend-inner-icon="mdi-calendar"
+                            readonly
+                            v-on="on"
+                            outlined
+                        />
+                      </template>
+                      <v-date-picker v-model="newWork.finish" no-title scrollable @input="menuFinish = false"/>
+                    </v-menu>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-btn color="darken-1" text @click="closeCreateWorkDialog">Cancel</v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn color="primary" text @click="createWork">Create</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </v-col>
           </v-row>
         </v-card-text>
       </v-card>
@@ -186,6 +334,8 @@
 </template>
 
 <script>
+import {mapState} from "vuex";
+
 export default {
   name: "Account",
   data(){
@@ -193,6 +343,10 @@ export default {
       showCommon: true,
       showAvatar: true,
       changePassword: false,
+      worksSheet: false,
+      createWorkDialog: false,
+      editWorkDialog: false,
+      deleteWorkDialog: false,
       user: {
         first_name: '',
         second_name: '',
@@ -216,7 +370,26 @@ export default {
         min: v => v.length >= 8 || 'Min 8 characters',
         confirmation: v => v === this.changePasswordRequest.password || 'Password mismatch',
       },
+      worksHeaders: [
+        { text: 'Title', value: 'title' },
+        { text: 'Start', value: 'start' },
+        { text: 'Finish', value: 'finish' },
+        { text: 'Actions', value: 'actions', sortable: false },
+      ],
+      newWork: null,
+      selectedWork: null,
+      organizationSearch:'',
+      structureUnitSearch: '',
+      menuStart:false,
+      menuFinish:false,
     }
+  },
+  computed: {
+    ...mapState({
+      works: (state) => state.account.works,
+      organizations: (state) => state.organization.organizations,
+      structureUnits: (state) => state.organization.structureUnits,
+    }),
   },
   mounted() {
     this.user = this.$store.getters['account/getAccount'];
@@ -230,6 +403,12 @@ export default {
     },
     showChangePasswordSheet() {
       this.changePassword = !this.changePassword
+    },
+    showWorksSheet() {
+      this.worksSheet = !this.worksSheet;
+      if (this.worksSheet) {
+        this.$store.dispatch('account/downloadWorks');
+      }
     },
     updateUser(e) {
       e.preventDefault();
@@ -287,6 +466,70 @@ export default {
             this.$loadingClose();
             this.$notify('','error', error.response.data.message);
           })
+    },
+    openCreateWorkDialog() {
+      this.createWorkDialog = true;
+      this.newWork = {
+        organization: null,
+        structureUnit: null,
+        position: '',
+        start: new Date().toISOString().substr(0, 10),
+        finish: new Date().toISOString().substr(0, 10),
+      };
+      this.$store.dispatch('organization/downloadOrganizations');
+    },
+    closeCreateWorkDialog() {
+      this.createWorkDialog = false;
+    },
+    openWorkEdit (item) {
+      this.editWorkDialog = true;
+      this.selectedWork = item;
+    },
+    closeWorkEdit() {
+      this.editWorkDialog = false;
+      this.selectedWork = null;
+    },
+    openWorkDelete (item) {
+      this.deleteWorkDialog = true;
+      this.selectedWork = item;
+    },
+    closeWorkDelete() {
+      this.deleteWorkDialog = false;
+      this.selectedWork = null;
+    },
+    createWork () {
+      if (this.newWork.organization === null) {
+        this.newWork.organization = {
+          name:this.organizationSearch,
+        }
+        this.newWork.structureUnit = {
+          name: this.structureUnitSearch,
+        }
+      }
+      if (this.this.newWork.structureUnit === null) {
+        this.newWork.structureUnit = {
+          name: this.structureUnitSearch,
+        }
+      }
+      this.newWork.structure_unit = this.newWork.structureUnit;
+      this.$loading();
+      this.$store.dispatch('account/createWork',this.newWork)
+          .then((res) => {
+            this.user = res;
+            this.$loadingClose();
+            this.closeCreateWorkDialog();
+            this.$notify('','success', 'Success');
+          })
+          .catch(error => {
+            this.$loadingClose();
+            this.$notify('','error', error.response.data.message);
+          })
+    },
+    editWork() {
+
+    },
+    deleteWork() {
+
     },
   },
 }

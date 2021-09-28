@@ -8,6 +8,7 @@ use App\Http\Requests\User\Work\UpdateWorkRequest;
 use App\Repo\WorkRepo;
 use Exception;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class UserWorkController extends Controller
 {
@@ -19,6 +20,17 @@ class UserWorkController extends Controller
     public function __construct(WorkRepo $repo)
     {
         $this->repo = $repo;
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function index(Request $request): JsonResponse
+    {
+        $id = $request->user()->getKey();
+
+        return new JsonResponse($this->repo->getByUserID($id));
     }
 
     /**

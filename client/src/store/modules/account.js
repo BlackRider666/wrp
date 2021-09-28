@@ -2,6 +2,7 @@ import axios from "axios";
 
 const state = {
     user: JSON.parse(localStorage.getItem('account')) || {},
+    works: [],
 };
 
 const getters = {
@@ -58,14 +59,44 @@ const actions = {
                     reject(errors.response.data)
                 })
         }))
-    }
+    },
+    downloadWorks({commit}) {
+        return new Promise(((resolve, reject) => {
+            axios.get('auth/user/works')
+                .then(res => {
+                    commit("UPDATE_WORKS", res.data.data);
+                    resolve(res.data.data)
+                })
+                .catch(errors => {
+                    reject(errors.response.data)
+                })
+        }))
+    },
+    createWork({commit}) {
+        return new Promise(((resolve, reject) => {
+            axios.post('auth/user/works')
+                .then(res => {
+                    commit("ADD_WORK", res.data.work);
+                    resolve(res.data.work)
+                })
+                .catch(errors => {
+                    reject(errors.response.data)
+                })
+        }))
+    },
 };
 
 const mutations = {
     UPDATE_ACCOUNT (state, account) {
-        state.user = account
+        state.user = account;
         localStorage.setItem('account', JSON.stringify(account));
     },
+    UPDATE_WORKS (state, works) {
+        state.works = works;
+    },
+    ADD_WORK (state, work) {
+        state.works.push(work);
+    }
 };
 
 export default {

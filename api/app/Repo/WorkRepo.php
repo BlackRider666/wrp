@@ -4,6 +4,7 @@
 namespace App\Repo;
 
 
+use App\Models\Organization\Organization;
 use App\Models\User\Work\Work;
 use BlackParadise\LaravelAdmin\Core\CoreRepo;
 use Exception;
@@ -24,6 +25,28 @@ class WorkRepo extends CoreRepo
      */
     public function create(array $data)
     {
+        $organizationRepo = new OrganizationRepo();
+        $structureUnitRepo = new StructureUnitRepo();
+        if (!$data['organization']['id']) {
+            $organization = $organizationRepo->create([
+                'name' => $data['organization']['name'],
+            ]);
+            $structureUnit = $structureUnitRepo->create([
+                'name' => $data['structure_unit']['name'],
+                'organization_id' => $organization->getKey(),
+            ]);
+            $data['structure_unit']['id'] = $structureUnit->getKey();
+        }
+        if (!$data['structure_unit']['id']) {
+            $structureUnit = $structureUnitRepo->create([
+                'name' => $data['structure_unit']['name'],
+                'organization_id' => $data['organization']['id'],
+            ]);
+            $data['structure_unit']['id'] = $structureUnit->getKey();
+        }
+
+        $data['structure_unit_id'] = $data['structure_unit']['id'];
+
         if (!$work = $this->query()->create($data)) {
             throw new RuntimeException('Error on creating work!',500);
         }
@@ -58,5 +81,14 @@ class WorkRepo extends CoreRepo
         if (!$work->delete()) {
             throw new RuntimeException('Error on destroying work!',500);
         }
+    }
+
+    public function getByUserID(int $id)
+    {
+        $perPage = 10;
+        $query = $this->query();
+        $query->where('user_id',$id);
+
+        return $query->paginate($perPage);
     }
 }
