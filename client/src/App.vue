@@ -20,7 +20,7 @@ export default {
   },
   beforeCreate() {
     this.$store.dispatch('l10s/getActiveLocales');
-    this.$store.dispatch('l10s/getAllTranslations', this.$store.getters['l10s/getActiveLocale'])
+    this.$store.dispatch('l10s/getAllTranslations', this.$store.getters['l10s/getActiveLocale'].iso_code)
         .then((result) => {
           this.l10s.setAllTranslations(result);
         });
@@ -28,7 +28,7 @@ export default {
       this.$store.dispatch('l10s/createNewTranslationKey', {
         key,
         value,
-        iso_code: this.$store.getters['l10s/getActiveLocale'],
+        iso_code: this.$store.getters['l10s/getActiveLocale'].iso_code,
       });
     });
   },

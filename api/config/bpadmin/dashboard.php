@@ -103,5 +103,41 @@ return [
             ],
             'validation_type' => 'default',
         ],
+        'locales' => [
+            'type'      =>  'default',
+            'entity'    =>  \App\Models\Locale\Locale::class,
+            'key'       =>  'id',
+            'icon'      =>  'fa-handshake',
+            'paginate'  =>  10,
+            'table_headers'   =>  [
+                'name',
+            ],
+            'show_title'    => 'Locale Information',
+            'show_fields'   => [
+                'name',
+                'iso_code',
+                'is_active'
+            ],
+            'validation_type' => 'default',
+        ],
+        'locale_keys' => [
+            'type'      =>  'default',
+            'entity'    =>  \App\Models\Locale\LocaleKey\LocaleKey::class,
+            'key'       =>  'id',
+            'icon'      =>  'fa-handshake',
+            'paginate'  =>  10,
+            'table_headers'   =>  [
+                'key_title',
+                'locale_title',
+                'value'
+            ],
+            'show_title'    => 'Partner Information',
+            'show_fields'   => [
+                'key->key',
+                'locale->name',
+                'value'
+            ],
+            'validation_type' => 'default',
+        ],
     ],
 ];

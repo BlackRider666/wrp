@@ -26,47 +26,124 @@
                   </v-card>
                 </v-dialog>
                 <v-dialog v-model="dialogEdit" max-width="500px">
+                  <v-form
+                      v-if="selectedItem"
+                      ref="updateArticleForm"
+                      lazy-validation
+                      align="center"
+                      @submit.prevent="editItemConfirm"
+                  >
                   <v-card>
                     <v-card-title>{{$t('articles.edit.title','Edit')}}</v-card-title>
-                    <v-card-text v-if="selectedItem">
+                    <v-card-text>
                       <v-text-field
                           v-model="selectedItem.title"
-                          :label="$t('articles.placeholder.title', 'Title')"
+                          :label="$t('articles.placeholder.title','Title')"
                           outlined
                           prepend-inner-icon="mdi-card-text-outline"
+                          :rules="[rules.required]"
                       />
                       <v-select
                           v-model="selectedItem.category_id"
                           :label="$t('articles.placeholder.category','Category')"
                           outlined
                           prepend-inner-icon="mdi-shape-outline"
+                          :rules="[rules.required]"
                           :items="categories"
                           item-text="title"
                           item-value="id"
                       ></v-select>
                       <v-text-field
                           v-model="selectedItem.year"
-                          :label="$t('articles.placeholder.year', 'year')"
+                          :label="$t('articles.placeholder.year', 'Year')"
                           outlined
                           prepend-inner-icon="mdi-calendar-range"
+                          :rules="[rules.required]"
                       ></v-text-field>
                       <v-select
                           v-model="selectedItem.authors"
-                          :label="$t('articles.placeholder.authors', 'Authors')"
+                          :label="$t('articles.placeholder.authors','Authors')"
                           outlined
                           prepend-inner-icon="mdi-shape-outline"
+                          :rules="[rules.required]"
                           :items="authors"
                           item-text="full_name"
                           item-value="id"
                           multiple
                       ></v-select>
+                      <v-text-field
+                          v-if="checkCategory(['article','conference','section'])"
+                          v-model="selectedItem.journal"
+                          :label="$t(checkCategoryTitleLabelTranslate(), 'Journal')"
+                          outlined
+                          prepend-inner-icon="mdi-card-text-outline"
+                          :rules="[rules.required]"
+                      />
+                      <v-text-field
+                          v-if="checkCategory(['article','conference','section', 'book','conference'])"
+                          v-model="selectedItem.part"
+                          :label="$t('articles.placeholder.part', 'Part')"
+                          outlined
+                          prepend-inner-icon="mdi-card-text-outline"
+                          :rules="[rules.required]"
+                      />
+                      <v-text-field
+                          v-if="checkCategory(['article','conference'])"
+                          v-model="selectedItem.number"
+                          :label="$t('articles.placeholder.number', 'Number')"
+                          outlined
+                          prepend-inner-icon="mdi-card-text-outline"
+                          :rules="[rules.required]"
+                      />
+                      <v-text-field
+                          v-if="checkCategory(['article','conference','section', 'book','conference','guidelines'])"
+                          v-model="selectedItem.pages"
+                          :label="$t('articles.placeholder.pages', 'Pages')"
+                          outlined
+                          prepend-inner-icon="mdi-card-text-outline"
+                          :rules="[rules.required]"
+                      />
+                      <v-text-field
+                          v-if="checkCategory(['article','section','guidelines'])"
+                          v-model="selectedItem.publisher"
+                          :label="$t('articles.placeholder.publisher', 'Publisher')"
+                          outlined
+                          prepend-inner-icon="mdi-card-text-outline"
+                          :rules="[rules.required]"
+                      />
+                      <v-select
+                          v-if="checkCategory(['patent'])"
+                          v-model="selectedItem.country"
+                          :label="$t('articles.placeholder.country', 'Country')"
+                          outlined
+                          prepend-inner-icon="mdi-shape-outline"
+                          :rules="[rules.required]"
+                          :items="countries"
+                      ></v-select>
+                      <v-text-field
+                          v-if="checkCategory(['patent'])"
+                          v-model="selectedItem.patent_number"
+                          :label="$t('articles.placeholder.patent_number', 'Patent Number')"
+                          outlined
+                          prepend-inner-icon="mdi-card-text-outline"
+                          :rules="[rules.required]"
+                      />
+                      <v-text-field
+                          v-if="checkCategory(['patent'])"
+                          v-model="selectedItem.app_number"
+                          :label="$t('articles.placeholder.app_number','App Number')"
+                          outlined
+                          prepend-inner-icon="mdi-card-text-outline"
+                          :rules="[rules.required]"
+                      />
                     </v-card-text>
                     <v-card-actions>
                       <v-btn color="darken-1" text @click="closeEdit">{{$t('btn.cancel','Cancel')}}</v-btn>
                       <v-spacer></v-spacer>
-                      <v-btn color="darken-1" text @click="editItemConfirm">{{$t('btn.update','Update')}}</v-btn>
+                      <v-btn color="darken-1" text type="submit">{{$t('btn.update','Update')}}</v-btn>
                     </v-card-actions>
                   </v-card>
+                  </v-form>
                 </v-dialog>
             </template>
             <template v-slot:item.actions="{ item }">
@@ -107,6 +184,19 @@ export default {
       dialogEdit: false,
       dialogDelete: false,
       selectedItem: null,
+      countries:[
+        {
+          text:'Ukraine',
+          value:'Ukraine',
+        },
+        {
+          text:'USA',
+          value:'USA',
+        },
+      ],
+      rules: {
+        required: value => !!value || 'Required.',
+      },
     };
   },
   computed: {
@@ -141,7 +231,10 @@ export default {
             this.closeDelete()
           });
     },
-    editItemConfirm () {
+    editItemConfirm (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!this.$refs.updateArticleForm.validate()) return;
       this.$loading();
       this.selectedItem.authors = this.selectedItem.authors.map( (a) => a.id);
       this.$store.dispatch('article/updateArticle', this.selectedItem)
@@ -151,7 +244,6 @@ export default {
             this.closeEdit()
           });
     },
-
     closeEdit () {
       this.dialogEdit = false;
       this.selectedItem = null;
@@ -160,6 +252,27 @@ export default {
     closeDelete () {
       this.dialogDelete = false
     },
+
+    checkCategory(arr) {
+      let category = this.categories.find( (c) => c.id === this.selectedItem.category_id);
+      if (!category) {
+        return false;
+      }
+      return arr.includes(category.tech_name);
+    },
+    checkCategoryTitleLabelTranslate() {
+      let category = this.categories.find( (c) => c.id === this.selectedItem.category_id);
+      if (!category) return;
+      if (category.tech_name === 'article') {
+        return 'articles.placeholder.journal';
+      }
+      if (category.tech_name === 'section') {
+        return 'articles.placeholder.book';
+      }
+      if (category.tech_name === 'conference') {
+        return 'articles.placeholder.conference';
+      }
+    }
   },
 }
 </script>

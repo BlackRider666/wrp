@@ -59,10 +59,8 @@ class LocaleController extends Controller
         $languageKey = $this->localeKeyRepo->create($language,$data);
 
         return new JsonResponse([
-            'data' => [
-                'key' => $languageKey->key->key,
-                'value' => $languageKey->value,
-            ],
+            'key' => $languageKey->key->key,
+            'value' => $languageKey->value,
         ]);
     }
 

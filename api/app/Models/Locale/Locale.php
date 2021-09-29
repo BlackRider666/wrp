@@ -6,6 +6,7 @@ use App\Models\Locale\Key\Key;
 use App\Models\Locale\LocaleKey\LocaleKey;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Collection;
 
 class Locale extends Model
 {
@@ -25,5 +26,13 @@ class Locale extends Model
         return $this->belongsToMany(Key::class,'locale_keys')
             ->using(LocaleKey::class)
             ->withPivot('value');
+    }
+
+    /**
+     * @return Collection
+     */
+    public function forSelect(): Collection
+    {
+        return $this->newQuery()->pluck('name','id');
     }
 }
