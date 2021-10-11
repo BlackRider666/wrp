@@ -3,11 +3,13 @@ import axios from "axios";
 const state = {
     categories: [],
     articles: [],
+    article:null,
 };
 
 const getters = {
     getCategories: (state) => state.categories,
     getArticles: (state) => state.articles,
+    getArticle: (state) => state.article,
 };
 
 const actions = {
@@ -71,6 +73,18 @@ const actions = {
                 })
         }))
     },
+    getArticle({commit}, payload) {
+        return new Promise(((resolve, reject) => {
+            axios.get('article/'+payload)
+                .then(res => {
+                    commit("CHOOSE_ARTICLE", res.data.article);
+                    resolve(res.data.article)
+                })
+                .catch(errors => {
+                    reject(errors.response.data)
+                })
+        }))
+    },
 };
 
 const mutations = {
@@ -90,6 +104,9 @@ const mutations = {
     },
     REMOVE_ARTICLE (state, article) {
         state.articles = state.articles.filter( (i) => i.id !== article);
+    },
+    CHOOSE_ARTICLE (state, article) {
+        state.article = article;
     },
 };
 

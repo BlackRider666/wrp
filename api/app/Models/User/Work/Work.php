@@ -41,7 +41,7 @@ class Work extends Model
      */
     public function unit(): BelongsTo
     {
-        return $this->belongsTo(StructuralUnit::class);
+        return $this->belongsTo(StructuralUnit::class,'structural_unit_id','id');
     }
 
     /**
@@ -49,6 +49,6 @@ class Work extends Model
      */
     public function getTitleAttribute(): string
     {
-        return $this->unit->organization->name.'-'.$this->unit->title.'-'.$this->position;
+        return $this->unit->organization->name.'-'.$this->unit->name.'-'.$this->position;
     }
 }

@@ -8,6 +8,9 @@ use BlackParadise\LaravelAdmin\Core\CoreRepo;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use RuntimeException;
 
 class ArticleRepo extends CoreRepo
@@ -72,5 +75,14 @@ class ArticleRepo extends CoreRepo
         if (!$article->delete()) {
             throw new RuntimeException('Error on destroying article!',500);
         }
+    }
+
+    /**
+     * @param int $id
+     * @return Builder|Builder[]|Collection|Model|Model[]|null
+     */
+    public function findWithCategory(int $id)
+    {
+        return $this->query()->with('category')->find($id);
     }
 }

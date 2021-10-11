@@ -204,6 +204,78 @@
                         <v-card>
                           <v-card-title>{{$t('works.edit.title','Edit')}}</v-card-title>
                           <v-card-text v-if="selectedWork">
+                            <v-autocomplete
+                                v-model="selectedWork.organization"
+                                :items="organizations"
+                                hide-no-data
+                                item-text="name"
+                                item-value="id"
+                                :label="$t('works.placeholder.organization','Organization')"
+                                :placeholder="$t('works.placeholder.organization','Organization')"
+                                prepend-inner-icon="mdi-database-search"
+                                :search-input="organizationSearch"
+                                @update:search-input="(value) => changeOrganization(value)"
+                                return-object
+                                outlined
+                            ></v-autocomplete>
+                            <v-autocomplete
+                                v-model="selectedWork.structure_unit"
+                                :items="structureUnits"
+                                hide-no-data
+                                item-text="name"
+                                item-value="id"
+                                :label="$t('works.placeholder.structure-unit','Structure Unit')"
+                                :placeholder="$t('works.placeholder.structure-unit','Structure Unit')"
+                                prepend-inner-icon="mdi-database-search"
+                                :search-input="structureUnitSearch"
+                                @update:search-input="(value) => changeStructureUnit(value)"
+                                return-object
+                                outlined
+                            ></v-autocomplete>
+                            <v-text-field
+                                v-model="selectedWork.position"
+                                :label="$t('works.placeholder.position','Position')"
+                                outlined
+                                prepend-inner-icon="mdi-card-text-outline"
+                            />
+                            <v-menu ref="menu"
+                                    v-model="menuStart"
+                                    :close-on-content-click="false"
+                                    transition="scale-transition"
+                                    offset-y
+                                    min-width="290px"
+                            >
+                              <template v-slot:activator="{ on }">
+                                <v-text-field
+                                    :value="selectedWork.start"
+                                    :label="$t('works.placeholder.start', 'Worked from')"
+                                    prepend-inner-icon="mdi-calendar"
+                                    readonly
+                                    v-on="on"
+                                    outlined
+                                />
+                              </template>
+                              <v-date-picker v-model="selectedWork.start" no-title scrollable @input="menuStart = false"/>
+                            </v-menu>
+                            <v-menu ref="menu"
+                                    v-model="menuFinish"
+                                    :close-on-content-click="false"
+                                    transition="scale-transition"
+                                    offset-y
+                                    min-width="290px"
+                            >
+                              <template v-slot:activator="{ on }">
+                                <v-text-field
+                                    :value="selectedWork.finish"
+                                    :label="$t('works.placeholder.finish','Worked Until')"
+                                    prepend-inner-icon="mdi-calendar"
+                                    readonly
+                                    v-on="on"
+                                    outlined
+                                />
+                              </template>
+                              <v-date-picker v-model="selectedWork.finish" no-title scrollable @input="menuFinish = false"/>
+                            </v-menu>
                           </v-card-text>
                           <v-card-actions>
                             <v-spacer></v-spacer>
@@ -256,12 +328,13 @@
                         :label="$t('works.placeholder.organization','Organization')"
                         :placeholder="$t('works.placeholder.organization','Organization')"
                         prepend-inner-icon="mdi-database-search"
-                        :search-input.sync="organizationSearch"
+                        :search-input="organizationSearch"
+                        @update:search-input="(value) => changeOrganization(value)"
                         return-object
                         outlined
                     ></v-autocomplete>
                     <v-autocomplete
-                        v-model="newWork.structureUnit"
+                        v-model="newWork.structure_unit"
                         :items="structureUnits"
                         hide-no-data
                         item-text="name"
@@ -269,7 +342,8 @@
                         :label="$t('works.placeholder.structure-unit','Structure Unit')"
                         :placeholder="$t('works.placeholder.structure-unit','Structure Unit')"
                         prepend-inner-icon="mdi-database-search"
-                        :search-input.sync="structureUnitSearch"
+                        :search-input="structureUnitSearch"
+                        @update:search-input="(value) => changeStructureUnit(value)"
                         return-object
                         outlined
                     ></v-autocomplete>
@@ -471,10 +545,10 @@ export default {
       this.createWorkDialog = true;
       this.newWork = {
         organization: null,
-        structureUnit: null,
+        structure_unit: null,
         position: '',
         start: new Date().toISOString().substr(0, 10),
-        finish: new Date().toISOString().substr(0, 10),
+        finish: null,
       };
       this.$store.dispatch('organization/downloadOrganizations');
     },
@@ -484,6 +558,9 @@ export default {
     openWorkEdit (item) {
       this.editWorkDialog = true;
       this.selectedWork = item;
+      this.selectedWork.organization = this.selectedWork.unit.organization;
+      this.selectedWork.structure_unit = this.selectedWork.unit;
+      this.$store.dispatch('organization/downloadOrganizations');
     },
     closeWorkEdit() {
       this.editWorkDialog = false;
@@ -498,20 +575,6 @@ export default {
       this.selectedWork = null;
     },
     createWork () {
-      if (this.newWork.organization === null) {
-        this.newWork.organization = {
-          name:this.organizationSearch,
-        }
-        this.newWork.structureUnit = {
-          name: this.structureUnitSearch,
-        }
-      }
-      if (this.this.newWork.structureUnit === null) {
-        this.newWork.structureUnit = {
-          name: this.structureUnitSearch,
-        }
-      }
-      this.newWork.structure_unit = this.newWork.structureUnit;
       this.$loading();
       this.$store.dispatch('account/createWork',this.newWork)
           .then((res) => {
@@ -526,10 +589,80 @@ export default {
           })
     },
     editWork() {
-
+      this.$loading();
+      this.$store.dispatch('account/updateWork',this.selectedWork)
+          .then((res) => {
+            this.user = res;
+            this.$loadingClose();
+            this.closeWorkEdit();
+            this.$notify('','success', 'Success');
+          })
+          .catch(error => {
+            this.$loadingClose();
+            this.$notify('','error', error.response.data.message);
+          })
     },
     deleteWork() {
-
+      this.$loading();
+      this.$store.dispatch('account/deleteWork',this.selectedWork.id)
+          .then((res) => {
+            this.user = res;
+            this.$loadingClose();
+            this.closeWorkDelete();
+            this.$notify('','success', 'Success');
+          })
+          .catch(error => {
+            this.$loadingClose();
+            this.$notify('','error', error.response.data.message);
+          })
+    },
+    changeOrganization(item) {
+      if (item) {
+        let organization = this.organizations.find((o) => o.name === item);
+        if (!organization) {
+          if (this.createWorkDialog) this.newWork.structure_unit = null;
+          if (this.editWorkDialog) this.selectedWork.structure_unit = null;
+          let org = this.organizations.find((i) => i.id === 'new');
+          if (org) {
+            org.name = item;
+          } else {
+            this.organizations.push({id:'new',name:item});
+          }
+        }
+      }
+    },
+    changeStructureUnit(item) {
+      if (item) {
+        let unit = this.structureUnits.find((u) => u.name === item);
+        if (!unit) {
+          let structureUnit = this.structureUnits.find((i) => i.id === 'new');
+          if (structureUnit) {
+            structureUnit.name = item;
+          } else {
+            this.structureUnits.push({id:'new',name:item});
+          }
+        }
+      }
+    },
+  },
+  watch: {
+    'newWork.organization'(item) {
+      if (item) {
+        if (item.id !== 'new') {
+          this.$store.dispatch('organization/downloadStructureUnits',item.id)
+        } else {
+          this.$store.dispatch('organization/clearStructureUnits');
+        }
+      }
+    },
+    'selectedWork.organization'(item) {
+      if (item) {
+        if (item.id !== 'new') {
+          this.$store.dispatch('organization/downloadStructureUnits',item.id)
+        } else {
+          this.$store.dispatch('organization/clearStructureUnits');
+        }
+      }
     },
   },
 }

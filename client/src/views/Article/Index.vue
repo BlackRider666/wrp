@@ -150,6 +150,13 @@
               <v-icon
                   small
                   class="mr-2"
+                  @click="showItem(item)"
+              >
+                mdi-eye
+              </v-icon>
+              <v-icon
+                  small
+                  class="mr-2"
                   @click="editItem(item)"
               >
                 mdi-pencil
@@ -212,6 +219,10 @@ export default {
     this.$store.dispatch('user/downloadAuthors');
   },
   methods: {
+    showItem (item) {
+      this.$store.dispatch('article/chooseArticle',item);
+      this.$router.push( { name: 'Article', params: { article_id: item.id } });
+    },
     editItem (item) {
       this.selectedItem = item;
       this.dialogEdit = true

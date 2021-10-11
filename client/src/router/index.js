@@ -65,7 +65,7 @@ const router = new VueRouter({
                     component: () => import('../views/Article/Index.vue'),
                 },
                 {
-                    path: '/articles/{:article_id}',
+                    path: '/articles/:article_id',
                     name: 'Article',
                     component: () => import('../views/Article/Show.vue'),
                 },
@@ -100,7 +100,7 @@ const router = new VueRouter({
                     },
                 },
                 {
-                    path: '/error-404',
+                    path: '/404',
                     name: 'error-404',
                     component: () => import('../views/errors/Error404.vue'),
                     meta: {
@@ -111,7 +111,7 @@ const router = new VueRouter({
         },
         {
             path: '*',
-            redirect: '/error-404',
+            redirect: '/404',
             meta: {
                 withoutAuth: true,
             }

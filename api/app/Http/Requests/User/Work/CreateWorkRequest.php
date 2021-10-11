@@ -24,12 +24,11 @@ class CreateWorkRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' =>  'required|string|max:255',
             'start' =>  'required|date',
             'finish'    =>  'nullable|date|after:start',
             'position'  =>  'required|string|max:255',
-            'organization.id' => 'nullable|int',
-            'structural_unit.id' => 'nullable|int',
+            'organization' => 'required',
+            'structure_unit' => 'required',
         ];
     }
 }

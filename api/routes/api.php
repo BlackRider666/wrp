@@ -31,6 +31,9 @@ Route::group(['prefix' => 'auth'], function () {
         Route::post('update-photo', [ AuthController::class, 'updatePhoto']);
         Route::post('change-password', [ AuthController::class, 'changePassword']);
         Route::get('works', [UserWorkController::class,'index']);
+        Route::post('works', [UserWorkController::class,'create']);
+        Route::post('works/{work_id}', [UserWorkController::class,'update']);
+        Route::delete('works/{work_id}', [UserWorkController::class,'destroy']);
     });
     Route::post('logout', [ AuthController::class, 'logout'])->middleware('auth:sanctum');
 });
@@ -42,6 +45,7 @@ Route::get('authors',[UserController::class, 'index'])->middleware('auth:sanctum
 Route::group(['prefix' => 'article', 'middleware' => 'auth:sanctum'], function () {
     Route::get('/', [ArticleController::class, 'index']);
     Route::post('/', [ArticleController::class, 'store']);
+    Route::get('/{article_id}', [ArticleController::class, 'show']);
     Route::post('/{article_id}', [ArticleController::class, 'update']);
     Route::delete('/{article_id}', [ArticleController::class, 'destroy']);
 });

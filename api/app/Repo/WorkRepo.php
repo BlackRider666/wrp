@@ -27,7 +27,7 @@ class WorkRepo extends CoreRepo
     {
         $organizationRepo = new OrganizationRepo();
         $structureUnitRepo = new StructureUnitRepo();
-        if (!$data['organization']['id']) {
+        if ($data['organization']['id'] === 'new') {
             $organization = $organizationRepo->create([
                 'name' => $data['organization']['name'],
             ]);
@@ -37,7 +37,7 @@ class WorkRepo extends CoreRepo
             ]);
             $data['structure_unit']['id'] = $structureUnit->getKey();
         }
-        if (!$data['structure_unit']['id']) {
+        if ($data['structure_unit']['id'] === 'new') {
             $structureUnit = $structureUnitRepo->create([
                 'name' => $data['structure_unit']['name'],
                 'organization_id' => $data['organization']['id'],
@@ -45,7 +45,7 @@ class WorkRepo extends CoreRepo
             $data['structure_unit']['id'] = $structureUnit->getKey();
         }
 
-        $data['structure_unit_id'] = $data['structure_unit']['id'];
+        $data['structural_unit_id'] = $data['structure_unit']['id'];
 
         if (!$work = $this->query()->create($data)) {
             throw new RuntimeException('Error on creating work!',500);

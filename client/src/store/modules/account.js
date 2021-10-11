@@ -72,12 +72,36 @@ const actions = {
                 })
         }))
     },
-    createWork({commit}) {
+    createWork({commit}, payload) {
         return new Promise(((resolve, reject) => {
-            axios.post('auth/user/works')
+            axios.post('auth/user/works', payload)
                 .then(res => {
                     commit("ADD_WORK", res.data.work);
                     resolve(res.data.work)
+                })
+                .catch(errors => {
+                    reject(errors.response.data)
+                })
+        }))
+    },
+    updateWork({commit}, payload) {
+        return new Promise(((resolve, reject) => {
+            axios.post('auth/user/works/'+payload.id, payload)
+                .then(res => {
+                    commit("UPDATE_WORK", res.data.work);
+                    resolve(res.data.work)
+                })
+                .catch(errors => {
+                    reject(errors.response.data)
+                })
+        }))
+    },
+    deleteWork({commit}, payload) {
+        return new Promise(((resolve, reject) => {
+            axios.delete('auth/user/works/'+payload)
+                .then(res => {
+                    commit("REMOVE_WORK", payload);
+                    resolve(res.data)
                 })
                 .catch(errors => {
                     reject(errors.response.data)
@@ -96,7 +120,15 @@ const mutations = {
     },
     ADD_WORK (state, work) {
         state.works.push(work);
-    }
+    },
+    UPDATE_WORK (state, work) {
+        let item = state.works.find((i) => i.id === work.id)
+        item = work;
+        state.works = [...state.works.filter( (i) => i.id !== work.id), item];
+    },
+    REMOVE_WORK (state, id) {
+        state.works = state.works.filter( (i) => i.id !== id);
+    },
 };
 
 export default {

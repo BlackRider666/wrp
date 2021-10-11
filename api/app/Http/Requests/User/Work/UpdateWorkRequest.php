@@ -24,12 +24,11 @@ class UpdateWorkRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' =>  'required|string|max:255',
             'start' =>  'required|date',
             'finish'    =>  'nullable|date|after:start',
             'position'  =>  'required|string|max:255',
-            'organization' => 'required|string|max:255',
-            'structural_unit' => 'required|string|max:255',
+            'organization' => 'required',
+            'structure_unit' => 'required',
         ];
     }
 }

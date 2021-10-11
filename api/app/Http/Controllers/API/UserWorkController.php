@@ -47,7 +47,7 @@ class UserWorkController extends Controller
         } catch (Exception $e) {
             return new JsonResponse([
                 'message' => $e->getMessage(),
-            ], $e->getCode());
+            ], 500);
         }
 
         return new JsonResponse([

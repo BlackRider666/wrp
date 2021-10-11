@@ -25,7 +25,7 @@ const actions = {
     },
     downloadStructureUnits({commit}, payload) {
         return new Promise(((resolve, reject) => {
-            axios.get('organizations/structureUnits?organization_id='+payload.id)
+            axios.get('organizations/structure-units?organization_id='+payload)
                 .then(res => {
                     commit("UPDATE_STRUCTURE_UNITS", res.data.data);
                     resolve(res.data.data)
@@ -34,6 +34,9 @@ const actions = {
                     reject(errors.response.data)
                 })
         }))
+    },
+    clearStructureUnits({commit}) {
+        commit("CLEAR_STRUCTURE_UNITS")
     },
 };
 
@@ -44,6 +47,9 @@ const mutations = {
     UPDATE_STRUCTURE_UNITS (state, structureUnits) {
         state.structureUnits = structureUnits
     },
+    CLEAR_STRUCTURE_UNITS (state) {
+        state.structureUnits = [];
+    }
 };
 
 export default {

@@ -22,7 +22,11 @@ class ArticleController extends Controller
         $this->repo = $repo;
     }
 
-    public function index(Request $request)
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function index(Request $request): JsonResponse
     {
         return new JsonResponse($this->repo->search($request->all()));
     }
@@ -36,6 +40,25 @@ class ArticleController extends Controller
 
         try {
             $article = $this->repo->create($data);
+        } catch (Exception $e) {
+            return new JsonResponse([
+                'message' => $e->getMessage(),
+            ], $e->getCode());
+        }
+
+        return new JsonResponse([
+            'article'  =>  $article,
+        ]);
+    }
+
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function show(int $id): JsonResponse
+    {
+        try {
+            $article = $this->repo->findWithCategory($id);
         } catch (Exception $e) {
             return new JsonResponse([
                 'message' => $e->getMessage(),
