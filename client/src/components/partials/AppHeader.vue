@@ -9,7 +9,41 @@
         :to="{name:'dashboard'}"
     ><v-app-bar-nav-icon>{{$t('main.company-name', 'WRP')}}</v-app-bar-nav-icon>
     </router-link>
-    <v-spacer></v-spacer>
+    <v-spacer/>
+    <v-form
+      class="d-inline-flex"
+      ref="form"
+      lazy-validation
+      align="center"
+      @submit.prevent="mainSearch"
+    ><v-row no-gutters>
+        <v-col cols="6">
+          <v-text-field
+              v-model="search"
+              :placeholder="$t('search.placeholder', 'Search ...')"
+              hide-details
+              :rules="[rules.required]"
+          />
+        </v-col>
+        <v-col cols="3">
+          <v-select
+              v-model="searchType"
+              :items="types"
+              :placeholder="$t('search.type.placeholder', 'Choose')"
+              :item-text="(item) => $t('search.type.'+item.key, item.value)"
+              hide-details
+              :rules="[rules.required]"
+              return-object
+          ></v-select>
+        </v-col>
+        <v-col cols="3">
+          <v-btn
+              text
+              type="submit"
+          ><v-icon>mdi-magnify</v-icon></v-btn>
+        </v-col>
+      </v-row>
+    </v-form>
     <router-link
         class="text-decoration-none"
         :to="{name:'Create Article'}"
@@ -32,6 +66,25 @@ import {mapState} from "vuex";
 export default {
   name: "AppHeader",
   components: {MenuList, LanguageSwitcher},
+  data() {
+    return {
+      search:null,
+      searchType:null,
+      types: [
+        {
+          key:'users',
+          value:'Users'
+        },
+        {
+          key:'articles',
+          value:'Articles'
+        }
+      ],
+      rules: {
+        required: value => !!value || 'Required.',
+      },
+    };
+  },
   computed: {
     accountOptions() {
       return {
@@ -92,6 +145,12 @@ export default {
       if (pageName) this.$router.push({name: pageName});
       if (action) action();
     },
+    mainSearch(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!this.$refs.form.validate()) return;
+      this.$router.push({name:'Main Search', params:{type:this.searchType.key}, query: {title:this.search}})
+    }
   },
 }
 </script>

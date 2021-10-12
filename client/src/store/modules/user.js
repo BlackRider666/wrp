@@ -21,6 +21,21 @@ const actions = {
                 })
         }))
     },
+    downloadUsers ({commit}, payload) {
+        return new Promise(((resolve, reject) => {
+            let perPage = payload.itemsPerPage?payload.itemsPerPage:10;
+            let page = payload.page?payload.page:1;
+            let search = `perPage=${perPage}&page=${page}&title=${payload.title}&sortBy=${payload.sortBy}&sortDesc=${payload.sortDesc}`;
+            axios.get('users?'+search)
+                .then(res => {
+                    commit("UPDATE_USERS", res.data.data);
+                    resolve(res.data)
+                })
+                .catch(errors => {
+                    reject(errors.response.data)
+                })
+        }))
+    },
 };
 
 const mutations = {

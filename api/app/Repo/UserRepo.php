@@ -6,6 +6,7 @@ namespace App\Repo;
 
 use App\Models\User\User;
 use BlackParadise\LaravelAdmin\Core\CoreRepo;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use RuntimeException;
@@ -75,5 +76,35 @@ class UserRepo extends CoreRepo
     {
         $user = $this->find($id);
         $user->tokens()->delete();
+    }
+
+    /**
+     * @param array $data
+     * @return LengthAwarePaginator
+     */
+    public function search(array $data): LengthAwarePaginator
+    {
+        $perPage = array_key_exists('perPage',$data)?$data['perPage']:10;
+        $sortBy = 'first_name';
+        $sortDesc = array_key_exists('sortDesc',$data)?$data['sortDesc']:true;
+        $query = $this->query();
+        if (array_key_exists('title',$data)) {
+            $query->where(function($q) use($data) {
+                $q->where('first_name','like','%'.$data['title'].'%');
+                $q->orWhere('second_name','like','%'.$data['title'].'%');
+                $q->orWhere('surname','like','%'.$data['title'].'%');
+            });
+        }
+        return $query->orderBy($sortBy,$sortDesc?'desc':'asc')->paginate($perPage);
+    }
+
+    /**
+     * @param array $data
+     * @return LengthAwarePaginator
+     */
+    public function searchAuthors(array $data): LengthAwarePaginator
+    {
+        $perPage = array_key_exists('perPage',$data)?$data['perPage']:10;
+        return $this->query()->paginate($perPage);
     }
 }

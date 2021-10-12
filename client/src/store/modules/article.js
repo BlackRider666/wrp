@@ -27,11 +27,14 @@ const actions = {
     },
     downloadArticles({commit}, payload) {
         return new Promise(((resolve, reject) => {
-            let search = `&user_id=${payload.user_id}&title=${payload.title}`;
-            axios.get('article?perPage=10'+search)
+            let perPage = payload.itemsPerPage?payload.itemsPerPage:10;
+            let page = payload.page?payload.page:1;
+            let byUser = payload.user_id?`&user_id=${payload.user_id}`:''
+            let search = `perPage=${perPage}&page=${page}&title=${payload.title}&sortBy=${payload.sortBy}&sortDesc=${payload.sortDesc}`;
+            axios.get('article?'+search+byUser)
                 .then(res => {
                     commit("UPDATE_ARTICLES", res.data.data);
-                    resolve(res.data.data)
+                    resolve(res.data)
                 })
                 .catch(errors => {
                     reject(errors.response.data)

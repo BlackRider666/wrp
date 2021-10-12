@@ -41,14 +41,18 @@ class ArticleRepo extends CoreRepo
     public function search(array $data): LengthAwarePaginator
     {
         $perPage = array_key_exists('perPage',$data)?$data['perPage']:10;
+        $sortBy = array_key_exists('sortBy',$data)?$data['sortBy']:'year';
+        $sortDesc = array_key_exists('sortDesc',$data)?$data['sortDesc']:true;
+        $query = $this->query();
+
         if (array_key_exists('user_id',$data)) {
-            $this->query()->where('user_id',$data['user_id']);
+            $query->where('user_id',$data['user_id']);
         }
         if (array_key_exists('title',$data)) {
-            $this->query()->where('title',$data['title']);
+            $query->where('title','like','%'.$data['title'].'%');
         }
 
-        return $this->query()->with(['category','authors'])->orderByDesc('year')->paginate($perPage);
+        return $query->with(['category','authors'])->orderBy($sortBy,$sortDesc?'desc':'asc')->paginate($perPage);
     }
 
     public function update(int $id, array $data)

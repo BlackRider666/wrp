@@ -69,6 +69,11 @@ const router = new VueRouter({
                     name: 'Article',
                     component: () => import('../views/Article/Show.vue'),
                 },
+                {
+                    path:'/search/:type',
+                    name: 'Main Search',
+                    component: () => import('../views/Search/Search.vue'),
+                },
             ],
         },
         {
