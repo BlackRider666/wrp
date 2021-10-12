@@ -25,9 +25,10 @@ const actions = {
                 })
         }))
     },
-    downloadArticles({commit}) {
+    downloadArticles({commit}, payload) {
         return new Promise(((resolve, reject) => {
-            axios.get('article')
+            let search = `&user_id=${payload.user_id}&title=${payload.title}`;
+            axios.get('article?perPage=10'+search)
                 .then(res => {
                     commit("UPDATE_ARTICLES", res.data.data);
                     resolve(res.data.data)
@@ -41,8 +42,8 @@ const actions = {
         return new Promise(((resolve, reject) => {
             axios.post('article', payload)
                 .then(res => {
-                    commit("ADD_ARTICLE", res.data.data);
-                    resolve(res.data.data)
+                    commit("ADD_ARTICLE", res.data.article);
+                    resolve(res.data.article)
                 })
                 .catch(errors => {
                     reject(errors.response.data)

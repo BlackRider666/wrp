@@ -1,23 +1,23 @@
 <?php
 
-namespace App\Http\Controllers\API\Article;
+namespace App\Http\Controllers\API\User;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Article\CreateArticleRequest;
-use App\Http\Requests\Article\UpdateArticleRequest;
-use App\Repo\ArticleRepo;
+use App\Http\Requests\User\Grant\StoreGrantRequest;
+use App\Http\Requests\User\Grant\UpdateGrantRequest;
+use App\Repo\GrantRepo;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class ArticleController extends Controller
+class GrantController extends Controller
 {
     /**
-     * @var ArticleRepo
+     * @var GrantRepo
      */
     private $repo;
 
-    public function __construct(ArticleRepo $repo)
+    public function __construct(GrantRepo $repo)
     {
         $this->repo = $repo;
     }
@@ -28,20 +28,22 @@ class ArticleController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $data = $request->only(['user_id','title']);
+        $data = $request->only(['user_id']);
 
         return new JsonResponse($this->repo->search($data));
     }
+
     /**
-     * @param CreateArticleRequest $request
+     * @param StoreGrantRequest $request
      * @return JsonResponse
      */
-    public function store(CreateArticleRequest $request): JsonResponse
+    public function store(StoreGrantRequest $request): JsonResponse
     {
         $data = $request->validated();
+        $data['user_id'] = $request->user()->getKey();
 
         try {
-            $article = $this->repo->create($data);
+            $grant = $this->repo->create($data);
         } catch (Exception $e) {
             return new JsonResponse([
                 'message' => $e->getMessage(),
@@ -49,40 +51,21 @@ class ArticleController extends Controller
         }
 
         return new JsonResponse([
-            'article'  =>  $article,
+            'grant'  =>  $grant,
         ]);
     }
 
     /**
      * @param int $id
+     * @param UpdateGrantRequest $request
      * @return JsonResponse
      */
-    public function show(int $id): JsonResponse
-    {
-        try {
-            $article = $this->repo->findWithCategory($id);
-        } catch (Exception $e) {
-            return new JsonResponse([
-                'message' => $e->getMessage(),
-            ], $e->getCode());
-        }
-
-        return new JsonResponse([
-            'article'  =>  $article,
-        ]);
-    }
-
-    /**
-     * @param int $id
-     * @param UpdateArticleRequest $request
-     * @return JsonResponse
-     */
-    public function update(int $id, UpdateArticleRequest $request): JsonResponse
+    public function update(int $id, UpdateGrantRequest $request): JsonResponse
     {
         $data = $request->validated();
 
         try {
-            $article = $this->repo->update($id,$data);
+            $grant = $this->repo->update($id,$data);
         } catch (Exception $e) {
             return new JsonResponse([
                 'message' => $e->getMessage(),
@@ -90,7 +73,7 @@ class ArticleController extends Controller
         }
 
         return new JsonResponse([
-            'article'  =>  $article,
+            'grant'  =>  $grant,
         ]);
     }
 
@@ -109,7 +92,7 @@ class ArticleController extends Controller
         }
 
         return new JsonResponse([
-            'message'  =>  'Article deleted!',
+            'message'  =>  'Grant deleted!',
         ]);
     }
 }

@@ -214,13 +214,15 @@ export default {
     }),
   },
   mounted() {
-    this.$store.dispatch('article/downloadArticles');
+    this.$store.dispatch('article/downloadArticles', {
+      user_id:this.$store.getters['account/getAccount'].id,
+      title:null,
+    });
     this.$store.dispatch('article/downloadCategories');
     this.$store.dispatch('user/downloadAuthors');
   },
   methods: {
     showItem (item) {
-      this.$store.dispatch('article/chooseArticle',item);
       this.$router.push( { name: 'Article', params: { article_id: item.id } });
     },
     editItem (item) {

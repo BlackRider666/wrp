@@ -2,6 +2,8 @@
 
 namespace App\Models\User;
 
+use App\Models\User\Grant\Grant;
+use App\Models\User\Project\Project;
 use App\Models\User\Work\Work;
 use BlackParadise\LaravelAdmin\Core\PathManager;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -106,5 +108,21 @@ class User extends Authenticatable
     public function teachers(): BelongsToMany
     {
         return $this->belongsToMany(__CLASS__, 'students', 'student_id', 'user_id');
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function grants(): HasMany
+    {
+        return $this->hasMany(Grant::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function projects(): HasMany
+    {
+        return $this->hasMany(Project::class);
     }
 }

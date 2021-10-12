@@ -9,6 +9,8 @@ use App\Http\Controllers\API\Organization\OrganizationController;
 use App\Http\Controllers\API\Organization\StructuralUnitController;
 use App\Http\Controllers\API\OrganizerController;
 use App\Http\Controllers\API\PartnerController;
+use App\Http\Controllers\API\User\GrantController;
+use App\Http\Controllers\API\User\ProjectController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\UserWorkController;
 
@@ -30,10 +32,24 @@ Route::group(['prefix' => 'auth'], function () {
         Route::post('update', [ AuthController::class, 'update']);
         Route::post('update-photo', [ AuthController::class, 'updatePhoto']);
         Route::post('change-password', [ AuthController::class, 'changePassword']);
-        Route::get('works', [UserWorkController::class,'index']);
-        Route::post('works', [UserWorkController::class,'create']);
-        Route::post('works/{work_id}', [UserWorkController::class,'update']);
-        Route::delete('works/{work_id}', [UserWorkController::class,'destroy']);
+        Route::group(['prefix' => 'works'], function() {
+            Route::get('/',[UserWorkController::class,'index']);
+            Route::post('/', [UserWorkController::class,'create']);
+            Route::post('/{work_id}', [UserWorkController::class,'update']);
+            Route::delete('/{work_id}', [UserWorkController::class,'destroy']);
+        });
+        Route::group(['prefix' => 'grant'], function() {
+            Route::get('/',[GrantController::class,'index']);
+            Route::post('/',[GrantController::class,'store']);
+            Route::post('/{grant_id}',[GrantController::class,'update']);
+            Route::delete('/{grant_id}',[GrantController::class,'destroy']);
+        });
+        Route::group(['prefix' => 'project'], function() {
+            Route::get('/',[ProjectController::class,'index']);
+            Route::post('/',[ProjectController::class,'store']);
+            Route::post('/{project_id}',[ProjectController::class,'update']);
+            Route::delete('/{project_id}',[ProjectController::class,'destroy']);
+        });
     });
     Route::post('logout', [ AuthController::class, 'logout'])->middleware('auth:sanctum');
 });

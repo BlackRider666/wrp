@@ -1,47 +1,47 @@
 <?php
 
-namespace App\Http\Controllers\API\Article;
+namespace App\Http\Controllers\API\User;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Article\CreateArticleRequest;
-use App\Http\Requests\Article\UpdateArticleRequest;
-use App\Repo\ArticleRepo;
+use App\Http\Requests\User\Project\StoreProjectRequest;
+use App\Http\Requests\User\Project\UpdateProjectRequest;
+use App\Repo\ProjectRepo;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class ArticleController extends Controller
+class ProjectController extends Controller
 {
     /**
-     * @var ArticleRepo
+     * @var ProjectRepo
      */
     private $repo;
 
-    public function __construct(ArticleRepo $repo)
+    public function __construct(ProjectRepo $repo)
     {
         $this->repo = $repo;
     }
-
     /**
      * @param Request $request
      * @return JsonResponse
      */
     public function index(Request $request): JsonResponse
     {
-        $data = $request->only(['user_id','title']);
-
+        $data = $request->only(['user_id']);
         return new JsonResponse($this->repo->search($data));
     }
+
     /**
-     * @param CreateArticleRequest $request
+     * @param StoreProjectRequest $request
      * @return JsonResponse
      */
-    public function store(CreateArticleRequest $request): JsonResponse
+    public function store(StoreProjectRequest $request): JsonResponse
     {
         $data = $request->validated();
+        $data['user_id'] = $request->user()->getKey();
 
         try {
-            $article = $this->repo->create($data);
+            $project = $this->repo->create($data);
         } catch (Exception $e) {
             return new JsonResponse([
                 'message' => $e->getMessage(),
@@ -49,40 +49,21 @@ class ArticleController extends Controller
         }
 
         return new JsonResponse([
-            'article'  =>  $article,
+            'project'  =>  $project,
         ]);
     }
 
     /**
      * @param int $id
+     * @param UpdateProjectRequest $request
      * @return JsonResponse
      */
-    public function show(int $id): JsonResponse
-    {
-        try {
-            $article = $this->repo->findWithCategory($id);
-        } catch (Exception $e) {
-            return new JsonResponse([
-                'message' => $e->getMessage(),
-            ], $e->getCode());
-        }
-
-        return new JsonResponse([
-            'article'  =>  $article,
-        ]);
-    }
-
-    /**
-     * @param int $id
-     * @param UpdateArticleRequest $request
-     * @return JsonResponse
-     */
-    public function update(int $id, UpdateArticleRequest $request): JsonResponse
+    public function update(int $id, UpdateProjectRequest $request): JsonResponse
     {
         $data = $request->validated();
 
         try {
-            $article = $this->repo->update($id,$data);
+            $project = $this->repo->update($id,$data);
         } catch (Exception $e) {
             return new JsonResponse([
                 'message' => $e->getMessage(),
@@ -90,7 +71,7 @@ class ArticleController extends Controller
         }
 
         return new JsonResponse([
-            'article'  =>  $article,
+            'project'  =>  $project,
         ]);
     }
 
@@ -109,7 +90,7 @@ class ArticleController extends Controller
         }
 
         return new JsonResponse([
-            'message'  =>  'Article deleted!',
+            'message'  =>  'Project deleted!',
         ]);
     }
 }
