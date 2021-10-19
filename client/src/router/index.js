@@ -74,6 +74,11 @@ const router = new VueRouter({
                     name: 'Main Search',
                     component: () => import('../views/Search/Search.vue'),
                 },
+                {
+                    path:'/users/:user_id',
+                    name: 'User',
+                    component: () => import('../views/User/Show'),
+                },
             ],
         },
         {

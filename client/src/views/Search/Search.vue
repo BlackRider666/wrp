@@ -57,14 +57,12 @@
 </template>
 
 <script>
+import {mapState} from "vuex";
+
 export default {
   name: "Search",
   data() {
     return {
-      articles:[],
-      users:[],
-      totalArticles:0,
-      totalUsers:0,
       articleHeaders: [
         { text: this.$t('articles.placeholder.title','Title'), value: 'title' },
         { text: this.$t('articles.placeholder.category','Category'), value: 'category.title' },
@@ -78,12 +76,20 @@ export default {
       options: {},
     };
   },
+  computed: {
+    ...mapState({
+      articles: (state) => state.article.articles,
+      totalArticles: (state) => state.article.total,
+      users: (state) => state.user.users,
+      totalUsers: (state) => state.user.total,
+    }),
+  },
   methods: {
     showArticle (item) {
       this.$router.push( { name: 'Article', params: { article_id: item.id } });
     },
     showUser (item) {
-      console.log(item);
+      this.$router.push( { name: 'User', params: { user_id: item.id } });
     },
     getData() {
       this.$loading()
@@ -92,9 +98,7 @@ export default {
           user_id:null,
           title: this.$route.query.title,
           ...this.options,
-        }).then((res) => {
-          this.articles = res.data
-          this.totalArticles = res.total
+        }).then(() => {
           this.$loadingClose();
         });
       }
@@ -102,9 +106,7 @@ export default {
         this.$store.dispatch('user/downloadUsers', {
           title: this.$route.query.title,
           ...this.options,
-        }).then( (res) => {
-          this.users = res.data
-          this.totalUsers = res.total
+        }).then( () => {
           this.$loadingClose();
         });
       }

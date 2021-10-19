@@ -6,6 +6,11 @@
           <v-data-table
               :headers="headers"
               :items="articles"
+              :options.sync="options"
+              :server-items-length="total"
+              :footer-props="{
+                  itemsPerPageOptions:[5,10,15,20]
+              }"
               class="elevation-1"
           >
             <template v-slot:top>
@@ -204,20 +209,19 @@ export default {
       rules: {
         required: value => !!value || 'Required.',
       },
+      options: {},
     };
   },
   computed: {
     ...mapState({
       articles: (state) => state.article.articles,
+      total: (state) => state.article.total,
       categories: (state) => state.article.categories,
       authors: (state) => state.user.users,
     }),
   },
   mounted() {
-    this.$store.dispatch('article/downloadArticles', {
-      user_id:this.$store.getters['account/getAccount'].id,
-      title:null,
-    });
+    this.getData();
     this.$store.dispatch('article/downloadCategories');
     this.$store.dispatch('user/downloadAuthors');
   },
@@ -285,7 +289,24 @@ export default {
       if (category.tech_name === 'conference') {
         return 'articles.placeholder.conference';
       }
+    },
+    getData() {
+      this.$loading()
+      this.$store.dispatch('article/downloadArticles', {
+        user_id:this.$store.getters['account/getAccount'].id,
+        ...this.options,
+      }).then(() => {
+        this.$loadingClose();
+      });
     }
+  },
+  watch: {
+    options: {
+      handler () {
+        this.getData();
+      },
+      deep: true,
+    },
   },
 }
 </script>

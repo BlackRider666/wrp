@@ -2,6 +2,7 @@
 
 namespace App\Models\User;
 
+use App\Models\Article\Article;
 use App\Models\User\Grant\Grant;
 use App\Models\User\Project\Project;
 use App\Models\User\Work\Work;
@@ -124,5 +125,13 @@ class User extends Authenticatable
     public function projects(): HasMany
     {
         return $this->hasMany(Project::class);
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+    public function articles(): BelongsToMany
+    {
+        return $this->belongsToMany(Article::class);
     }
 }

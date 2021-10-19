@@ -46,7 +46,9 @@ class ArticleRepo extends CoreRepo
         $query = $this->query();
 
         if (array_key_exists('user_id',$data)) {
-            $query->where('user_id',$data['user_id']);
+            $query->whereHas('authors', function (Builder $q) use ($data){
+                $q->where('user_id',$data['user_id']);
+            });
         }
         if (array_key_exists('title',$data)) {
             $query->where('title','like','%'.$data['title'].'%');

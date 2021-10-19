@@ -2,6 +2,7 @@ import axios from "axios";
 
 const state = {
     grants: [],
+    total:0,
     grant:null,
 };
 
@@ -13,11 +14,15 @@ const getters = {
 const actions = {
     downloadGrants({commit}, payload) {
         return new Promise(((resolve, reject) => {
-            let search = `&user_id=${payload.user_id}`;
-            axios.get('auth/user/grant?perPage=10'+search)
+            let perPage = payload.itemsPerPage?payload.itemsPerPage:10;
+            let page = payload.page?payload.page:1;
+            let byUser = payload.user_id?`&user_id=${payload.user_id}`:'';
+            let search = `perPage=${perPage}&page=${page}&user_id=${payload.user_id}`;
+            axios.get('auth/user/grant?perPage=10'+search+byUser)
                 .then(res => {
                     commit("UPDATE_GRANTS", res.data.data);
-                    resolve(res.data.data)
+                    commit("UPDATE_TOTAL", res.data.total);
+                    resolve(res.data)
                 })
                 .catch(errors => {
                     reject(errors.response.data)
@@ -65,9 +70,13 @@ const actions = {
 const mutations = {
     ADD_GRANT (state, grant) {
         state.grants.push(grant);
+        state.total += 1;
     },
     UPDATE_GRANTS (state, grants) {
         state.grants = grants
+    },
+    UPDATE_TOTAL (state, total) {
+        state.total = total
     },
     UPDATE_GRANT (state, grant) {
         let item = state.grants.find((i) => i.id === grant.id)
@@ -76,6 +85,7 @@ const mutations = {
     },
     REMOVE_GRANT (state, grant) {
         state.grants = state.grants.filter( (i) => i.id !== grant);
+        state.total -= 1;
     },
 };
 

@@ -43,4 +43,23 @@ class UserController extends Controller
     {
         return new JsonResponse($this->repo->searchAuthors($request->all()));
     }
+
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function show(int $id): JsonResponse
+    {
+        return new JsonResponse([
+            'user' => $this->repo->findWith(
+                $id,
+                [
+                    'works',
+                    'grants',
+                    'projects',
+                    'articles',
+                    'articles.category',
+                    ]),
+        ]);
+    }
 }

@@ -44,6 +44,7 @@
         </v-col>
       </v-row>
     </v-form>
+    <v-spacer/>
     <router-link
         class="text-decoration-none"
         :to="{name:'Create Article'}"

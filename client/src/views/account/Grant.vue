@@ -17,6 +17,11 @@
       <v-data-table
           :headers="grantsHeaders"
           :items="grants"
+          :options.sync="options"
+          :server-items-length="total"
+          :footer-props="{
+                  itemsPerPageOptions:[5,10,15,20]
+              }"
           class="elevation-1"
           dense
       >
@@ -108,24 +113,23 @@ export default {
       editGrantDialog: false,
       deleteGrantDialog: false,
       grantsHeaders: [
-        { text: 'Name', value: 'name' },
+        { text: this.$t('grants.placeholder.name','Name'), value: 'name' },
         { text: 'Actions', value: 'actions', sortable: false },
       ],
       newGrant: null,
       selectedGrant: null,
+      options: {},
     };
   },
   computed: {
     ...mapState({
       grants: (state) => state.grant.grants,
+      total: (state) => state.grant.total,
     }),
   },
   methods: {
     showGrantsSheet() {
       this.grantsSheet = !this.grantsSheet;
-      if (this.grantsSheet) {
-        this.$store.dispatch('grant/downloadGrants',{user_id:this.user_id});
-      }
     },
     openGrantCreate() {
       this.createGrantDialog = true;
@@ -190,6 +194,23 @@ export default {
             this.$loadingClose();
             this.$notify('','error', error.response.data.message);
           })
+    },
+    getData() {
+      this.$loading()
+      this.$store.dispatch('grant/downloadGrants',{
+        user_id:this.user_id,
+        ...this.options,
+      }).then(() => {
+        this.$loadingClose();
+      });
+    }
+  },
+  watch: {
+    options: {
+      handler () {
+        this.getData();
+      },
+      deep: true,
     },
   },
 }

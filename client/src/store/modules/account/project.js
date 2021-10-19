@@ -2,6 +2,7 @@ import axios from "axios";
 
 const state = {
     projects: [],
+    total: 0,
     project:null,
 };
 
@@ -13,11 +14,15 @@ const getters = {
 const actions = {
     downloadProjects({commit}, payload) {
         return new Promise(((resolve, reject) => {
-            let search = `&user_id=${payload.user_id}`;
-            axios.get('auth/user/project?perPage=10'+search)
+            let perPage = payload.itemsPerPage?payload.itemsPerPage:10;
+            let page = payload.page?payload.page:1;
+            let byUser = payload.user_id?`&user_id=${payload.user_id}`:''
+            let search = `perPage=${perPage}&page=${page}`;
+            axios.get('auth/user/project?perPage=10'+search+byUser)
                 .then(res => {
                     commit("UPDATE_PROJECTS", res.data.data);
-                    resolve(res.data.data)
+                    commit("UPDATE_TOTAL", res.data.total);
+                    resolve(res.data)
                 })
                 .catch(errors => {
                     reject(errors.response.data)
@@ -65,9 +70,13 @@ const actions = {
 const mutations = {
     ADD_PROJECT (state, project) {
         state.projects.push(project);
+        state.total += 1;
     },
     UPDATE_PROJECTS (state, projects) {
         state.projects = projects
+    },
+    UPDATE_TOTAL (state, total) {
+        state.total = total;
     },
     UPDATE_PROJECT (state, project) {
         let item = state.projects.find((i) => i.id === project.id)
@@ -76,6 +85,7 @@ const mutations = {
     },
     REMOVE_PROJECT (state, project) {
         state.projects = state.projects.filter( (i) => i.id !== project);
+        state.total -= 1;
     },
 };
 

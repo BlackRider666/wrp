@@ -17,6 +17,11 @@
       <v-data-table
           :headers="worksHeaders"
           :items="works"
+          :options.sync="options"
+          :server-items-length="total"
+          :footer-props="{
+                  itemsPerPageOptions:[5,10,15,20]
+              }"
           class="elevation-1"
           dense
       >
@@ -134,6 +139,9 @@
             mdi-delete
           </v-icon>
         </template>
+        <template v-slot:item.finish="{ item }">
+          {{item.finish?item.finish: $t('works.now','Now')}}
+        </template>
       </v-data-table>
     </v-sheet>
     <v-dialog v-model="createWorkDialog" max-width="500px">
@@ -235,9 +243,9 @@ export default {
       editWorkDialog: false,
       deleteWorkDialog: false,
       worksHeaders: [
-        { text: 'Title', value: 'title' },
-        { text: 'Start', value: 'start' },
-        { text: 'Finish', value: 'finish' },
+        { text: this.$t('works.placeholder.title','Title'), value: 'title' },
+        { text: this.$t('works.placeholder.start', 'Worked from'), value: 'start' },
+        { text: this.$t('works.placeholder.finish','Worked Until'), value: 'finish' },
         { text: 'Actions', value: 'actions', sortable: false },
       ],
       newWork: null,
@@ -246,11 +254,13 @@ export default {
       structureUnitSearch: '',
       menuStart:false,
       menuFinish:false,
+      options: {},
     };
   },
   computed: {
     ...mapState({
       works: (state) => state.account.works,
+      total: (state) => state.account.total,
       organizations: (state) => state.organization.organizations,
       structureUnits: (state) => state.organization.structureUnits,
     }),
@@ -258,9 +268,6 @@ export default {
   methods: {
     showWorksSheet() {
       this.worksSheet = !this.worksSheet;
-      if (this.worksSheet) {
-        this.$store.dispatch('account/downloadWorks');
-      }
     },
     openCreateWorkDialog() {
       this.createWorkDialog = true;
@@ -364,6 +371,15 @@ export default {
         }
       }
     },
+    getData() {
+      this.$loading()
+      this.$store.dispatch('account/downloadWorks',{
+        user_id:this.user_id,
+        ...this.options,
+      }).then(() => {
+        this.$loadingClose();
+      });
+    }
   },
   watch: {
     'newWork.organization'(item) {
@@ -383,6 +399,12 @@ export default {
           this.$store.dispatch('organization/clearStructureUnits');
         }
       }
+    },
+    options: {
+      handler () {
+        this.getData();
+      },
+      deep: true,
     },
   },
 }

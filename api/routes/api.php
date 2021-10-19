@@ -58,6 +58,7 @@ Route::get('organizers',[OrganizerController::class, 'index']);
 Route::get('partners',[PartnerController::class, 'index']);
 Route::get('article-categories',[CategoryController::class, 'index'])->middleware('auth:sanctum');
 Route::get('users',[UserController::class, 'index']);
+Route::get('users/{user_id}',[UserController::class, 'show']);
 Route::get('authors',[UserController::class, 'authors'])->middleware('auth:sanctum');
 Route::group(['prefix' => 'article', 'middleware' => 'auth:sanctum'], function () {
     Route::get('/', [ArticleController::class, 'index']);

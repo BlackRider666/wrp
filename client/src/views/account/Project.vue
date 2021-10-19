@@ -17,6 +17,11 @@
       <v-data-table
           :headers="projectsHeaders"
           :items="projects"
+          :options.sync="options"
+          :server-items-length="total"
+          :footer-props="{
+                  itemsPerPageOptions:[5,10,15,20]
+              }"
           class="elevation-1"
           dense
       >
@@ -108,24 +113,23 @@ export default {
       editProjectDialog: false,
       deleteProjectDialog: false,
       projectsHeaders: [
-        { text: 'Name', value: 'name' },
+        { text: this.$t('projects.placeholder.name','Name'), value: 'name' },
         { text: 'Actions', value: 'actions', sortable: false },
       ],
       newProject: null,
       selectedProject: null,
+      options: {},
     };
   },
   computed: {
     ...mapState({
       projects: (state) => state.project.projects,
+      total: (state) => state.project.total,
     }),
   },
   methods: {
     showProjectsSheet() {
       this.projectsSheet = !this.projectsSheet;
-      if (this.projectsSheet) {
-        this.$store.dispatch('project/downloadProjects',{user_id:this.user_id});
-      }
     },
     openProjectCreate() {
       this.createProjectDialog = true;
@@ -190,6 +194,23 @@ export default {
             this.$loadingClose();
             this.$notify('','error', error.response.data.message);
           })
+    },
+    getData() {
+      this.$loading()
+      this.$store.dispatch('project/downloadProjects',{
+        user_id:this.user_id,
+        ...this.options,
+      }).then(() => {
+        this.$loadingClose();
+      });
+    }
+  },
+  watch: {
+    options: {
+      handler () {
+        this.getData();
+      },
+      deep: true,
     },
   },
 }

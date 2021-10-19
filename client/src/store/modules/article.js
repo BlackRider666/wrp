@@ -4,6 +4,7 @@ const state = {
     categories: [],
     articles: [],
     article:null,
+    total:0,
 };
 
 const getters = {
@@ -30,10 +31,12 @@ const actions = {
             let perPage = payload.itemsPerPage?payload.itemsPerPage:10;
             let page = payload.page?payload.page:1;
             let byUser = payload.user_id?`&user_id=${payload.user_id}`:''
-            let search = `perPage=${perPage}&page=${page}&title=${payload.title}&sortBy=${payload.sortBy}&sortDesc=${payload.sortDesc}`;
-            axios.get('article?'+search+byUser)
+            let byTitle = payload.title?`&title=${payload.title}`:''
+            let search = `perPage=${perPage}&page=${page}&sortBy=${payload.sortBy}&sortDesc=${payload.sortDesc}`;
+            axios.get('article?'+search+byUser+byTitle)
                 .then(res => {
                     commit("UPDATE_ARTICLES", res.data.data);
+                    commit("UPDATE_TOTAL", res.data.total);
                     resolve(res.data)
                 })
                 .catch(errors => {
@@ -97,9 +100,13 @@ const mutations = {
     },
     ADD_ARTICLE (state, article) {
         state.articles.push(article);
+        state.total += 1;
     },
     UPDATE_ARTICLES (state, articles) {
         state.articles = articles
+    },
+    UPDATE_TOTAL (state, total) {
+        state.total = total;
     },
     UPDATE_ARTICLE (state, article) {
         let item = state.articles.find((i) => i.id === article.id)
@@ -108,6 +115,7 @@ const mutations = {
     },
     REMOVE_ARTICLE (state, article) {
         state.articles = state.articles.filter( (i) => i.id !== article);
+        state.total -= 1;
     },
     CHOOSE_ARTICLE (state, article) {
         state.article = article;

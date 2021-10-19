@@ -107,4 +107,11 @@ class UserRepo extends CoreRepo
         $perPage = array_key_exists('perPage',$data)?$data['perPage']:10;
         return $this->query()->paginate($perPage);
     }
+
+    public function findWith(int $id, array $with) {
+        $query = $this->query();
+        $query->where('id',$id);
+        $query->with($with);
+        return $query->firstOrFail();
+    }
 }
