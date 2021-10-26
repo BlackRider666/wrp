@@ -27,7 +27,14 @@ class Article extends Model
     ];
 
     protected $casts = [
-        'year'  =>  'date:Y',
+        'year'  =>  'date',
+    ];
+
+    public $createWithRel = [
+        'authors_id' => [
+            'required' => true,
+            'type' => 'integer',
+        ],
     ];
 
     /**
@@ -44,5 +51,10 @@ class Article extends Model
     public function authors(): BelongsToMany
     {
         return $this->belongsToMany(User::class);
+    }
+
+    public function forSelect()
+    {
+        return $this->pluck('title','id');
     }
 }

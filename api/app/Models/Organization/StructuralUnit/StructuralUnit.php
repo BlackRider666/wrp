@@ -17,6 +17,9 @@ class StructuralUnit extends Model
         'organization_id',
         ];
 
+    protected $appends = [
+        'organization_title',
+    ];
     /**
      * @return BelongsTo
      */
@@ -31,5 +34,10 @@ class StructuralUnit extends Model
     public function works(): HasMany
     {
         return $this->hasMany(Work::class, 'structural_unit_id','structural_unit_id');
+    }
+
+    public function getOrganizationTitleAttribute()
+    {
+        return $this->organization->name;
     }
 }
