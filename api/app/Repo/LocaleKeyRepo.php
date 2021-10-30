@@ -26,7 +26,7 @@ class LocaleKeyRepo extends CoreRepo
         ])) {
             throw new RuntimeException('Error on creating key!',500);
         }
-        if (!$localeKey = LocaleKey::updateOrCreate([
+        if (!$localeKey = LocaleKey::firstOrCreate([
             'key_id' => $key->getKey(),
             'locale_id' => $locale->getKey(),
         ], [

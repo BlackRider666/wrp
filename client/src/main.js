@@ -8,7 +8,7 @@ import loading from './plugins/loading';
 import l10s from './plugins/l10s';
 import FlagIcon from 'vue-flag-icon';
 
-Vue.use(l10s);
+Vue.use(l10s,store);
 Vue.use(loading);
 Vue.use(FlagIcon);
 

@@ -1,12 +1,16 @@
+import store from "@/store";
+
 const L10s = {
-    translations: JSON.parse(localStorage.getItem('l10s')) || {},
+    translations: store.getters['l10s/translations'] || {},
     untranslatedKeys: [],
     onUntranslatedKeyFoundCallback: (key, value) => {},
     install(Vue) {
         Vue.prototype.$t = (key, value) => {
-            if (this.translations[key] !== undefined && this.translations[key].length > 0) {
-                return this.translations[key];
+            const translations =  store.getters['l10s/translations']
+            if (translations[key] !== undefined && translations[key].length > 0) {
+                return translations[key];
             }
+            console.log({key,value});
             this.untranslatedKeys.push({key, value});
             this.onUntranslatedKeyFoundCallback(key, value);
             return value;
@@ -15,13 +19,6 @@ const L10s = {
         Vue.prototype.l10s = {
             onUntranslatedKeyFound: (cb) => {
                 this.onUntranslatedKeyFoundCallback = cb.bind(this);
-            },
-            setAllTranslations: (data) => {
-                localStorage.removeItem('l10s');
-                for (let i = 0; i < data.length; i++) {
-                    this.translations[data[i].key] = data[i].value;
-                }
-                localStorage.setItem('l10s', JSON.stringify(this.translations));
             },
             getUntranslatedKeys: () => this.untranslatedKeys,
             cleanUntranslatedKeys: () => {

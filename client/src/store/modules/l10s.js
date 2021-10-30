@@ -9,7 +9,7 @@ const state = {
             iso_code: 'en',
         },
     ],
-    locale: localStorage.getItem('activeLocaleCode')
+    locale: JSON.parse(localStorage.getItem('activeLocale'))
         ||
         {
             id:1,
@@ -29,6 +29,7 @@ const actions = {
         return new Promise(((resolve, reject) => {
             axios.get(`locales?iso_code=${langIsoCode}`)
                 .then((response) => {
+                    commit('TRANSLATIONS', response.data);
                     resolve(response.data);
                 })
                 .catch((error) => {
@@ -40,6 +41,7 @@ const actions = {
         return new Promise(((resolve, reject) => {
             axios.post('locales', payload)
                 .then((response) => {
+                    commit('ADD_TRANSLATION_KEY', response.data);
                     resolve(response.data);
                 })
                 .catch((error) => {
@@ -59,6 +61,9 @@ const actions = {
                 });
         }));
     },
+    setActiveLocale({ commit }, payload) {
+        commit('SET_ACTIVE_LOCALE', payload)
+    },
 };
 
 const mutations = {
@@ -66,10 +71,19 @@ const mutations = {
         state.locales = locales;
     },
     TRANSLATIONS(state, translations) {
-        state.translations = translations;
+        let trans = {};
+        for (let i = 0; i < translations.length; i++) {
+            trans[translations[i].key] = translations[i].value;
+        }
+        state.translations = trans;
+        localStorage.setItem('l10s', JSON.stringify(trans));
+    },
+    ADD_TRANSLATION_KEY (state, key) {
+        state.translations[key.key] = key.value;
     },
     SET_ACTIVE_LOCALE(state, locale) {
         state.locale = locale;
+        localStorage.setItem('activeLocale', JSON.stringify(locale));
     },
 };
 

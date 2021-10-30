@@ -6,7 +6,6 @@
       left
       :nudge-bottom="30"
       ref="locale"
-      @itemClicked="changeLanguage"
   >
     <template v-slot:activator="{ on }">
       <div class="font-weight-medium px-1" v-on="on">
@@ -25,6 +24,7 @@
              :key="item.id">
           <v-list-item
               class="my-1"
+              @click="changeLanguage(item)"
           >
             <v-list-item-content>
               <v-list-item-subtitle v-if="item.name" v-html="item.name"></v-list-item-subtitle>
@@ -61,11 +61,21 @@ export default {
     MenuList,
   },
   methods: {
-    ...mapMutations({
-      setLocale: (state) => state.l10s.SET_ACTIVE_LOCALE,
-    }),
     changeLanguage(language) {
-      this.setLocale(language);
+      this.$loading();
+      this.$store.dispatch('l10s/setActiveLocale',language)
+          .then((result) => {
+            if (result) {
+              this.l10s.onUntranslatedKeyFound((key, value) => {
+                this.$store.dispatch('l10s/createNewTranslationKey', {
+                  key,
+                  value,
+                  iso_code: this.$store.getters['l10s/getActiveLocale'].iso_code,
+                });
+              })
+            }
+            this.$loadingClose();
+          });
     },
   },
 };

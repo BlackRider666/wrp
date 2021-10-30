@@ -11,6 +11,7 @@
 <script>
 import Loading from "./components/loading/Loading";
 import NotificationSnackbar from "./components/notification/Notification";
+import {mapState} from "vuex";
 
 export default {
   name: 'App',
@@ -18,21 +19,33 @@ export default {
   data: function() {
     return {}
   },
-  beforeCreate() {
+  created() {
     this.$store.dispatch('l10s/getActiveLocales');
-    this.$store.dispatch('l10s/getAllTranslations', this.$store.getters['l10s/getActiveLocale'].iso_code)
-        .then((result) => {
-          this.l10s.setAllTranslations(result);
-        });
-    this.l10s.onUntranslatedKeyFound((key, value) => {
-      this.$store.dispatch('l10s/createNewTranslationKey', {
-        key,
-        value,
-        iso_code: this.$store.getters['l10s/getActiveLocale'].iso_code,
-      });
-    });
+    this.updateTranslations();
+  },
+  computed: {
+    ...mapState({
+      locale: (state) => state.l10s.locale,
+    }),
+  },
+  watch: {
+    locale: function () {
+      this.updateTranslations();
+    },
   },
   methods: {
+    updateTranslations(){
+      this.$store.dispatch('l10s/getAllTranslations', this.$store.getters['l10s/getActiveLocale'].iso_code)
+          .then(() => {
+            this.l10s.onUntranslatedKeyFound((key, value) => {
+              this.$store.dispatch('l10s/createNewTranslationKey', {
+                key,
+                value,
+                iso_code: this.$store.getters['l10s/getActiveLocale'].iso_code,
+              });
+            })
+          });
+    }
   },
 };
 </script>

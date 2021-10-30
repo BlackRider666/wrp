@@ -21,11 +21,11 @@
               src="https://picsum.photos/1280/720?random&id=777"
           >
             <v-card-text class="white--text mt-8">
-              <v-row>
+              <v-row justify="center">
                 <v-col cols="12">
                   <p>{{$t('home.auth-info','Auth info')}}</p>
                 </v-col>
-                <v-col cols="4" offset="4">
+                <v-col cols="6">
                   <v-btn
                       block
                       outlined
