@@ -9,9 +9,10 @@
     "license": "MIT",
     "require": {
         "php": "^7.2.5|^8.0",
-        "black-paradise/laravel-admin": "^0.2.0",
+        "black-paradise/laravel-admin": "^0.3.0",
         "fideloper/proxy": "^4.4",
         "intervention/image": "^2.6",
+        "joggapp/laravel-google-translate": "5.0.2",
         "laravel/framework": "^6.20.26",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",

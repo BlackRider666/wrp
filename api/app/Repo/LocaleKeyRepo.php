@@ -34,7 +34,7 @@ class LocaleKeyRepo extends CoreRepo
         ])) {
             throw new RuntimeException('Error on creating localeKey!',500);
         }
-        Log::error($localeKey);
+        
         return $localeKey;
     }
 }
