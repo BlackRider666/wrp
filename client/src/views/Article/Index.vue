@@ -41,6 +41,24 @@
                   <v-card>
                     <v-card-title>{{$t('articles.edit.title','Edit')}}</v-card-title>
                     <v-card-text>
+                      <v-select
+                          v-model="selectedItem.country_id"
+                          :items="countries"
+                          item-text="name"
+                          item-value="id"
+                          :label="$t('article.placeholder.country','Country')"
+                          prepend-inner-icon="mdi-database-search"
+                          outlined
+                      ></v-select>
+                      <v-select
+                          v-model="selectedItem.city_id"
+                          :items="cities"
+                          item-text="name"
+                          item-value="id"
+                          :label="$t('article.placeholder.city','City')"
+                          prepend-inner-icon="mdi-database-search"
+                          outlined
+                      ></v-select>
                       <v-text-field
                           v-model="selectedItem.title"
                           :label="$t('articles.placeholder.title','Title')"
@@ -119,11 +137,13 @@
                       <v-select
                           v-if="checkCategory(['patent'])"
                           v-model="selectedItem.country"
-                          :label="$t('articles.placeholder.country', 'Country')"
+                          :label="$t('articles.placeholder.patent_country', 'Patent Country')"
                           outlined
                           prepend-inner-icon="mdi-shape-outline"
                           :rules="[rules.required]"
                           :items="countries"
+                          item-text="name"
+                          item-value="name"
                       ></v-select>
                       <v-text-field
                           v-if="checkCategory(['patent'])"
@@ -196,16 +216,6 @@ export default {
       dialogEdit: false,
       dialogDelete: false,
       selectedItem: null,
-      countries:[
-        {
-          text:'Ukraine',
-          value:'Ukraine',
-        },
-        {
-          text:'USA',
-          value:'USA',
-        },
-      ],
       rules: {
         required: value => !!value || 'Required.',
       },
@@ -218,12 +228,15 @@ export default {
       total: (state) => state.article.total,
       categories: (state) => state.article.categories,
       authors: (state) => state.user.users,
+      countries: (state) => state.country.countries,
+      cities: (state) => state.city.cities,
     }),
   },
   mounted() {
     this.getData();
     this.$store.dispatch('article/downloadCategories');
     this.$store.dispatch('user/downloadAuthors');
+    this.$store.dispatch('country/downloadCountries');
   },
   methods: {
     showItem (item) {
@@ -307,10 +320,12 @@ export default {
       },
       deep: true,
     },
+    'selectedItem.country_id': {
+      handler () {
+        this.$store.dispatch('city/downloadCities');
+      },
+      deep: true,
+    },
   },
 }
 </script>
-
-<style scoped>
-
-</style>

@@ -32,8 +32,10 @@ const actions = {
             let page = payload.page?payload.page:1;
             let byUser = payload.user_id?`&user_id=${payload.user_id}`:''
             let byTitle = payload.title?`&title=${payload.title}`:''
+            let country = payload.country_id?`&country_id=${payload.country_id}`:'';
+            let city = payload.city_id?`&city_id=${payload.city_id}`:'';
             let search = `perPage=${perPage}&page=${page}&sortBy=${payload.sortBy}&sortDesc=${payload.sortDesc}`;
-            axios.get('article?'+search+byUser+byTitle)
+            axios.get('article?'+search+byUser+byTitle+country+city)
                 .then(res => {
                     commit("UPDATE_ARTICLES", res.data.data);
                     commit("UPDATE_TOTAL", res.data.total);

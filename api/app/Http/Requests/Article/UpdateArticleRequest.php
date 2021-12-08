@@ -24,6 +24,8 @@ class UpdateArticleRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'country_id' => 'required|int|exists:countries,id',
+            'city_id'    => 'required|int|exists:cities,id',
             'title' =>  'required|string|max:255',
             'category_id' => 'required|int|exists:categories,id',
             'year'        => 'required|date_format:Y',

@@ -4,6 +4,7 @@
 namespace App\Repo;
 
 use App\Models\Article\Article;
+use App\Models\User\Work\Work;
 use BlackParadise\LaravelAdmin\Core\CoreRepo;
 use Carbon\Carbon;
 use Exception;
@@ -41,7 +42,7 @@ class ArticleRepo extends CoreRepo
     public function search(array $data): LengthAwarePaginator
     {
         $perPage = array_key_exists('perPage',$data)?$data['perPage']:10;
-        $sortBy = array_key_exists('sortBy',$data)?$data['sortBy']:'year';
+        $sortBy = $data['sortBy'] ?: 'year';
         $sortDesc = array_key_exists('sortDesc',$data)?$data['sortDesc']:true;
         $query = $this->query();
 
@@ -52,6 +53,12 @@ class ArticleRepo extends CoreRepo
         }
         if (array_key_exists('title',$data)) {
             $query->where('title','like','%'.$data['title'].'%');
+        }
+        if (array_key_exists('country_id',$data)) {
+            $query->where('country_id', $data['country_id']);
+        }
+        if (array_key_exists('city_id',$data)) {
+            $query->where('city_id', $data['city_id']);
         }
 
         return $query->with(['category','authors'])->orderBy($sortBy,$sortDesc?'desc':'asc')->paginate($perPage);
@@ -96,6 +103,6 @@ class ArticleRepo extends CoreRepo
      */
     public function findWithCategory(int $id)
     {
-        return $this->query()->with('category')->find($id);
+        return $this->query()->with(['category','countryCreate','city'])->find($id);
     }
 }

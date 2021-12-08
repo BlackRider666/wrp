@@ -9,6 +9,30 @@
       </v-card-title>
       <v-card-text>
         <v-list outlined>
+          <div v-if="article.country_id">
+            <v-list-item >
+              <v-list-item-action>
+                <v-icon>mdi-account</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-subtitle>{{$t('articles.placeholder.country', 'Country')}}</v-list-item-subtitle>
+                <v-list-item-title>{{article.country_create.name}}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-divider/>
+          </div>
+          <div v-if="article.city_id">
+            <v-list-item >
+              <v-list-item-action>
+                <v-icon>mdi-account</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-subtitle>{{$t('articles.placeholder.city', 'City')}}</v-list-item-subtitle>
+                <v-list-item-title>{{article.city.name}}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-divider/>
+          </div>
           <div v-if="article.title">
             <v-list-item >
               <v-list-item-action>
@@ -111,7 +135,7 @@
                 <v-icon>mdi-account</v-icon>
               </v-list-item-action>
               <v-list-item-content>
-                <v-list-item-subtitle>{{$t('articles.placeholder.country', 'Country')}}</v-list-item-subtitle>
+                <v-list-item-subtitle>{{$t('articles.placeholder.patent_country', 'Patent Country')}}</v-list-item-subtitle>
                 <v-list-item-title>{{article.country}}</v-list-item-title>
               </v-list-item-content>
             </v-list-item>

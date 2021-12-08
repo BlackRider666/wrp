@@ -3,6 +3,8 @@
 namespace App\Models\Article;
 
 use App\Models\Article\Category\Category;
+use App\Models\Country\City\City;
+use App\Models\Country\Country;
 use App\Models\User\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,6 +15,8 @@ class Article extends Model
     protected $table = 'articles';
 
     protected $fillable = [
+        'country_id',
+        'city_id',
         'title',
         'category_id',
         'year',
@@ -27,7 +31,7 @@ class Article extends Model
     ];
 
     protected $casts = [
-        'year'  =>  'date',
+        'year'  =>  'date:Y',
     ];
 
     public $createWithRel = [
@@ -56,5 +60,21 @@ class Article extends Model
     public function forSelect()
     {
         return $this->pluck('title','id');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function countryCreate(): BelongsTo
+    {
+        return $this->belongsTo(Country::class, 'country_id', 'id');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function city(): BelongsTo
+    {
+        return $this->belongsTo(City::class);
     }
 }

@@ -28,7 +28,13 @@ class UpdateWorkRequest extends FormRequest
             'finish'    =>  'nullable|date|after:start',
             'position'  =>  'required|string|max:255',
             'organization' => 'required',
-            'structure_unit' => 'required',
+            'organization.id' => 'required',
+            'structure_unit'    => 'required',
+            'structure_unit.id' => 'required',
+            'country'           => 'required',
+            'country.id'        => 'required',
+            'city'              =>  'required',
+            'city.id'           =>  'required',
         ];
     }
 }

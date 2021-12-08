@@ -44,6 +44,12 @@
         </v-col>
       </v-row>
     </v-form>
+    <router-link
+        class="text-decoration-none"
+        :to="{name:'Main Search', params:{type:'articles'}}"
+    >
+      <v-btn color="primary">{{$t('articles.index.title','Articles')}}</v-btn>
+    </router-link>
     <v-spacer/>
     <router-link
         class="text-decoration-none"

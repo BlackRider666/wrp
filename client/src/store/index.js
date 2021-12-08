@@ -11,6 +11,8 @@ import user from "./modules/user";
 import organization from "./modules/organization";
 import grant from "./modules/account/grant";
 import project from "./modules/account/project";
+import country from "./modules/country";
+import city from "./modules/city";
 
 const notifier = require('./modules/notifier/index').default;
 
@@ -42,6 +44,8 @@ const store = new Vuex.Store({
         l10s,
         grant,
         project,
+        country,
+        city,
     }
 });
 

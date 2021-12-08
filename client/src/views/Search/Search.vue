@@ -8,6 +8,62 @@
           {{$t('search.title','Search')}}
         </v-card-title>
         <v-card-text>
+            <v-toolbar
+                dense
+                color="primary"
+                v-if="$route.params.type === 'articles'"
+            >
+              {{$t('search.articles.filters','Filters')}}
+              <v-spacer/>
+              <v-btn icon @click="showArticleFiltersSheet">
+                <v-icon v-if="articleFiltersSheet">mdi-chevron-up</v-icon>
+                <v-icon v-else>mdi-chevron-down</v-icon>
+              </v-btn>
+            </v-toolbar>
+            <v-sheet
+                v-if="articleFiltersSheet && $route.params.type === 'articles'"
+                outlined
+            >
+              <v-container>
+                <v-row>
+                  <v-col cols="12">
+                    <v-text-field
+                        v-model="articleFilters.title"
+                        :label="$t('articles.placeholder.title','Title')"
+                        outlined
+                        prepend-inner-icon="mdi-card-text-outline"
+                    />
+                  </v-col>
+                  <v-col cols="12">
+                    <v-select
+                        v-model="articleFilters.country_id"
+                        :items="countries"
+                        item-text="name"
+                        item-value="id"
+                        :label="$t('search.placeholder.country','Country')"
+                        :placeholder="$t('search.placeholder.country','Country')"
+                        prepend-inner-icon="mdi-database-search"
+                        outlined
+                    ></v-select>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-select
+                        v-model="articleFilters.city_id"
+                        :items="cities"
+                        item-text="name"
+                        item-value="id"
+                        :label="$t('search.placeholder.city','City')"
+                        :placeholder="$t('search.placeholder.city','City')"
+                        prepend-inner-icon="mdi-database-search"
+                        outlined
+                    ></v-select>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-btn color="primary" block @click="getData">{{$t('search.title','Search')}}</v-btn>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-sheet>
           <v-data-table
               v-if="$route.params.type === 'articles'"
               :headers="articleHeaders"
@@ -74,6 +130,12 @@ export default {
         { text: this.$t('placeholder.actions','Actions'), value: 'actions', sortable: false },
       ],
       options: {},
+      articleFiltersSheet: true,
+      articleFilters: {
+        country_id:null,
+        city_id: null,
+        title: null,
+      },
     };
   },
   computed: {
@@ -82,7 +144,13 @@ export default {
       totalArticles: (state) => state.article.total,
       users: (state) => state.user.users,
       totalUsers: (state) => state.user.total,
+      countries: (state) => state.country.countries,
+      cities: (state) => state.city.cities,
     }),
+  },
+  mounted() {
+    this.$store.dispatch('country/downloadCountries');
+    this.articleFilters.title = this.$route.query.title;
   },
   methods: {
     showArticle (item) {
@@ -98,6 +166,7 @@ export default {
           user_id:null,
           title: this.$route.query.title,
           ...this.options,
+          ...this.articleFilters,
         }).then(() => {
           this.$loadingClose();
         });
@@ -110,12 +179,21 @@ export default {
           this.$loadingClose();
         });
       }
-    }
+    },
+    showArticleFiltersSheet() {
+      this.articleFiltersSheet = !this.articleFiltersSheet;
+    },
   },
   watch: {
     options: {
       handler () {
         this.getData();
+      },
+      deep: true,
+    },
+    'articleFilters.country_id': {
+      handler () {
+        this.$store.dispatch('city/downloadCities');
       },
       deep: true,
     },

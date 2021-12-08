@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5a49d7ca5606b117b66586e034a7d016",
+    "content-hash": "83e828222050cfc50409a4c8fa2bebd3",
     "packages": [
         {
             "name": "black-paradise/laravel-admin",
@@ -8462,7 +8462,8 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^7.2.5|^8.0"
+        "php": "^7.2.5|^8.0",
+        "ext-openssl": "^7.4"
     },
     "platform-dev": [],
     "plugin-api-version": "2.0.0"

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Country\Country;
 use Illuminate\Database\Seeder;
 
 class CountrySeeder extends Seeder
@@ -11,6 +12,8 @@ class CountrySeeder extends Seeder
      */
     public function run()
     {
-        //
+        Country::create([
+            'name'  =>  'Україна',
+        ]);
     }
 }

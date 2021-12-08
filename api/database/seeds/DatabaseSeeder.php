@@ -16,6 +16,8 @@ class DatabaseSeeder extends Seeder
             RolesSeeder::class,
             ArticleCategorySeeder::class,
             LocaleSeeder::class,
+            CountrySeeder::class,
+            CitySeeder::class,
         ]);
     }
 }

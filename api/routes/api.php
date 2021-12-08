@@ -5,6 +5,8 @@ use App\Http\Controllers\API\Article\CategoryController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\Locale\LocaleController;
 use App\Http\Controllers\API\NewsController;
+use App\Http\Controllers\API\Organization\CityController;
+use App\Http\Controllers\API\Organization\CountryController;
 use App\Http\Controllers\API\Organization\OrganizationController;
 use App\Http\Controllers\API\Organization\StructuralUnitController;
 use App\Http\Controllers\API\OrganizerController;
@@ -60,8 +62,8 @@ Route::get('article-categories',[CategoryController::class, 'index'])->middlewar
 Route::get('users',[UserController::class, 'index']);
 Route::get('users/{user_id}',[UserController::class, 'show']);
 Route::get('authors',[UserController::class, 'authors'])->middleware('auth:sanctum');
+Route::get('/article', [ArticleController::class, 'index']);
 Route::group(['prefix' => 'article', 'middleware' => 'auth:sanctum'], function () {
-    Route::get('/', [ArticleController::class, 'index']);
     Route::post('/', [ArticleController::class, 'store']);
     Route::get('/{article_id}', [ArticleController::class, 'show']);
     Route::post('/{article_id}', [ArticleController::class, 'update']);
@@ -75,4 +77,13 @@ Route::group(['prefix' => 'locales'], function () {
     Route::get('/',[LocaleController::class,'index']);
     Route::get('/active',[LocaleController::class,'getActive']);
     Route::post('/', [LocaleController::class, 'store']);
+});
+Route::get('/countries', [CountryController::class, 'index']);
+Route::get('/cities', [CityController::class, 'index']);
+
+Route::get('test', function () {
+    (new \App\Service\IboxClient())->test();
+});
+Route::post('/test-result', function (\Illuminate\Http\Request $request) {
+    (new \App\Service\IboxClient())->testResult($request);
 });

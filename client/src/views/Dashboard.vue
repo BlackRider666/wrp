@@ -117,7 +117,7 @@
                         class="ma-4"
                         flat
                     >
-                      <v-img :src="organizer.logo_url" class="rounded-circle" :alt="organizer.title" width="100px" height="100px"/>
+                      <v-img :src="organizer.logo_url" :alt="organizer.title" width="100px" height="100px"/>
                     </v-card>
                   </v-slide-item>
                 </v-slide-group>
@@ -143,7 +143,7 @@
                       class="ma-4"
                       flat
                   >
-                    <v-img :src="partner.logo_url" class="rounded-circle" width="100px" :alt="partner.title" height="100px"/>
+                    <v-img :src="partner.logo_url" width="100px" :alt="partner.title" height="100px"/>
                   </v-card>
                 </v-slide-item>
               </v-slide-group>

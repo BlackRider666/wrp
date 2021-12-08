@@ -18,6 +18,24 @@
                 flat
             >
               <v-card-text>
+                <v-select
+                    v-model="article.country_id"
+                    :items="countries"
+                    item-text="name"
+                    item-value="id"
+                    :label="$t('article.placeholder.country','Country')"
+                    prepend-inner-icon="mdi-database-search"
+                    outlined
+                ></v-select>
+                <v-select
+                    v-model="article.city_id"
+                    :items="cities"
+                    item-text="name"
+                    item-value="id"
+                    :label="$t('article.placeholder.city','City')"
+                    prepend-inner-icon="mdi-database-search"
+                    outlined
+                ></v-select>
                 <v-text-field
                     v-model="article.title"
                     :label="$t('articles.placeholder.title','Title')"
@@ -96,11 +114,13 @@
                 <v-select
                     v-if="checkCategory(['patent'])"
                     v-model="article.country"
-                    :label="$t('articles.placeholder.country', 'Country')"
+                    :label="$t('articles.placeholder.patent_country', 'Patent Country')"
                     outlined
                     prepend-inner-icon="mdi-shape-outline"
                     :rules="[rules.required]"
                     :items="countries"
+                    item-text="name"
+                    item-value="name"
                 ></v-select>
                 <v-text-field
                     v-if="checkCategory(['patent'])"
@@ -156,28 +176,21 @@ export default {
       rules: {
         required: value => !!value || 'Required.',
       },
-      countries:[
-        {
-          text:'Ukraine',
-          value:'Ukraine',
-        },
-        {
-          text:'USA',
-          value:'USA',
-        },
-      ],
     };
   },
   computed: {
     ...mapState({
       categories: (state) => state.article.categories,
       authors: (state) => state.user.users,
+      countries: (state) => state.country.countries,
+      cities: (state) => state.city.cities,
     }),
   },
   mounted() {
     this.$store.dispatch('article/downloadCategories');
     this.$store.dispatch('user/downloadAuthors');
     this.article.authors.push(this.$store.getters['account/getAccount'].id);
+    this.$store.dispatch('country/downloadCountries');
   },
   methods: {
     createArticle(e) {
@@ -192,8 +205,10 @@ export default {
 
         this.$router.push({name:'Articles'});
       })
-      .catch( (error) => {
-          console.log(error);
+      .catch( () => {
+        this.$loadingClose();
+        this.$notify('','error', this.$t('messages.error','Error'));
+
       });
     },
     checkCategory(arr) {
@@ -216,6 +231,14 @@ export default {
         return 'articles.placeholder.conference';
       }
     }
+  },
+  watch: {
+    'article.country_id': {
+      handler () {
+        this.$store.dispatch('city/downloadCities');
+      },
+      deep: true,
+    },
   },
 }
 </script>

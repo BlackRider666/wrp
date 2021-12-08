@@ -28,7 +28,7 @@ class ArticleController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $data = $request->only(['user_id','title']);
+        $data = $request->all();
 
         return new JsonResponse($this->repo->search($data));
     }
@@ -64,7 +64,8 @@ class ArticleController extends Controller
         } catch (Exception $e) {
             return new JsonResponse([
                 'message' => $e->getMessage(),
-            ], $e->getCode());
+                'code'    => $e->getCode(),
+            ], 500);
         }
 
         return new JsonResponse([

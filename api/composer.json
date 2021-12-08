@@ -9,8 +9,10 @@
     "license": "MIT",
     "require": {
         "php": "^7.2.5|^8.0",
+        "ext-openssl": "^7.4",
         "black-paradise/laravel-admin": "^0.3.0",
         "fideloper/proxy": "^4.4",
+        "guzzlehttp/guzzle": "^7.4",
         "intervention/image": "^2.6",
         "joggapp/laravel-google-translate": "5.0.2",
         "laravel/framework": "^6.20.26",
