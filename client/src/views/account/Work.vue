@@ -203,6 +203,7 @@
           </v-menu>
           <v-menu ref="menu"
                   v-model="menuFinish"
+                  v-if="!finishNow"
                   :close-on-content-click="false"
                   transition="scale-transition"
                   offset-y
@@ -220,6 +221,10 @@
             </template>
             <v-date-picker v-model="newWork.finish" no-title scrollable @input="menuFinish = false"/>
           </v-menu>
+          <v-checkbox
+              v-model="finishNow"
+              :label="$t('works.placeholder.now-working','Now')"
+          ></v-checkbox>
         </v-card-text>
         <v-card-actions>
           <v-btn color="darken-1" text @click="closeCreateWorkDialog">{{$t('btn.cancel','Cancel')}}</v-btn>
@@ -255,6 +260,7 @@ export default {
       menuStart:false,
       menuFinish:false,
       options: {},
+      finishNow:false,
     };
   },
   computed: {

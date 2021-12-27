@@ -5,8 +5,10 @@ namespace App\Http\Controllers\API\Article;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Article\CreateArticleRequest;
 use App\Http\Requests\Article\UpdateArticleRequest;
+use App\Models\Article\Article;
 use App\Repo\ArticleRepo;
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -32,14 +34,16 @@ class ArticleController extends Controller
 
         return new JsonResponse($this->repo->search($data));
     }
+
     /**
      * @param CreateArticleRequest $request
      * @return JsonResponse
+     * @throws AuthorizationException
      */
     public function store(CreateArticleRequest $request): JsonResponse
     {
         $data = $request->validated();
-
+        $this->authorize('create', Article::class);
         try {
             $article = $this->repo->create($data);
         } catch (Exception $e) {

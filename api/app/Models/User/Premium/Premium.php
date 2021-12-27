@@ -18,6 +18,10 @@ class Premium extends Model
         'finish',
     ];
 
+    protected $casts = [
+        'start' => 'date',
+        'finish' => 'date',
+    ];
     /**
      * @return BelongsTo
      */

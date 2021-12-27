@@ -4,9 +4,11 @@ namespace App\Models\User;
 
 use App\Models\Article\Article;
 use App\Models\User\Grant\Grant;
+use App\Models\User\Premium\Premium;
 use App\Models\User\Project\Project;
 use App\Models\User\Work\Work;
 use BlackParadise\LaravelAdmin\Core\PathManager;
+use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -39,6 +41,7 @@ class User extends Authenticatable
     protected $appends = [
         'full_name',
         'avatar_url',
+        'is_premium',
     ];
     /**
      * The attributes that should be hidden for arrays.
@@ -139,5 +142,29 @@ class User extends Authenticatable
     public function articles(): BelongsToMany
     {
         return $this->belongsToMany(Article::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function premiums(): HasMany
+    {
+        return $this->hasMany(Premium::class);
+    }
+
+    /**
+     * @return string|false
+     */
+    public function getIsPremiumAttribute()
+    {
+        $now = Carbon::now()->format('Y-m-d');
+        $prem = $this->premiums()
+            ->where('start','<=',Carbon::now()->format('Y-m-d'))
+            ->where('finish','>=',$now)
+            ->get('finish');
+        if ($prem->count() > 0) {
+            return Carbon::parse($prem->first()->finish)->format('d-m-Y');
+        }
+        return false;
     }
 }

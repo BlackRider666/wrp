@@ -31,10 +31,6 @@ class CreateWorkRequest extends FormRequest
             'organization.id' => 'required',
             'structure_unit'    => 'required',
             'structure_unit.id' => 'required',
-            'country'           => 'required',
-            'country.id'        => 'required',
-            'city'              =>  'required',
-            'city.id'           =>  'required',
         ];
     }
 }

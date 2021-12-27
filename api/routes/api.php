@@ -87,3 +87,4 @@ Route::get('test', function () {
 Route::post('/test-result', function (\Illuminate\Http\Request $request) {
     (new \App\Service\IboxClient())->testResult($request);
 });
+Route::get('/get-free-premium', [\App\Http\Controllers\API\User\PremiumController::class, 'getFreePremium'])->middleware('auth:sanctum');

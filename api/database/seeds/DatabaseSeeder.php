@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             LocaleSeeder::class,
             CountrySeeder::class,
             CitySeeder::class,
+            TransactionStatusSeeder::class,
         ]);
     }
 }

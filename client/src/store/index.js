@@ -13,6 +13,7 @@ import grant from "./modules/account/grant";
 import project from "./modules/account/project";
 import country from "./modules/country";
 import city from "./modules/city";
+import premium from "./modules/premium";
 
 const notifier = require('./modules/notifier/index').default;
 
@@ -46,6 +47,7 @@ const store = new Vuex.Store({
         project,
         country,
         city,
+        premium,
     }
 });
 

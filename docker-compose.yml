@@ -52,7 +52,7 @@ services:
       - wrp_network
 
   client:
-    image: node:current-alpine
+    image: node:lts-alpine
     container_name: client_wrp
     tty: true
     volumes:

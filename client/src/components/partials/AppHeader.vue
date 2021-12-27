@@ -51,12 +51,15 @@
       <v-btn color="primary">{{$t('articles.index.title','Articles')}}</v-btn>
     </router-link>
     <v-spacer/>
-    <router-link
-        class="text-decoration-none"
-        :to="{name:'Create Article'}"
-    >
-      <v-btn v-if="isLoggedIn" color="primary" icon><v-icon>mdi-plus</v-icon></v-btn>
-    </router-link>
+    <template v-if="account.is_premium">
+      <router-link
+          class="text-decoration-none"
+          :to="{name:'Create Article'}"
+      >
+        <v-btn v-if="isLoggedIn" color="primary" icon><v-icon>mdi-plus</v-icon></v-btn>
+      </router-link>
+      <div>{{$t('header.menu.premium-to','Premium to: ')+account.is_premium}}</div>
+    </template>
     <v-divider vertical color="white" inset class="mr-2"></v-divider>
     <LanguageSwitcher/>
     <template v-if="isLoggedIn">
@@ -101,6 +104,15 @@ export default {
             divider: true,
             subtitleClass: 'text-center font-weight-bold',
             image: this.account.avatar_url || null,
+          },
+          {
+            titleTKey: "header.menu.premium",
+            titleTDefault: "Premium",
+            icon: "mdi-account-outline",
+            to: {
+              name:'Premium',
+            },
+            divider: true,
           },
           {
             titleTKey: "header.menu.account",

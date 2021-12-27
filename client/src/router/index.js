@@ -58,6 +58,9 @@ const router = new VueRouter({
                     path: '/article-create',
                     name: 'Create Article',
                     component: () => import('../views/Article/Create.vue'),
+                    meta: {
+                        premium: true,
+                    },
                 },
                 {
                     path: '/articles',
@@ -78,6 +81,11 @@ const router = new VueRouter({
                     path:'/users/:user_id',
                     name: 'User',
                     component: () => import('../views/User/Show'),
+                },
+                {
+                    path:'/premium',
+                    name: 'Premium',
+                    component: () => import('../views/premium/Index'),
                 },
             ],
         },
