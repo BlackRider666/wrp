@@ -15,7 +15,7 @@ class PremiumController extends Controller
     {
         $user_id = auth()->user()->getKey();
         $premium = Premium::where('user_id', $user_id)
-            ->where('finish',Carbon::create(2022,3,1))->get();
+            ->where('finish',Carbon::create(2022,3,1))->first();
         if ($premium) {
             return new JsonResponse('You have a premium!',422);
         }
