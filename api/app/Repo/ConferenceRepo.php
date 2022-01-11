@@ -4,6 +4,7 @@
 namespace App\Repo;
 
 use App\Models\Conference\Conference;
+use App\Models\User\User;
 use BlackParadise\LaravelAdmin\Core\CoreRepo;
 use Exception;
 use Highlight\Mode;
@@ -97,6 +98,13 @@ class ConferenceRepo extends CoreRepo
         return $this->query()->with($with)->find($id);
     }
 
+    public function findWithAll(int $id)
+    {
+        return $this->query()
+                    ->with(['city','country','organizers','articles', 'orgCommittee', 'editors'])
+                    ->find($id);
+    }
+
     /**
      * @param int $id
      * @param array $articleData
@@ -111,7 +119,59 @@ class ConferenceRepo extends CoreRepo
         if (!$conference->articles()->sync($article,false)) {
             throw new RuntimeException('Error on attach article to conference!',500);
         }
-        $conference = $this->query()->with(['city','country','organizers','articles'])->find($id);
+        $conference = $this->findWithAll($id);
+
+        return $conference;
+    }
+
+    public function addOrgCommittee(int $id, array $data)
+    {
+        if (!$conference = $this->query()->find($id)) {
+            throw new RuntimeException('Conference not found!',404);
+        }
+        if (!$conference->orgCommittee()->sync($data['users'],false)) {
+            throw new RuntimeException('Error on attach org committee to conference!',500);
+        }
+        $conference = $this->findWithAll($id);
+
+        return $conference;
+    }
+
+    public function removeOrgCommittee(int $id, array $data)
+    {
+        if (!$conference = $this->query()->find($id)) {
+            throw new RuntimeException('Conference not found!',404);
+        }
+        if (!$conference->orgCommittee()->detach($data['users'])) {
+            throw new RuntimeException('Error on detach org committee to conference!',500);
+        }
+        $conference = $this->findWithAll($id);
+
+        return $conference;
+    }
+
+    public function addEditors(int $id, array $data)
+    {
+        if (!$conference = $this->query()->find($id)) {
+            throw new RuntimeException('Conference not found!',404);
+        }
+        if (!$conference->editors()->sync($data['users'],false)) {
+            throw new RuntimeException('Error on attach editors to conference!',500);
+        }
+        $conference = $this->findWithAll($id);
+
+        return $conference;
+    }
+
+    public function removeEditors(int $id, array $data)
+    {
+        if (!$conference = $this->query()->find($id)) {
+            throw new RuntimeException('Conference not found!',404);
+        }
+        if (!$conference->editors()->detach($data['users'])) {
+            throw new RuntimeException('Error on detach editors to conference!',500);
+        }
+        $conference = $this->findWithAll($id);
 
         return $conference;
     }

@@ -4,7 +4,11 @@ namespace App\Http\Controllers\API\Conference;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Conference\AddArticleRequest;
+use App\Http\Requests\Conference\AddEditorsRequest;
+use App\Http\Requests\Conference\AddOrgCommitteeRequest;
 use App\Http\Requests\Conference\CreateConferenceRequest;
+use App\Http\Requests\Conference\RemoveEditorsRequest;
+use App\Http\Requests\Conference\RemoveOrgCommitteeRequest;
 use App\Http\Requests\Conference\UpdateConferenceRequest;
 use App\Repo\ConferenceRepo;
 use Exception;
@@ -41,6 +45,7 @@ class ConferenceController extends Controller
     public function store(CreateConferenceRequest $request): JsonResponse
     {
         $data = $request->validated();
+        $data['user_id'] = $request->user()->getKey();
         try {
             $conference = $this->repo->create($data);
         } catch (Exception $e) {
@@ -61,7 +66,7 @@ class ConferenceController extends Controller
     public function show(int $id): JsonResponse
     {
         try {
-            $conference = $this->repo->findWith($id,['city','country','organizers','articles']);
+            $conference = $this->repo->findWithAll($id);
         } catch (Exception $e) {
             return new JsonResponse([
                 'message' => $e->getMessage(),
@@ -124,6 +129,90 @@ class ConferenceController extends Controller
         $data = $request->validated();
         try {
             $conference = $this->repo->addArticle($id,$data);
+        } catch (Exception $e) {
+            return new JsonResponse([
+                'message' => $e->getMessage(),
+            ], $e->getCode());
+        }
+
+        return new JsonResponse([
+            'conference'  =>  $conference,
+        ]);
+    }
+
+    /**
+     * @param int $id
+     * @param AddOrgCommitteeRequest $request
+     * @return JsonResponse
+     */
+    public function addOrgCommittee(int $id, AddOrgCommitteeRequest $request): JsonResponse
+    {
+        $data = $request->validated();
+        try {
+            $conference = $this->repo->addOrgCommittee($id,$data);
+        } catch (Exception $e) {
+            return new JsonResponse([
+                'message' => $e->getMessage(),
+            ], $e->getCode());
+        }
+
+        return new JsonResponse([
+            'conference'  =>  $conference,
+        ]);
+    }
+
+    /**
+     * @param int $id
+     * @param RemoveOrgCommitteeRequest $request
+     * @return JsonResponse
+     */
+    public function removeOrgCommittee(int $id, RemoveOrgCommitteeRequest $request): JsonResponse
+    {
+        $data = $request->validated();
+        try {
+            $conference = $this->repo->removeOrgCommittee($id,$data);
+        } catch (Exception $e) {
+            return new JsonResponse([
+                'message' => $e->getMessage(),
+            ], $e->getCode());
+        }
+
+        return new JsonResponse([
+            'conference'  =>  $conference,
+        ]);
+    }
+
+    /**
+     * @param int $id
+     * @param AddEditorsRequest $request
+     * @return JsonResponse
+     */
+    public function addEditors(int $id, AddEditorsRequest $request): JsonResponse
+    {
+        $data = $request->validated();
+        try {
+            $conference = $this->repo->addEditors($id,$data);
+        } catch (Exception $e) {
+            return new JsonResponse([
+                'message' => $e->getMessage(),
+            ], $e->getCode());
+        }
+
+        return new JsonResponse([
+            'conference'  =>  $conference,
+        ]);
+    }
+
+    /**
+     * @param int $id
+     * @param RemoveEditorsRequest $request
+     * @return JsonResponse
+     */
+    public function removeEditors(int $id, RemoveEditorsRequest $request): JsonResponse
+    {
+        $data = $request->validated();
+        try {
+            $conference = $this->repo->removeEditors($id,$data);
         } catch (Exception $e) {
             return new JsonResponse([
                 'message' => $e->getMessage(),

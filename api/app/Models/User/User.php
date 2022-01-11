@@ -4,6 +4,9 @@ namespace App\Models\User;
 
 use App\Models\Article\Article;
 use App\Models\Article\ArticleAuthor\ArticleAuthor;
+use App\Models\Conference\Conference;
+use App\Models\Conference\EditorialBoard\EditorialBoard;
+use App\Models\Conference\OrganizationalCommittee\OrganizationalCommittee;
 use App\Models\User\Grant\Grant;
 use App\Models\User\Premium\Premium;
 use App\Models\User\Project\Project;
@@ -169,5 +172,31 @@ class User extends Authenticatable
             return Carbon::parse($prem->first()->finish)->format('d-m-Y');
         }
         return false;
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function conferenceAuthor(): HasMany
+    {
+        return $this->hasMany(Conference::class);
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+    public function conferenceInOrgCommittee(): BelongsToMany
+    {
+        return $this->belongsToMany(Conference::class,'organizational_committees')
+                    ->using(OrganizationalCommittee::class);
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+    public function conferenceInEditors(): BelongsToMany
+    {
+        return $this->belongsToMany(Conference::class,'editorial_boards')
+                    ->using(EditorialBoard::class);
     }
 }

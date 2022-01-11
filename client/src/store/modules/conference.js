@@ -91,7 +91,55 @@ const actions = {
                     reject(errors.response.data)
                 })
         }))
-    }
+    },
+    addOrgCommittee({commit}, payload) {
+        return new Promise(((resolve, reject) => {
+            axios.post('conference/add-org-committee/'+payload.id, payload)
+                .then(res => {
+                    commit("CHOOSE_CONFERENCE", res.data.conference);
+                    resolve(res.data.conference)
+                })
+                .catch(errors => {
+                    reject(errors.response.data)
+                })
+        }))
+    },
+    deleteOrgCommittee({commit}, payload) {
+        return new Promise(((resolve, reject) => {
+            axios.post('conference/remove-org-committee/'+payload.id, payload)
+                .then(res => {
+                    commit("CHOOSE_CONFERENCE", res.data.conference);
+                    resolve(res.data.conference)
+                })
+                .catch(errors => {
+                    reject(errors.response.data)
+                })
+        }))
+    },
+    addEditors({commit}, payload) {
+        return new Promise(((resolve, reject) => {
+            axios.post('conference/add-editors/'+payload.id, payload)
+                .then(res => {
+                    commit("CHOOSE_CONFERENCE", res.data.conference);
+                    resolve(res.data.conference)
+                })
+                .catch(errors => {
+                    reject(errors.response.data)
+                })
+        }))
+    },
+    deleteEditors({commit}, payload) {
+        return new Promise(((resolve, reject) => {
+            axios.post('conference/remove-editors/'+payload.id, payload)
+                .then(res => {
+                    commit("CHOOSE_CONFERENCE", res.data.conference);
+                    resolve(res.data.conference)
+                })
+                .catch(errors => {
+                    reject(errors.response.data)
+                })
+        }))
+    },
 };
 
 const mutations = {

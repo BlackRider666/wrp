@@ -93,6 +93,10 @@ Route::group(['prefix' => 'conference'], function() {
     Route::post('/{conference_id}', [ConferenceController::class,'update']);
     Route::delete('/{conference_id}', [ConferenceController::class,'destroy']);
     Route::post('/add-article/{conference_id}', [ConferenceController::class,'addArticle']);
+    Route::post('/add-org-committee/{conference_id}', [ConferenceController::class,'addOrgCommittee']);
+    Route::post('/remove-org-committee/{conference_id}', [ConferenceController::class,'removeOrgCommittee']);
+    Route::post('/add-editors/{conference_id}', [ConferenceController::class,'addEditors']);
+    Route::post('/remove-editors/{conference_id}', [ConferenceController::class,'removeEditors']);
 });
 
 Route::get('test', function () {
