@@ -18,6 +18,7 @@
                 <span class="text-h5">{{$t('articles.index.title','Articles')}}</span>
                 <v-spacer></v-spacer>
                 <v-btn :to="{name:'Create Article'}" color="primary">{{$t('articles.create.btn.add','Add Article')}}</v-btn>
+                <v-btn class="ml-1" @click="getNonApproved" color="primary">{{nonApproved?$t('articles.create.btn.approved','Approved'):$t('articles.create.btn.non-approved','Non Approved')}}</v-btn>
               </v-toolbar>
                 <v-dialog v-model="dialogDelete" max-width="500px">
                   <v-card>
@@ -30,7 +31,7 @@
                     </v-card-actions>
                   </v-card>
                 </v-dialog>
-                <v-dialog v-model="dialogEdit" max-width="500px">
+                <v-dialog v-model="dialogEdit" >
                   <v-form
                       v-if="selectedItem"
                       ref="updateArticleForm"
@@ -172,26 +173,44 @@
                 </v-dialog>
             </template>
             <template v-slot:item.actions="{ item }">
-              <v-icon
-                  small
-                  class="mr-2"
-                  @click="showItem(item)"
-              >
-                mdi-eye
-              </v-icon>
-              <v-icon
-                  small
-                  class="mr-2"
-                  @click="editItem(item)"
-              >
-                mdi-pencil
-              </v-icon>
-              <v-icon
-                  small
-                  @click="deleteItem(item)"
-              >
-                mdi-delete
-              </v-icon>
+              <template v-if="!nonApproved">
+                <v-icon
+                    small
+                    class="mr-2"
+                    @click="showItem(item)"
+                >
+                  mdi-eye
+                </v-icon>
+                <v-icon
+                    small
+                    class="mr-2"
+                    @click="editItem(item)"
+                >
+                  mdi-pencil
+                </v-icon>
+                <v-icon
+                    small
+                    @click="deleteItem(item)"
+                >
+                  mdi-delete
+                </v-icon>
+              </template>
+              <template v-else>
+                <v-icon
+                    small
+                    class="mr-2"
+                    @click="showItem(item)"
+                >
+                  mdi-eye
+                </v-icon>
+                <v-icon
+                    small
+                    class="mr-2"
+                    @click="approveItem(item)"
+                >
+                  mdi-account-check
+                </v-icon>
+              </template>
             </template>
           </v-data-table>
         </v-card-text>
@@ -220,6 +239,7 @@ export default {
         required: value => !!value || 'Required.',
       },
       options: {},
+      nonApproved:false,
     };
   },
   computed: {
@@ -251,7 +271,12 @@ export default {
       this.selectedItem = item;
       this.dialogDelete = true
     },
-
+    approveItem (item) {
+      this.$loading();
+      this.$store.dispatch('article/approveAuthor',item.id).then(() => {
+        this.getData();
+      });
+    },
     deleteItemConfirm () {
       this.$loading();
       this.$store.dispatch('article/deleteArticle', this.selectedItem.id)
@@ -308,9 +333,14 @@ export default {
       this.$store.dispatch('article/downloadArticles', {
         user_id:this.$store.getters['account/getAccount'].id,
         ...this.options,
+        nonApproved: this.nonApproved,
       }).then(() => {
         this.$loadingClose();
       });
+    },
+    getNonApproved() {
+      this.nonApproved = !this.nonApproved;
+      this.getData();
     }
   },
   watch: {

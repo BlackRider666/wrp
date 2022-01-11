@@ -31,7 +31,6 @@ class ArticleRepo extends CoreRepo
         if (!$article->authors()->sync($data['authors'])) {
             throw new RuntimeException('Error on assign authors to article!',500);
         }
-
         return $article;
     }
 
@@ -49,6 +48,11 @@ class ArticleRepo extends CoreRepo
         if (array_key_exists('user_id',$data)) {
             $query->whereHas('authors', function (Builder $q) use ($data){
                 $q->where('user_id',$data['user_id']);
+                if (array_key_exists('nonApproved', $data)) {
+                    $q->where('approved', false);
+                } else {
+                    $q->where('approved', true);
+                }
             });
         }
         if (array_key_exists('title',$data)) {
@@ -104,5 +108,19 @@ class ArticleRepo extends CoreRepo
     public function findWithCategory(int $id)
     {
         return $this->query()->with(['category','countryCreate','city'])->find($id);
+    }
+
+    /**
+     * @param int $id
+     * @param int $user_id
+     */
+    public function approveAuthor(int $id, int $user_id): void
+    {
+        if (!$article = $this->query()->find($id)) {
+            throw new RuntimeException('Article not found!',404);
+        }
+        if (!$article->authors()->where('user_id', $user_id)->update(['approved' => true])) {
+            throw new RuntimeException('Error on approve author on article!',500);
+        }
     }
 }

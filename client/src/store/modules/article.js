@@ -35,7 +35,8 @@ const actions = {
             let country = payload.country_id?`&country_id=${payload.country_id}`:'';
             let city = payload.city_id?`&city_id=${payload.city_id}`:'';
             let search = `perPage=${perPage}&page=${page}&sortBy=${payload.sortBy}&sortDesc=${payload.sortDesc}`;
-            axios.get('article?'+search+byUser+byTitle+country+city)
+            let NonApproved = payload.nonApproved?'&nonApproved=true':'';
+            axios.get('article?'+search+byUser+byTitle+country+city+NonApproved)
                 .then(res => {
                     commit("UPDATE_ARTICLES", res.data.data);
                     commit("UPDATE_TOTAL", res.data.total);
@@ -88,6 +89,18 @@ const actions = {
                 .then(res => {
                     commit("CHOOSE_ARTICLE", res.data.article);
                     resolve(res.data.article)
+                })
+                .catch(errors => {
+                    reject(errors.response.data)
+                })
+        }))
+    },
+    // eslint-disable-next-line no-empty-pattern
+    approveAuthor({},payload) {
+        return new Promise(((resolve, reject) => {
+            axios.post('article/'+payload+'/approve')
+                .then(res => {
+                    resolve(res.data)
                 })
                 .catch(errors => {
                     reject(errors.response.data)

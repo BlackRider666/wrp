@@ -41,7 +41,8 @@ class ArticlePolicy
      */
     public function create(User $user): bool
     {
-        return $user->is_premium !== false;
+//        return $user->is_premium !== false;
+        return true;
     }
 
     /**

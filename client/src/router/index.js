@@ -87,6 +87,16 @@ const router = new VueRouter({
                     name: 'Premium',
                     component: () => import('../views/premium/Index'),
                 },
+                {
+                    path: '/conferences',
+                    name: 'Conferences',
+                    component: () => import('../views/Conference/Index.vue'),
+                },
+                {
+                    path: '/conferences/:conference_id',
+                    name: 'Conference',
+                    component: () => import('../views/Conference/Show.vue'),
+                },
             ],
         },
         {

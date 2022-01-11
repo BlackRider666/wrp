@@ -1,25 +1,24 @@
 <?php
 
-namespace App\Http\Controllers\API\Article;
+namespace App\Http\Controllers\API\Conference;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Article\CreateArticleRequest;
-use App\Http\Requests\Article\UpdateArticleRequest;
-use App\Models\Article\Article;
-use App\Repo\ArticleRepo;
+use App\Http\Requests\Conference\AddArticleRequest;
+use App\Http\Requests\Conference\CreateConferenceRequest;
+use App\Http\Requests\Conference\UpdateConferenceRequest;
+use App\Repo\ConferenceRepo;
 use Exception;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class ArticleController extends Controller
+class ConferenceController extends Controller
 {
     /**
-     * @var ArticleRepo
+     * @var ConferenceRepo
      */
     private $repo;
 
-    public function __construct(ArticleRepo $repo)
+    public function __construct(ConferenceRepo $repo)
     {
         $this->repo = $repo;
     }
@@ -36,20 +35,14 @@ class ArticleController extends Controller
     }
 
     /**
-     * @param CreateArticleRequest $request
+     * @param CreateConferenceRequest $request
      * @return JsonResponse
-     * @throws AuthorizationException
      */
-    public function store(CreateArticleRequest $request): JsonResponse
+    public function store(CreateConferenceRequest $request): JsonResponse
     {
         $data = $request->validated();
-        $this->authorize('create', Article::class);
-        $user = $request->user();
         try {
-            $article = $this->repo->create($data);
-            if ((array_search($user->getKey(), $data['authors'], true)) !== false) {
-                $article->authors()->where('user_id', $user->getKey())->update(['approved' => true]);
-            }
+            $conference = $this->repo->create($data);
         } catch (Exception $e) {
             return new JsonResponse([
                 'message' => $e->getMessage(),
@@ -57,7 +50,7 @@ class ArticleController extends Controller
         }
 
         return new JsonResponse([
-            'article'  =>  $article,
+            'conference'  =>  $conference,
         ]);
     }
 
@@ -68,7 +61,7 @@ class ArticleController extends Controller
     public function show(int $id): JsonResponse
     {
         try {
-            $article = $this->repo->findWithCategory($id);
+            $conference = $this->repo->findWith($id,['city','country','organizers','articles']);
         } catch (Exception $e) {
             return new JsonResponse([
                 'message' => $e->getMessage(),
@@ -76,21 +69,21 @@ class ArticleController extends Controller
         }
 
         return new JsonResponse([
-            'article'  =>  $article,
+            'conference'  =>  $conference,
         ]);
     }
 
     /**
      * @param int $id
-     * @param UpdateArticleRequest $request
+     * @param UpdateConferenceRequest $request
      * @return JsonResponse
      */
-    public function update(int $id, UpdateArticleRequest $request): JsonResponse
+    public function update(int $id, UpdateConferenceRequest $request): JsonResponse
     {
         $data = $request->validated();
 
         try {
-            $article = $this->repo->update($id,$data);
+            $conference = $this->repo->update($id,$data);
         } catch (Exception $e) {
             return new JsonResponse([
                 'message' => $e->getMessage(),
@@ -98,7 +91,7 @@ class ArticleController extends Controller
         }
 
         return new JsonResponse([
-            'article'  =>  $article,
+            'conference'  =>  $conference,
         ]);
     }
 
@@ -117,26 +110,28 @@ class ArticleController extends Controller
         }
 
         return new JsonResponse([
-            'message'  =>  'Article deleted!',
+            'message'  =>  'Conference deleted!',
         ]);
     }
 
     /**
      * @param int $id
+     * @param AddArticleRequest $request
      * @return JsonResponse
      */
-    public function approveAuthor(int $id): JsonResponse
+    public function addArticle(int $id, AddArticleRequest $request): JsonResponse
     {
+        $data = $request->validated();
         try {
-            $this->repo->approveAuthor($id, auth()->user()->getKey());
+            $conference = $this->repo->addArticle($id,$data);
         } catch (Exception $e) {
             return new JsonResponse([
                 'message' => $e->getMessage(),
-            ],500);
+            ], $e->getCode());
         }
 
         return new JsonResponse([
-            'message'  =>  'Approved!',
+            'conference'  =>  $conference,
         ]);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Models\User;
 
 use App\Models\Article\Article;
+use App\Models\Article\ArticleAuthor\ArticleAuthor;
 use App\Models\User\Grant\Grant;
 use App\Models\User\Premium\Premium;
 use App\Models\User\Project\Project;
@@ -141,7 +142,9 @@ class User extends Authenticatable
      */
     public function articles(): BelongsToMany
     {
-        return $this->belongsToMany(Article::class);
+        return $this->belongsToMany(Article::class)
+            ->using(ArticleAuthor::class)
+            ->withPivot(['approved']);
     }
 
     /**

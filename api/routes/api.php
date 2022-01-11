@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\Article\ArticleController;
 use App\Http\Controllers\API\Article\CategoryController;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\Conference\ConferenceController;
 use App\Http\Controllers\API\Locale\LocaleController;
 use App\Http\Controllers\API\NewsController;
 use App\Http\Controllers\API\Organization\CityController;
@@ -12,9 +13,12 @@ use App\Http\Controllers\API\Organization\StructuralUnitController;
 use App\Http\Controllers\API\OrganizerController;
 use App\Http\Controllers\API\PartnerController;
 use App\Http\Controllers\API\User\GrantController;
+use App\Http\Controllers\API\User\PremiumController;
 use App\Http\Controllers\API\User\ProjectController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\UserWorkController;
+use App\Service\IboxClient;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -68,6 +72,7 @@ Route::group(['prefix' => 'article', 'middleware' => 'auth:sanctum'], function (
     Route::get('/{article_id}', [ArticleController::class, 'show']);
     Route::post('/{article_id}', [ArticleController::class, 'update']);
     Route::delete('/{article_id}', [ArticleController::class, 'destroy']);
+    Route::post('/{article_id}/approve', [ArticleController::class, 'approveAuthor']);
 });
 Route::group(['prefix' => 'organizations', 'middleware' => 'auth:sanctum'], function () {
     Route::get('/', [OrganizationController::class,'index']);
@@ -81,10 +86,19 @@ Route::group(['prefix' => 'locales'], function () {
 Route::get('/countries', [CountryController::class, 'index']);
 Route::get('/cities', [CityController::class, 'index']);
 
+Route::group(['prefix' => 'conference'], function() {
+    Route::get('/',[ConferenceController::class,'index']);
+    Route::post('/', [ConferenceController::class,'store']);
+    Route::get('/{conference_id}',[ConferenceController::class,'show']);
+    Route::post('/{conference_id}', [ConferenceController::class,'update']);
+    Route::delete('/{conference_id}', [ConferenceController::class,'destroy']);
+    Route::post('/add-article/{conference_id}', [ConferenceController::class,'addArticle']);
+});
+
 Route::get('test', function () {
-    (new \App\Service\IboxClient())->test();
+    (new IboxClient())->test();
 });
-Route::post('/test-result', function (\Illuminate\Http\Request $request) {
-    (new \App\Service\IboxClient())->testResult($request);
+Route::post('/test-result', function (Request $request) {
+    (new IboxClient())->testResult($request);
 });
-Route::get('/get-free-premium', [\App\Http\Controllers\API\User\PremiumController::class, 'getFreePremium'])->middleware('auth:sanctum');
+Route::get('/get-free-premium', [PremiumController::class, 'getFreePremium'])->middleware('auth:sanctum');

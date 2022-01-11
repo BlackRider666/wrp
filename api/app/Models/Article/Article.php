@@ -2,6 +2,7 @@
 
 namespace App\Models\Article;
 
+use App\Models\Article\ArticleAuthor\ArticleAuthor;
 use App\Models\Article\Category\Category;
 use App\Models\Country\City\City;
 use App\Models\Country\Country;
@@ -54,7 +55,9 @@ class Article extends Model
      */
     public function authors(): BelongsToMany
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class)
+            ->using(ArticleAuthor::class)
+            ->withPivot(['approved']);
     }
 
     public function forSelect()

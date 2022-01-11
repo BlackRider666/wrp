@@ -14,6 +14,7 @@ import project from "./modules/account/project";
 import country from "./modules/country";
 import city from "./modules/city";
 import premium from "./modules/premium";
+import conference from "./modules/conference";
 
 const notifier = require('./modules/notifier/index').default;
 
@@ -48,6 +49,7 @@ const store = new Vuex.Store({
         country,
         city,
         premium,
+        conference,
     }
 });
 
