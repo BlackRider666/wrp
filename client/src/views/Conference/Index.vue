@@ -95,6 +95,14 @@
                           prepend-inner-icon="mdi-database-search"
                           outlined
                       ></v-select>
+                      <v-file-input
+                          accept="application/pdf"
+                          label="PDF File"
+                          v-model="pdf"
+                          prepend-icon=""
+                          prepend-inner-icon="mdi-file"
+                          outlined
+                      />
                     </v-card-text>
                     <v-card-actions>
                       <v-btn color="darken-1" text @click="closeCreate">{{$t('btn.cancel','Cancel')}}</v-btn>
@@ -230,6 +238,7 @@ name: "Index",
       },
       options: {},
       menuDate: false,
+      pdf: null,
     };
   },
   computed: {
@@ -268,20 +277,27 @@ name: "Index",
       this.selectedItem = item;
       this.dialogDelete = true
     },
-    createItemConfirm (e) {
+    createItemConfirm: function (e) {
       e.preventDefault();
       e.stopPropagation();
       if (!this.$refs.createConferenceForm.validate()) return;
       this.$loading();
-      this.$store.dispatch('conference/createConference', this.newItem)
-          .then( () => {
+      let form = new FormData();
+      form.append('file', this.pdf);
+      form.append('country_id', this.newItem.country_id);
+      form.append('city_id', this.newItem.city_id);
+      form.append('title', this.newItem.title);
+      form.append('date', this.newItem.date);
+      this.newItem.organizers.forEach((value,key) => form.append(`organizers[${key}]`, value));
+      this.$store.dispatch('conference/createConference', form)
+          .then(() => {
             this.$loadingClose();
-            this.$notify('','success', this.$t('messages.success','Success'));
+            this.$notify('', 'success', this.$t('messages.success', 'Success'));
             this.closeCreate()
           })
-          .catch( () => {
+          .catch(() => {
             this.$loadingClose();
-            this.$notify('','error', this.$t('messages.error','Error'));
+            this.$notify('', 'error', this.$t('messages.error', 'Error'));
           });
     },
     editItemConfirm (e) {

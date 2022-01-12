@@ -21,7 +21,7 @@ use Znck\Eloquent\Traits\BelongsToThrough;
 class Conference extends Model
 {
     use BelongsToThrough;
-
+    public const PDF_FILE_PATH = 'conference_files';
     protected $table = 'conferences';
 
     protected $fillable = [
@@ -77,7 +77,7 @@ class Conference extends Model
     public function getFileUrlAttribute(): ?string
     {
         return $this->file ?
-            (new PathManager())->getFile($this->file, 'conference_files')
+            (new PathManager())->getFile($this->file, self::PDF_FILE_PATH)
             : null;
     }
 

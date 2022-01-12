@@ -47,7 +47,7 @@ class ConferenceController extends Controller
         $data = $request->validated();
         $data['user_id'] = $request->user()->getKey();
         try {
-            $conference = $this->repo->create($data);
+            $conference = $this->repo->create($data,$request->file('file'));
         } catch (Exception $e) {
             return new JsonResponse([
                 'message' => $e->getMessage(),
@@ -88,7 +88,7 @@ class ConferenceController extends Controller
         $data = $request->validated();
 
         try {
-            $conference = $this->repo->update($id,$data);
+            $conference = $this->repo->update($id,$data,$request->file('file'));
         } catch (Exception $e) {
             return new JsonResponse([
                 'message' => $e->getMessage(),

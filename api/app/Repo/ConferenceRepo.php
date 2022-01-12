@@ -6,6 +6,7 @@ namespace App\Repo;
 use App\Models\Conference\Conference;
 use App\Models\User\User;
 use BlackParadise\LaravelAdmin\Core\CoreRepo;
+use BlackParadise\LaravelAdmin\Core\StorageManager;
 use Exception;
 use Highlight\Mode;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -42,12 +43,19 @@ class ConferenceRepo extends CoreRepo
 
         return $query->with(['organizers'])->orderBy($sortBy,$sortDesc?'desc':'asc')->paginate($perPage);
     }
+
     /**
      * @param array $data
+     * @param null $file
      * @return Builder|Model
      */
-    public function create(array $data)
+    public function create(array $data, $file = null)
     {
+        if ($file) {
+            $storage = new StorageManager();
+            $data['file'] = $storage
+                ->saveFile($file,Conference::PDF_FILE_PATH);
+        }
         if (!$conference = $this->query()->create($data)) {
             throw new RuntimeException('Error on creating conference!',500);
         }
@@ -60,12 +68,22 @@ class ConferenceRepo extends CoreRepo
     /**
      * @param int $id
      * @param array $data
+     * @param null $file
      * @return Builder|Builder[]|Collection|Model|Model[]|null
      */
-    public function update(int $id, array $data)
+    public function update(int $id, array $data, $file = null)
     {
+
         if (!$conference = $this->query()->find($id)) {
             throw new RuntimeException('Conference not found!',404);
+        }
+        if ($file) {
+            $storage = new StorageManager();
+            if($conference->file !== null) {
+                $storage->deleteFile($conference->file,Conference::PDF_FILE_PATH);
+            }
+            $data['file'] = $storage
+                ->saveFile($file,Conference::PDF_FILE_PATH);
         }
         if (!$conference->update($data)) {
             throw new RuntimeException('Error on updating conference!',500);

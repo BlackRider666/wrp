@@ -57,6 +57,18 @@
               </v-list-item>
               <v-divider/>
             </div>
+            <div v-if="conference.file">
+              <v-list-item >
+                <v-list-item-action>
+                  <v-icon>mdi-file</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                  <v-list-item-subtitle>{{$t('conference.placeholder.file', 'PDF File')}}</v-list-item-subtitle>
+                  <v-btn color="primary" text :href="conference.file_url" target="blank"><v-icon large>mdi-file-pdf-box</v-icon></v-btn>
+                </v-list-item-content>
+              </v-list-item>
+              <v-divider/>
+            </div>
             <div v-if="conference.organizers">
               <v-toolbar dense tile>
                 {{$t('home.organizers.title','Organizers')}}
