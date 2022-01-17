@@ -13,7 +13,6 @@ use App\Models\User\Project\Project;
 use App\Models\User\Work\Work;
 use BlackParadise\LaravelAdmin\Core\PathManager;
 use Carbon\Carbon;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;

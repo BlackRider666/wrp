@@ -21,6 +21,7 @@ export default {
   },
   created() {
     this.$store.dispatch('l10s/getActiveLocales');
+    this.$store.dispatch('account/downloadAccount');
     this.updateTranslations();
   },
   computed: {

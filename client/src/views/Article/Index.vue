@@ -336,6 +336,8 @@ export default {
         nonApproved: this.nonApproved,
       }).then(() => {
         this.$loadingClose();
+      }).catch(() => {
+        this.$loadingClose();
       });
     },
     getNonApproved() {

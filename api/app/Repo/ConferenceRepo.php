@@ -40,6 +40,9 @@ class ConferenceRepo extends CoreRepo
         if (array_key_exists('city_id',$data)) {
             $query->where('city_id', $data['city_id']);
         }
+        if (array_key_exists('user_id',$data)) {
+            $query->where('user_id', $data['user_id']);
+        }
 
         return $query->with(['organizers'])->orderBy($sortBy,$sortDesc?'desc':'asc')->paginate($perPage);
     }
@@ -62,6 +65,8 @@ class ConferenceRepo extends CoreRepo
         if (!$conference->organizers()->sync($data['organizers'])) {
             throw new RuntimeException('Error on assign organizers to conference!',500);
         }
+        $conference = $this->findWith($conference->getKey(),['organizers']);
+
         return $conference;
     }
 
@@ -88,8 +93,14 @@ class ConferenceRepo extends CoreRepo
         if (!$conference->update($data)) {
             throw new RuntimeException('Error on updating conference!',500);
         }
+        Log::alert($data);
+        if (!$conference->organizers()->sync($data['organizers'])) {
+            throw new RuntimeException('Error on assign organizers to conference!',500);
+        }
 
-        return $this->query()->find($id);
+        $conference = $this->findWithAll($id);
+
+        return $conference;
     }
 
     /**
@@ -119,7 +130,7 @@ class ConferenceRepo extends CoreRepo
     public function findWithAll(int $id)
     {
         return $this->query()
-                    ->with(['city','country','organizers','articles', 'orgCommittee', 'editors'])
+                    ->with(['city','country','organizers','articles','articles.category', 'orgCommittee', 'editors'])
                     ->find($id);
     }
 

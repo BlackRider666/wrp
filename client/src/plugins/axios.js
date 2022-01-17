@@ -37,7 +37,7 @@ axios.interceptors.response.use(
                     }
                     break
                 case 403:
-
+                    router.push({name:'error-403'});
                     break
                 case 422:
                     break

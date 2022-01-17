@@ -283,7 +283,9 @@ name: "Index",
       if (!this.$refs.createConferenceForm.validate()) return;
       this.$loading();
       let form = new FormData();
-      form.append('file', this.pdf);
+      if (this.pdf) {
+        form.append('file', this.pdf);
+      }
       form.append('country_id', this.newItem.country_id);
       form.append('city_id', this.newItem.city_id);
       form.append('title', this.newItem.title);
@@ -346,6 +348,8 @@ name: "Index",
         user_id:this.$store.getters['account/getAccount'].id,
         ...this.options,
       }).then(() => {
+        this.$loadingClose();
+      }).catch(() => {
         this.$loadingClose();
       });
     },

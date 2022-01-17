@@ -97,8 +97,65 @@ export default {
   },
   computed: {
     accountOptions() {
-      return {
-        items: [
+      let items = [];
+      if (this.$store.getters['account/getAccount'].roles.filter((item) => item.name === 'superadmin').length > 0
+          ||
+          this.$store.getters['account/getAccount'].roles.filter((item) => item.name === 'conference creator').length > 0
+      ) {
+         items = [
+          {
+            title: this.account.full_name || '',
+            divider: true,
+            subtitleClass: 'text-center font-weight-bold',
+            image: this.account.avatar_url || null,
+          },
+          {
+            titleTKey: "header.menu.premium",
+            titleTDefault: "Premium",
+            icon: "mdi-account-outline",
+            to: {
+              name:'Premium',
+            },
+            divider: true,
+          },
+          {
+            titleTKey: "header.menu.account",
+            titleTDefault: "Account",
+            icon: "mdi-account-outline",
+            to: {
+              name:'account',
+            },
+            divider: true,
+          },
+          {
+            titleTKey: "header.menu.conferences",
+            titleTDefault: "Conferences",
+            icon: "mdi-book-open-variant",
+            to: {
+              name:'Conferences',
+            },
+            divider: true,
+          },
+          {
+            titleTKey: "header.menu.articles",
+            titleTDefault: "Articles",
+            icon: "mdi-book-open-variant",
+            to: {
+              name:'Articles',
+            },
+            divider: true,
+          },
+          {
+            titleTKey: "header.menu.logout",
+            titleTDefault: "Logout",
+            icon: "mdi-logout",
+            to: {
+              name:'logout',
+            },
+          },
+        ];
+      } else {
+        items = [
           {
             title: this.account.full_name || '',
             divider: true,
@@ -140,7 +197,10 @@ export default {
               name:'logout',
             },
           },
-        ],
+        ]
+      }
+      return {
+        items: items,
         titleClass: "v-avatar _max-h-46 _w-auto",
         titleIcon: "mdi-account-outline",
         showArrow: true,

@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\Article\Article;
 use App\Models\User\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Support\Facades\Log;
 
 class ArticlePolicy
 {
@@ -42,7 +43,7 @@ class ArticlePolicy
     public function create(User $user): bool
     {
 //        return $user->is_premium !== false;
-        return true;
+        return $user->hasPermissionTo('create articles','api');
     }
 
     /**
@@ -54,7 +55,7 @@ class ArticlePolicy
      */
     public function update(User $user, Article $article): bool
     {
-        return $article->authors()->where('user_id',$user->getKey())->count() > 0;
+        return $article->authors()->where('user_id',$user->getKey())->count() > 0 && $user->hasPermissionTo('update articles','api');
     }
 
     /**
@@ -66,7 +67,7 @@ class ArticlePolicy
      */
     public function delete(User $user, Article $article): bool
     {
-        return true;
+        return $user->hasPermissionTo('delete articles','api');
     }
 
     /**

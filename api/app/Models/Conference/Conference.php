@@ -38,6 +38,10 @@ class Conference extends Model
         'country_id',
     ];
 
+    protected $casts = [
+        'city_id' => 'integer',
+    ];
+
     /**
      * @return BelongsTo
      */

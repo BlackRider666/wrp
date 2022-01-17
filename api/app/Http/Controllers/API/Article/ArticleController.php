@@ -11,6 +11,7 @@ use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ArticleController extends Controller
 {
@@ -84,10 +85,13 @@ class ArticleController extends Controller
      * @param int $id
      * @param UpdateArticleRequest $request
      * @return JsonResponse
+     * @throws AuthorizationException
      */
     public function update(int $id, UpdateArticleRequest $request): JsonResponse
     {
         $data = $request->validated();
+        $article = $this->repo->find($id);
+        $this->authorize('update', $article);
 
         try {
             $article = $this->repo->update($id,$data);
@@ -105,9 +109,13 @@ class ArticleController extends Controller
     /**
      * @param int $id
      * @return JsonResponse
+     * @throws AuthorizationException
      */
     public function destroy(int $id): JsonResponse
     {
+        $article = $this->repo->find($id);
+        $this->authorize('delete', $article);
+
         try {
             $this->repo->delete($id);
         } catch (Exception $e) {

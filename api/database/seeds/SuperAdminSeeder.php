@@ -19,7 +19,6 @@ class SuperAdminSeeder extends Seeder
             'email'         =>  'superadmin@wrp.com',
             'password'      =>  \Illuminate\Support\Facades\Hash::make('111111'),
         ]);
-        Role::create(['name' => 'superadmin']);
         $user->assignRole('superadmin');
     }
 }

@@ -10,8 +10,10 @@ use App\Http\Requests\Conference\CreateConferenceRequest;
 use App\Http\Requests\Conference\RemoveEditorsRequest;
 use App\Http\Requests\Conference\RemoveOrgCommitteeRequest;
 use App\Http\Requests\Conference\UpdateConferenceRequest;
+use App\Models\Conference\Conference;
 use App\Repo\ConferenceRepo;
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -30,10 +32,12 @@ class ConferenceController extends Controller
     /**
      * @param Request $request
      * @return JsonResponse
+     * @throws AuthorizationException
      */
     public function index(Request $request): JsonResponse
     {
         $data = $request->all();
+        $this->authorize('viewAny', Conference::class);
 
         return new JsonResponse($this->repo->search($data));
     }
@@ -41,11 +45,14 @@ class ConferenceController extends Controller
     /**
      * @param CreateConferenceRequest $request
      * @return JsonResponse
+     * @throws AuthorizationException
      */
     public function store(CreateConferenceRequest $request): JsonResponse
     {
         $data = $request->validated();
         $data['user_id'] = $request->user()->getKey();
+        $this->authorize('create', Conference::class);
+
         try {
             $conference = $this->repo->create($data,$request->file('file'));
         } catch (Exception $e) {
@@ -82,10 +89,13 @@ class ConferenceController extends Controller
      * @param int $id
      * @param UpdateConferenceRequest $request
      * @return JsonResponse
+     * @throws AuthorizationException
      */
     public function update(int $id, UpdateConferenceRequest $request): JsonResponse
     {
         $data = $request->validated();
+        $conference = $this->repo->find($id);
+        $this->authorize('update', $conference);
 
         try {
             $conference = $this->repo->update($id,$data,$request->file('file'));
@@ -103,9 +113,14 @@ class ConferenceController extends Controller
     /**
      * @param int $id
      * @return JsonResponse
+     * @throws AuthorizationException
      */
     public function destroy(int $id): JsonResponse
     {
+        $conference = $this->repo->find($id);
+        $this->authorize('delete', $conference);
+
+
         try {
             $this->repo->delete($id);
         } catch (Exception $e) {
@@ -123,10 +138,15 @@ class ConferenceController extends Controller
      * @param int $id
      * @param AddArticleRequest $request
      * @return JsonResponse
+     * @throws AuthorizationException
      */
     public function addArticle(int $id, AddArticleRequest $request): JsonResponse
     {
         $data = $request->validated();
+
+        $conference = $this->repo->find($id);
+        $this->authorize('addArticle', $conference);
+
         try {
             $conference = $this->repo->addArticle($id,$data);
         } catch (Exception $e) {
@@ -144,10 +164,15 @@ class ConferenceController extends Controller
      * @param int $id
      * @param AddOrgCommitteeRequest $request
      * @return JsonResponse
+     * @throws AuthorizationException
      */
     public function addOrgCommittee(int $id, AddOrgCommitteeRequest $request): JsonResponse
     {
         $data = $request->validated();
+
+        $conference = $this->repo->find($id);
+        $this->authorize('addOrgCommittee', $conference);
+
         try {
             $conference = $this->repo->addOrgCommittee($id,$data);
         } catch (Exception $e) {
@@ -165,10 +190,15 @@ class ConferenceController extends Controller
      * @param int $id
      * @param RemoveOrgCommitteeRequest $request
      * @return JsonResponse
+     * @throws AuthorizationException
      */
     public function removeOrgCommittee(int $id, RemoveOrgCommitteeRequest $request): JsonResponse
     {
         $data = $request->validated();
+
+        $conference = $this->repo->find($id);
+        $this->authorize('removeOrgCommittee', $conference);
+
         try {
             $conference = $this->repo->removeOrgCommittee($id,$data);
         } catch (Exception $e) {
@@ -186,10 +216,15 @@ class ConferenceController extends Controller
      * @param int $id
      * @param AddEditorsRequest $request
      * @return JsonResponse
+     * @throws AuthorizationException
      */
     public function addEditors(int $id, AddEditorsRequest $request): JsonResponse
     {
         $data = $request->validated();
+
+        $conference = $this->repo->find($id);
+        $this->authorize('addEditor', $conference);
+
         try {
             $conference = $this->repo->addEditors($id,$data);
         } catch (Exception $e) {
@@ -207,10 +242,15 @@ class ConferenceController extends Controller
      * @param int $id
      * @param RemoveEditorsRequest $request
      * @return JsonResponse
+     * @throws AuthorizationException
      */
     public function removeEditors(int $id, RemoveEditorsRequest $request): JsonResponse
     {
         $data = $request->validated();
+
+        $conference = $this->repo->find($id);
+        $this->authorize('removeEditor', $conference);
+
         try {
             $conference = $this->repo->removeEditors($id,$data);
         } catch (Exception $e) {

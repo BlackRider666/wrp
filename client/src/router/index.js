@@ -135,6 +135,14 @@ const router = new VueRouter({
                         withoutAuth: true,
                     },
                 },
+                {
+                    path: '/403',
+                    name: 'error-403',
+                    component: () => import('../views/errors/Error403.vue'),
+                    meta: {
+                        withoutAuth: true,
+                    },
+                },
             ]
         },
         {

@@ -27,7 +27,9 @@ class UpdateConferenceRequest extends FormRequest
             'title'     =>  'required|string|max:255',
             'date'      =>  'required|date',
             'city_id'   =>  'required|int|exists:cities,id',
-            'file'      =>  'nullable|file',
+            'file'      =>  'nullable|sometimes|file|mimes:pdf',
+            'organizers' => 'required|array',
+            'organizers.*' => 'required|int|exists:organizers,id',
         ];
     }
 }

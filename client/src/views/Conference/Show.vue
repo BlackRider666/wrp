@@ -105,7 +105,7 @@
               }"
                 class="elevation-1"
             >
-              <template v-slot:top>
+              <template v-slot:top v-if="canEdit">
                 <v-toolbar dense flat>
                   <span class="text-h5">{{$t('articles.index.title','Articles')}}</span>
                   <v-spacer></v-spacer>
@@ -220,7 +220,14 @@
                 </v-dialog>
               </template>
               <template v-slot:item.actions="{ item }">
-                  <v-icon
+                <v-icon
+                    small
+                    class="mr-2"
+                    @click="showItem(item)"
+                >
+                  mdi-eye
+                </v-icon>
+                  <v-icon v-if="canEdit"
                       small
                       @click="deleteItem(item)"
                   >
@@ -229,7 +236,7 @@
               </template>
             </v-data-table>
           </div>
-          <div>
+          <template v-if="canEdit">
             <v-data-table
                 :headers="headersOrgCommittee"
                 :items="conference.org_committee"
@@ -296,8 +303,36 @@
                 </v-icon>
               </template>
             </v-data-table>
-          </div>
-          <div>
+          </template>
+          <template v-else>
+            <template v-if="conference.org_committee && conference.org_committee.length > 0">
+              <v-toolbar dense tile>
+                {{$t('conference.index.org-committee','Org Committee')}}
+              </v-toolbar>
+              <v-slide-group
+                  show-arrows
+              >
+                <v-slide-item
+                    v-for="org in conference.org_committee"
+                    :key="org.id"
+                >
+                  <v-card
+                      class="ma-4"
+                      flat
+                      max-width="200px"
+                  >
+                    <v-card-title>
+                      <v-img :src="org.avatar_url" :alt="org.full_name" width="100%" height="100%"/>
+                    </v-card-title>
+                    <v-card-text>
+                      {{ org.full_name }}
+                    </v-card-text>
+                  </v-card>
+                </v-slide-item>
+              </v-slide-group>
+            </template>
+          </template>
+          <template v-if="canEdit">
             <v-data-table
                 :headers="headersEditors"
                 :items="conference.editors"
@@ -364,7 +399,35 @@
                 </v-icon>
               </template>
             </v-data-table>
-          </div>
+          </template>
+          <template v-else>
+            <template v-if="conference.editors && conference.editors.length > 0">
+              <v-toolbar dense tile>
+                {{$t('conference.editors.index.title','Editorial Boards')}}
+              </v-toolbar>
+              <v-slide-group
+                  show-arrows
+              >
+                <v-slide-item
+                    v-for="editor in conference.editors"
+                    :key="editor.id"
+                >
+                  <v-card
+                      class="ma-4"
+                      flat
+                      max-width="200px"
+                  >
+                    <v-card-title>
+                      <v-img :src="editor.avatar_url" :alt="editor.full_name" width="100%" height="100%"/>
+                    </v-card-title>
+                    <v-card-text>
+                      {{ editor.full_name }}
+                    </v-card-text>
+                  </v-card>
+                </v-slide-item>
+              </v-slide-group>
+            </template>
+          </template>
         </v-card-text>
       </v-card>
     </v-col>
@@ -414,7 +477,10 @@ export default {
       conference: (state) => state.conference.conference,
       authors: (state) => state.user.users,
       categories: (state) => state.article.categories,
-    })
+    }),
+    canEdit() {
+      return this.conference.user_id === this.$store.getters["account/getAccount"].id;
+    },
   },
   mounted() {
     this.$store.dispatch('conference/getConference', this.$route.params.conference_id);
@@ -447,7 +513,7 @@ export default {
     addArticleConfirm (e) {
       e.preventDefault();
       e.stopPropagation();
-      if (!this.$refs.createConferenceForm.validate()) return;
+      if (!this.$refs.addArticleForm.validate()) return;
       this.$loading();
       this.$store.dispatch('conference/addArticle',{id:this.conference.id, ...this.newItem})
           .then( () => {
@@ -599,6 +665,9 @@ export default {
     },
     closeDeleteEditor () {
       this.dialogDeleteEditors = false
+    },
+    showItem (item) {
+      this.$router.push( { name: 'Article', params: { article_id: item.id } });
     },
   },
 }

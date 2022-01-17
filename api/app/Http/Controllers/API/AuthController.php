@@ -20,7 +20,7 @@ class AuthController extends Controller
     /**
      * @var UserRepo
      */
-    private $repository;
+    private UserRepo $repository;
 
     /**
      * AuthController constructor.
@@ -39,7 +39,6 @@ class AuthController extends Controller
     {
         $data = $request->validated();
         $user = $this->repository->findByEmail($data['email']);
-
         if (! $user || ! Hash::check($data['password'], $user->password)) {
             return new JsonResponse([
                 'message'   =>  'Wrong credentials',
@@ -95,7 +94,7 @@ class AuthController extends Controller
     public function user(Request $request): JsonResponse
     {
         try {
-            $user = $this->repository->find($request->user()->getKey());
+            $user = $this->repository->findWith($request->user()->getKey(),['roles']);
         } catch (Exception $e) {
             return new JsonResponse([
                 'message' => $e->getMessage(),
