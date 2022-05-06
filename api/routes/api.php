@@ -67,9 +67,9 @@ Route::get('users',[UserController::class, 'index']);
 Route::get('users/{user_id}',[UserController::class, 'show']);
 Route::get('authors',[UserController::class, 'authors'])->middleware('auth:sanctum');
 Route::get('/article', [ArticleController::class, 'index']);
+Route::get('/article/{article_id}', [ArticleController::class, 'show']);
 Route::group(['prefix' => 'article', 'middleware' => 'auth:sanctum'], function () {
     Route::post('/', [ArticleController::class, 'store']);
-    Route::get('/{article_id}', [ArticleController::class, 'show']);
     Route::post('/{article_id}', [ArticleController::class, 'update']);
     Route::delete('/{article_id}', [ArticleController::class, 'destroy']);
     Route::post('/{article_id}/approve', [ArticleController::class, 'approveAuthor']);

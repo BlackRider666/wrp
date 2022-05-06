@@ -6,6 +6,10 @@
       >
         <v-card-title class="heading font-weight-medium">
           {{$t('search.title','Search')}}
+          <v-spacer></v-spacer>
+          <template v-if="isPremium">
+            <v-btn :to="{name:'Create Article'}" color="primary" icon><v-icon>mdi-plus</v-icon></v-btn>
+          </template>
         </v-card-title>
         <v-card-text>
             <v-toolbar
@@ -147,6 +151,12 @@ export default {
       countries: (state) => state.country.countries,
       cities: (state) => state.city.cities,
     }),
+    isPremium() {
+      if (this.$store.getters['auth/getAuthToken'].length > 0) {
+        return this.$store.getters['account/getAccount'].is_premium;
+      }
+      return false;
+    },
   },
   mounted() {
     this.$store.dispatch('country/downloadCountries');

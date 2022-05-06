@@ -165,6 +165,18 @@
             </v-list-item>
             <v-divider/>
           </div>
+          <div v-if="article.desc">
+            <v-list-item>
+              <v-list-item-action>
+                <v-icon>mdi-account</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-subtitle>{{$t('articles.placeholder.desc', 'Description')}}</v-list-item-subtitle>
+                <v-list-item-title>{{article.desc}}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-divider/>
+          </div>
         </v-list>
       </v-card-text>
     </v-card>

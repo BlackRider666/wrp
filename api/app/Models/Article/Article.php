@@ -29,6 +29,7 @@ class Article extends Model
         'country',
         'patent_number',
         'app_number',
+        'desc',
     ];
 
     protected $casts = [

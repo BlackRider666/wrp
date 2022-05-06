@@ -138,6 +138,13 @@
                     prepend-inner-icon="mdi-card-text-outline"
                     :rules="[rules.required]"
                 />
+                <v-textarea
+                    v-model="article.desc"
+                    :label="$t('articles.placeholder.desc', 'Desc')"
+                    outlined
+                    prepend-inner-icon="mdi-card-text-outline"
+                    :rules="[rules.required]"
+                ></v-textarea>
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
