@@ -44,20 +44,10 @@
         </v-col>
       </v-row>
     </v-form>
-    <router-link
-        class="text-decoration-none"
-        :to="{name:'Main Search', params:{type:'articles'}}"
-    >
-      <v-btn color="primary">{{$t('articles.index.title','Articles')}}</v-btn>
-    </router-link>
+    <v-btn :to="{name:'Main Search', params:{type:'articles'}}" color="primary">{{$t('articles.index.title','Articles')}}</v-btn>
     <v-spacer/>
     <template v-if="account.is_premium">
-      <router-link
-          class="text-decoration-none"
-          :to="{name:'Create Article'}"
-      >
-        <v-btn v-if="isLoggedIn" color="primary" icon><v-icon>mdi-plus</v-icon></v-btn>
-      </router-link>
+      <v-btn v-if="isLoggedIn" :to="{name:'Create Article'}" color="primary" icon><v-icon>mdi-plus</v-icon></v-btn>
       <div>{{$t('header.menu.premium-to','Premium to: ')+account.is_premium}}</div>
     </template>
     <v-divider vertical color="white" inset class="mr-2"></v-divider>

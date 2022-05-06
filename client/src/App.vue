@@ -21,13 +21,16 @@ export default {
   },
   created() {
     this.$store.dispatch('l10s/getActiveLocales');
-    this.$store.dispatch('account/downloadAccount');
+    if (this.isLoggedIn) this.$store.dispatch('account/downloadAccount');
     this.updateTranslations();
   },
   computed: {
     ...mapState({
       locale: (state) => state.l10s.locale,
     }),
+    isLoggedIn() {
+      return this.$store.getters['auth/getAuthToken'].length > 0;
+    },
   },
   watch: {
     locale: function () {
