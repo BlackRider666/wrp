@@ -1,12 +1,12 @@
 version: "3.7"
 services:
-  nginx:
+  nginx_wrp:
     image: nginx:1.16-alpine
     container_name: nginx_wrp
     restart: unless-stopped
     ports:
-      - "80:80"
-      - "443:443"
+      - "81:80"
+      - "443:80"
     volumes:
       - ./api:/var/www/api
       - ./client:/var/www/client
@@ -21,7 +21,7 @@ services:
     restart: unless-stopped
     tty: true
     ports:
-      - 3306:3306
+      - "3310:3306"
     environment:
       MYSQL_DATABASE: wrp_app_db
       MYSQL_ROOT_PASSWORD: wrp_app_password
