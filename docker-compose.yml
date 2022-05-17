@@ -14,6 +14,9 @@ services:
       - ./docker/certs:/etc/nginx/certs
     networks:
       - wrp_network
+    links:
+      - api_wrp
+      - client_wrp
 
   db_wrp:
     image: mysql:5.7.22
@@ -35,7 +38,7 @@ services:
     networks:
       - wrp_network
 
-  api:
+  api_wrp:
     build:
       args:
         user: vlad
@@ -50,8 +53,10 @@ services:
       - ./api:/var/www/api
     networks:
       - wrp_network
+    links:
+      - db_wrp
 
-  client:
+  client_wrp:
     image: node:lts-alpine
     container_name: client_wrp
     tty: true

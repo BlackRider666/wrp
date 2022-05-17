@@ -10,5 +10,6 @@ module.exports = {
     devServer: {
         compress: true,
         public: 'wrp.org.ua',
+        // public: 'wrp.local',
     }
 }
