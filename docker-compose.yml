@@ -15,7 +15,7 @@ services:
     networks:
       - wrp_network
 
-  db:
+  db_wrp:
     image: mysql:5.7.22
     container_name: db_wrp
     restart: unless-stopped
