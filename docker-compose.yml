@@ -16,7 +16,7 @@ services:
       - wrp_network
     links:
       - api_wrp
-      - client_wrp
+#      - client_wrp
 
   db_wrp:
     image: mysql:5.7.22
@@ -56,18 +56,18 @@ services:
     links:
       - db_wrp
 
-  client_wrp:
-    image: node:lts-alpine
-    container_name: client_wrp
-    tty: true
-    volumes:
-      - ./client:/client
-    working_dir: /client
-    environment:
-      NODE_ENV: development
-    command: npm run serve
-    networks:
-      - wrp_network
+#  client_wrp:
+#    image: node:lts-alpine
+#    container_name: client_wrp
+#    tty: true
+#    volumes:
+#      - ./client:/client
+#    working_dir: /client
+#    environment:
+#      NODE_ENV: development
+#    command: npm run serve
+#    networks:
+#      - wrp_network
 
 volumes:
   db_data:
