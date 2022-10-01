@@ -4,6 +4,7 @@ const state = {
     user: JSON.parse(localStorage.getItem('account')) || {},
     works: [],
     total:0,
+    occupancy: [],
 };
 
 const getters = {
@@ -25,11 +26,12 @@ const actions = {
                 })
         }))
     },
-    update({commit},payload) {
+    update({commit, dispatch},payload) {
         return new Promise(((resolve, reject) => {
             axios.post('auth/user/update',payload)
                 .then(res => {
                     commit("UPDATE_ACCOUNT", res.data.user);
+                    dispatch("getOccupancyAccount");
                     resolve(res.data.user)
                 })
                 .catch(errors => {
@@ -49,11 +51,12 @@ const actions = {
                 })
         }))
     },
-    updatePhoto({commit},payload) {
+    updatePhoto({commit, dispatch},payload) {
         return new Promise(((resolve, reject) => {
             axios.post('auth/user/update-photo',payload)
                 .then(res => {
                     commit("UPDATE_ACCOUNT", res.data.user);
+                    dispatch("getOccupancyAccount");
                     resolve(res.data.user)
                 })
                 .catch(errors => {
@@ -77,11 +80,12 @@ const actions = {
                 })
         }))
     },
-    createWork({commit}, payload) {
+    createWork({commit, dispatch}, payload) {
         return new Promise(((resolve, reject) => {
             axios.post('auth/user/works', payload)
                 .then(res => {
                     commit("ADD_WORK", res.data.work);
+                    dispatch("getOccupancyAccount");
                     resolve(res.data.work)
                 })
                 .catch(errors => {
@@ -101,11 +105,12 @@ const actions = {
                 })
         }))
     },
-    deleteWork({commit}, payload) {
+    deleteWork({commit, dispatch}, payload) {
         return new Promise(((resolve, reject) => {
             axios.delete('auth/user/works/'+payload)
                 .then(res => {
                     commit("REMOVE_WORK", payload);
+                    dispatch("getOccupancyAccount");
                     resolve(res.data)
                 })
                 .catch(errors => {
@@ -113,6 +118,19 @@ const actions = {
                 })
         }))
     },
+    getOccupancyAccount({commit,state}, payload) {
+        return new Promise(((resolve, reject) => {
+            let id = payload?payload:state.user.id;
+            axios.get('users/'+id+'/statistics')
+                .then(res => {
+                    commit("UPDATE_OCCUPANCY", res.data);
+                    resolve(res.data)
+                })
+                .catch(errors => {
+                    reject(errors.response.data)
+                })
+        }))
+    }
 };
 
 const mutations = {
@@ -139,6 +157,9 @@ const mutations = {
         state.works = state.works.filter( (i) => i.id !== id);
         state.total -= 1;
     },
+    UPDATE_OCCUPANCY (state, occupancy) {
+        state.occupancy = occupancy;
+    }
 };
 
 export default {

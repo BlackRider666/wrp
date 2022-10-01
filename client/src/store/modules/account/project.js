@@ -29,11 +29,12 @@ const actions = {
                 })
         }))
     },
-    createProject({commit}, payload) {
+    createProject({commit, dispatch}, payload) {
         return new Promise(((resolve, reject) => {
             axios.post('auth/user/project', payload)
                 .then(res => {
                     commit("ADD_PROJECT", res.data.project);
+                    dispatch("account/getOccupancyAccount");
                     resolve(res.data.project)
                 })
                 .catch(errors => {
@@ -53,11 +54,12 @@ const actions = {
                 })
         }))
     },
-    deleteProject({commit}, payload) {
+    deleteProject({commit, dispatch}, payload) {
         return new Promise(((resolve, reject) => {
             axios.delete('auth/user/project/'+payload)
                 .then(res => {
                     commit("REMOVE_PROJECT", payload);
+                    dispatch("account/getOccupancyAccount");
                     resolve(res.data)
                 })
                 .catch(errors => {

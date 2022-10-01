@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 100%">
+  <v-app>
     <AppHeader />
     <v-main class="main-content">
       <v-container fluid class="px-0">
@@ -10,9 +10,9 @@
           </v-col>
         </v-row>
       </v-container>
-      <Footer :text="$t('footer.all-reserved', 'All rights reserved')"/>
     </v-main>
-  </div>
+    <Footer :text="$t('footer.all-reserved', 'All rights reserved')"/>
+  </v-app>
 </template>
 
 <script>

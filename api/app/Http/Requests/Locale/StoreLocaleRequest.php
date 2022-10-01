@@ -25,8 +25,9 @@ class StoreLocaleRequest extends FormRequest
     {
         return [
             'iso_code' => 'required|string|max:255',
-            'key'      => 'required|string|max:255',
-            'value'    => 'required|string|max:255',
+            'keys'     =>  'required',
+            'keys.*.key'      => 'required|string|max:255',
+            'keys.*.value'    => 'required|string|max:255',
         ];
     }
 }

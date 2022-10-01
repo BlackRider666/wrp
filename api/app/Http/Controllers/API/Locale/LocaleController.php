@@ -56,11 +56,10 @@ class LocaleController extends Controller
     {
         $data = $request->validated();
         $language = $this->localeRepo->getActiveByIsoCode($data['iso_code']);
-        $languageKey = $this->localeKeyRepo->create($language,$data);
+        $languageKeys = $this->localeKeyRepo->create($language,$data['keys']);
 
         return new JsonResponse([
-            'key' => $languageKey->key->key,
-            'value' => $languageKey->value,
+            'keys' => $languageKeys,
         ]);
     }
 

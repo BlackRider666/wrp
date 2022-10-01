@@ -41,13 +41,14 @@ export default {
     updateTranslations(){
       this.$store.dispatch('l10s/getAllTranslations', this.$store.getters['l10s/getActiveLocale'].iso_code)
           .then(() => {
-            this.l10s.onUntranslatedKeyFound((key, value) => {
-              this.$store.dispatch('l10s/createNewTranslationKey', {
-                key,
-                value,
-                iso_code: this.$store.getters['l10s/getActiveLocale'].iso_code,
-              });
-            })
+            // this.l10s.onUntranslatedKeyFound((key, value) => {
+            //   // this.$store.dispatch('l10s/createNewTranslationKey', {
+            //   //   key,
+            //   //   value,
+            //   //   iso_code: this.$store.getters['l10s/getActiveLocale'].iso_code,
+            //   // });
+            //   // this.untranslated.push({key,value,iso_code: this.$store.getters['l10s/getActiveLocale'].iso_code})
+            // })
           });
     }
   },

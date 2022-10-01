@@ -29,11 +29,12 @@ const actions = {
                 })
         }))
     },
-    createGrant({commit}, payload) {
+    createGrant({commit,dispatch}, payload) {
         return new Promise(((resolve, reject) => {
             axios.post('auth/user/grant', payload)
                 .then(res => {
                     commit("ADD_GRANT", res.data.grant);
+                    dispatch("account/getOccupancyAccount");
                     resolve(res.data.grant)
                 })
                 .catch(errors => {
@@ -53,11 +54,12 @@ const actions = {
                 })
         }))
     },
-    deleteGrant({commit}, payload) {
+    deleteGrant({commit, dispatch}, payload) {
         return new Promise(((resolve, reject) => {
             axios.delete('auth/user/grant/'+payload)
                 .then(res => {
                     commit("REMOVE_GRANT", payload);
+                    dispatch("account/getOccupancyAccount");
                     resolve(res.data)
                 })
                 .catch(errors => {

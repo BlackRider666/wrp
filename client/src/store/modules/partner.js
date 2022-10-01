@@ -2,6 +2,7 @@ import axios from "axios";
 
 const state = {
     partners: [],
+    partner: null,
 };
 
 const getters = {
@@ -23,11 +24,26 @@ const actions = {
                 })
         }))
     },
+    getPartner({commit},id) {
+        return new Promise(((resolve, reject) => {
+            axios.get('partners/'+id)
+                .then(res => {
+                    commit("UPDATE_PARTNER", res.data.partner);
+                    resolve(res.data.partner)
+                })
+                .catch(errors => {
+                    reject(errors.response.data)
+                })
+        }))
+    },
 };
 
 const mutations = {
     UPDATE_PARTNERS(state, partners) {
         state.partners = partners
+    },
+    UPDATE_PARTNER(state, partner) {
+        state.partner = partner
     },
 };
 

@@ -97,6 +97,16 @@ const router = new VueRouter({
                     name: 'Conference',
                     component: () => import('../views/Conference/Show.vue'),
                 },
+                {
+                    path: '/partners/:partner_id',
+                    name: 'Partner',
+                    component: () => import('../views/partners/Show.vue'),
+                },
+                {
+                    path: '/organizer/:organizer_id',
+                    name: 'Organizer',
+                    component: () => import('../views/organizers/Show.vue'),
+                },
             ],
         },
         {

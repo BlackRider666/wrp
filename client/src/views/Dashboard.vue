@@ -113,12 +113,12 @@
                       v-for="organizer in organizers"
                       :key="organizer.id"
                   >
-                    <v-card
+                    <router-link
                         class="ma-4"
-                        flat
+                        :to="{name:'Organizer',params: { organizer_id:organizer.id } }"
                     >
-                      <v-img :src="organizer.logo_url" :alt="organizer.title" width="100px" height="100px"/>
-                    </v-card>
+                      <v-img contain :src="organizer.logo_url" :alt="organizer.title" height="90px" width="160px"/>
+                    </router-link>
                   </v-slide-item>
                 </v-slide-group>
               </v-card-text>
@@ -139,12 +139,12 @@
                     v-for="partner in partners"
                     :key="partner.id"
                 >
-                  <v-card
+                  <router-link
                       class="ma-4"
-                      flat
+                      :to="{name:'Partner',params: { partner_id:partner.id } }"
                   >
-                    <v-img :src="partner.logo_url" width="100px" :alt="partner.title" height="100px"/>
-                  </v-card>
+                    <v-img contain :src="partner.logo_url" width="160px" :alt="partner.title" height="90px"/>
+                  </router-link>
                 </v-slide-item>
               </v-slide-group>
               </v-card-text>

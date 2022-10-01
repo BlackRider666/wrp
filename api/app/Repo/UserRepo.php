@@ -108,10 +108,44 @@ class UserRepo extends CoreRepo
         return $this->query()->paginate($perPage);
     }
 
+    /**
+     * @param int $id
+     * @param array $with
+     * @return Builder|Model
+     */
     public function findWith(int $id, array $with) {
         $query = $this->query();
         $query->where('id',$id);
         $query->with($with);
         return $query->firstOrFail();
+    }
+
+    /**
+     * @param int $id
+     * @return array
+     */
+    public function findPercentageOccupancy(int $id): array
+    {
+        $user = $this->query()->with(['works','grants','projects'])->find($id);
+        $userFills = $user->getFillable();
+        $accountFill = 0;
+        foreach ($userFills as $fill) {
+            if ($user->$fill !== null) {
+                ++$accountFill;
+            }
+        }
+        $account = ($accountFill / count($userFills));
+        $works  = $user->works->count() > 0 ? 1:0;
+        $grants = $user->grants->count() > 0 ? 1:0;
+        $projects = $user->projects->count() > 0 ? 1:0;
+        $total = (4*$account + 2*$works + 2*$grants + 2*$projects) / 10;
+
+        return [
+            'total'     =>  $total,
+            'account'   =>  $account,
+            'works'     =>  $works,
+            'grants'    =>  $grants,
+            'projects'  =>  $projects,
+        ];
     }
 }

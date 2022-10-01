@@ -62,4 +62,14 @@ class UserController extends Controller
                     ]),
         ]);
     }
+
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function statistics(int $id): JsonResponse
+    {
+        $statistic = $this->repo->findPercentageOccupancy($id);
+        return new JsonResponse($statistic);
+    }
 }

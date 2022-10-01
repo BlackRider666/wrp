@@ -89,7 +89,7 @@
             </v-col>
             <v-col class="text-md-right">
               <v-btn type="submit" color="primary">
-                {{$t('btn.register')}}
+                {{$t('btn.register', 'Register')}}
               </v-btn>
             </v-col>
           </v-row>

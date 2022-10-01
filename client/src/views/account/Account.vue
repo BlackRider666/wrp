@@ -1,5 +1,6 @@
 <template>
   <v-row>
+    <Occupancy/>
     <v-col cols="12">
       <v-card>
         <v-card-title>
@@ -192,6 +193,7 @@
 import Grant from "@/views/account/Grant";
 import Project from "@/views/account/Project";
 import Work from "@/views/account/Work";
+import Occupancy from "./Occupancy";
 
 export default {
   name: "Account",
@@ -199,6 +201,7 @@ export default {
     Project,
     Grant,
     Work,
+    Occupancy,
   },
   data(){
     return {

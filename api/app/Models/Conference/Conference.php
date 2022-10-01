@@ -118,4 +118,10 @@ class Conference extends Model
         return $this->belongsToMany(User::class,'organizational_committees')
             ->using(OrganizationalCommittee::class);
     }
+
+    public function forSelect()
+    {
+        $collection = $this->newQuery()->get();
+        return $collection->pluck('title', 'id');
+    }
 }

@@ -37,11 +37,12 @@ const actions = {
                 });
         }));
     },
-    createNewTranslationKey({ commit }, payload) {
+    createNewTranslationKey({ commit,state }, payload) {
+        // console.log({message:'store',payload});
         return new Promise(((resolve, reject) => {
-            axios.post('locales', payload)
+            axios.post('locales', {iso_code:state.locale.iso_code,keys:payload})
                 .then((response) => {
-                    commit('ADD_TRANSLATION_KEY', response.data);
+                    commit('ADD_TRANSLATION_KEY', response.data.keys);
                     resolve(response.data);
                 })
                 .catch((error) => {
@@ -78,8 +79,10 @@ const mutations = {
         state.translations = trans;
         localStorage.setItem('l10s', JSON.stringify(trans));
     },
-    ADD_TRANSLATION_KEY (state, key) {
-        state.translations[key.key] = key.value;
+    ADD_TRANSLATION_KEY (state, keys) {
+        keys.forEach( key => {
+            state.translations[key.key_title] = key.value;
+        });
     },
     SET_ACTIVE_LOCALE(state, locale) {
         state.locale = locale;

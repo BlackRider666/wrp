@@ -2,6 +2,7 @@ import axios from "axios";
 
 const state = {
     organizers: [],
+    organizer: null,
 };
 
 const getters = {
@@ -23,11 +24,26 @@ const actions = {
                 })
         }))
     },
+    getOrganizer({commit},id) {
+        return new Promise(((resolve, reject) => {
+            axios.get('organizers/'+id)
+                .then(res => {
+                    commit("UPDATE_ORGANIZER", res.data.organizer);
+                    resolve(res.data.organizer)
+                })
+                .catch(errors => {
+                    reject(errors.response.data)
+                })
+        }))
+    },
 };
 
 const mutations = {
     UPDATE_ORGANIZERS (state, organizers) {
         state.organizers = organizers
+    },
+    UPDATE_ORGANIZER (state, organizer) {
+        state.organizer = organizer
     },
 };
 

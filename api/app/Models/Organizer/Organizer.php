@@ -12,6 +12,7 @@ class Organizer extends Model
     protected $fillable = [
         'title',
         'logo',
+        'desc',
     ];
 
     protected $appends = [

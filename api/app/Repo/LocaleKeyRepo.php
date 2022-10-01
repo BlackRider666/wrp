@@ -18,23 +18,27 @@ class LocaleKeyRepo extends CoreRepo
         return LocaleKey::class;
     }
 
-    public function create(Locale $locale, array $data)
+    public function create(Locale $locale, array $keys)
     {
-        if (!$key = Key::firstOrCreate([
-            'key' => $data['key'],
-            'description' => 'From frontend '.$data['key'],
-        ])) {
-            throw new RuntimeException('Error on creating key!',500);
-        }
-        if (!$localeKey = LocaleKey::firstOrCreate([
-            'key_id' => $key->getKey(),
-            'locale_id' => $locale->getKey(),
-        ], [
-            'value'       => $data['value'],
-        ])) {
-            throw new RuntimeException('Error on creating localeKey!',500);
-        }
+        $keysCol = collect($keys);
 
-        return $localeKey;
+        $collectKeys = $keysCol->map(function ($item) {
+            return Key::firstOrCreate([
+                'key' => $item['key'],
+                ],[
+                'description' => 'From frontend',
+            ]);
+        });
+
+        $localeKeys = $collectKeys->map(function ($key) use ($locale, $keysCol) {
+            return LocaleKey::firstOrCreate([
+                'key_id' => $key->getKey(),
+                'locale_id' => $locale->getKey(),
+            ], [
+                'value'       => $keysCol->where('key',$key->key)->first()['value'],
+            ]);
+        });
+
+        return $localeKeys;
     }
 }
