@@ -116,6 +116,7 @@ export default {
               name:'account',
             },
             divider: true,
+            blinkAccount: true,
           },
           {
             titleTKey: "header.menu.conferences",

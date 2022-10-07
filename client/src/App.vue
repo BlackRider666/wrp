@@ -5,6 +5,7 @@
     </v-dialog>
     <notification-snackbar/>
     <router-view></router-view>
+    <TutorialModal/>
   </v-app>
 </template>
 
@@ -12,10 +13,11 @@
 import Loading from "./components/loading/Loading";
 import NotificationSnackbar from "./components/notification/Notification";
 import {mapState} from "vuex";
+import TutorialModal from "./components/partials/TutorialModal";
 
 export default {
   name: 'App',
-  components: {NotificationSnackbar, Loading},
+  components: {TutorialModal, NotificationSnackbar, Loading},
   data: function() {
     return {}
   },

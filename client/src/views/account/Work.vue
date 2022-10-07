@@ -1,11 +1,12 @@
 <template>
   <v-col cols="12">
-    <v-toolbar dense color="primary">
+    <v-toolbar dense dark :class="fillWork?'blink':''" color="primary">
       {{$t('works.title','Works')}}
       <v-spacer/>
       <v-btn
           icon
           @click="openCreateWorkDialog"
+          :class="fillWork?'blink':''"
       ><v-icon>mdi-plus</v-icon>
       </v-btn>
       <v-btn icon @click="showWorksSheet">
@@ -270,6 +271,9 @@ export default {
       organizations: (state) => state.organization.organizations,
       structureUnits: (state) => state.organization.structureUnits,
     }),
+    fillWork() {
+      return this.$store.state.tutorial.step === 4 && this.$store.state.tutorial.show && this.createWorkDialog === false;
+    },
   },
   methods: {
     showWorksSheet() {

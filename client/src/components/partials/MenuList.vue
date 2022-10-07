@@ -9,7 +9,7 @@
       :nudge-bottom="options.nudgeBottom"
   >
     <template v-slot:activator="{ on }">
-      <div :data-v-step="dataStep" class="title font-weight-bold px-1" :class="options.iconsType" v-on="on">
+      <div :data-v-step="dataStep" class="title font-weight-bold px-1" :class="toAccount?'blink '+options.iconsType: options.iconsType" v-on="on">
         <v-badge
             :content="options.badgeContent"
             :color="options.badgeColor"
@@ -48,6 +48,7 @@
           <v-list-item
               class="my-1"
               :to="item.to"
+              :class="item.blinkAccount && toAccount?'blink':''"
           >
             <v-list-item-avatar size="26" v-if="item.image || item.icon">
               <v-img v-if="item.image" :src="item.image"></v-img>
@@ -145,11 +146,48 @@ export default {
       href: {
         default: "",
       },
+      blinkAccount: {
+        default:false,
+        type: Boolean,
+      },
     },
   },
+  computed: {
+    toAccount() {
+      return this.$route.name !== 'account' && this.$store.state.tutorial.step === 1 && this.$store.state.tutorial.show;
+    }
+  }
 }
 </script>
 
-<style scoped>
-
+<style>
+@keyframes blink {
+  0% {
+    box-shadow: 0 0 30px #e8b923;
+  }
+  50% {
+    box-shadow: none;
+  }
+  100% {
+    box-shadow: 0 0 30px #e8b923;
+  }
+}
+@-webkit-keyframes blink {
+  0% {
+    box-shadow: 0 0 30px #e8b923;
+  }
+  50% {
+    box-shadow: 0 0 0;
+  }
+  100% {
+    box-shadow: 0 0 30px #e8b923;
+  }
+}
+.blink {
+  -webkit-animation: blink 1.0s linear infinite;
+  -moz-animation: blink 1.0s linear infinite;
+  -ms-animation: blink 1.0s linear infinite;
+  -o-animation: blink 1.0s linear infinite;
+  animation: blink 1.0s linear infinite;
+}
 </style>

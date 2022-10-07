@@ -1,11 +1,12 @@
 <template>
   <v-col cols="12">
-    <v-toolbar dense color="primary">
+    <v-toolbar dense dark :class="fillProject?'blink':''" color="primary">
       {{$t('projects.title','Projects')}}
       <v-spacer/>
       <v-btn
           icon
           @click="openProjectCreate"
+          :class="fillProject?'blink':''"
       ><v-icon>mdi-plus</v-icon>
       </v-btn>
       <v-btn icon @click="showProjectsSheet">
@@ -126,6 +127,9 @@ export default {
       projects: (state) => state.project.projects,
       total: (state) => state.project.total,
     }),
+    fillProject() {
+      return this.$store.state.tutorial.step === 6 && this.$store.state.tutorial.show && this.createProjectDialog === false;
+    },
   },
   methods: {
     showProjectsSheet() {

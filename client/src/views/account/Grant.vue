@@ -1,11 +1,12 @@
 <template>
   <v-col cols="12">
-    <v-toolbar dense color="primary">
+    <v-toolbar dense dark :class="fillGrant?'blink':''" color="primary">
       {{$t('grants.title','Grants')}}
       <v-spacer/>
       <v-btn
           icon
           @click="openGrantCreate"
+          :class="fillGrant?'blink':''"
       ><v-icon>mdi-plus</v-icon>
       </v-btn>
       <v-btn icon @click="showGrantsSheet">
@@ -126,6 +127,9 @@ export default {
       grants: (state) => state.grant.grants,
       total: (state) => state.grant.total,
     }),
+    fillGrant() {
+      return this.$store.state.tutorial.step === 5 && this.$store.state.tutorial.show && this.createGrantDialog === false;
+    },
   },
   methods: {
     showGrantsSheet() {

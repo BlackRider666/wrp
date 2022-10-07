@@ -15,7 +15,7 @@ import country from "./modules/country";
 import city from "./modules/city";
 import premium from "./modules/premium";
 import conference from "./modules/conference";
-
+import tutorial from "./modules/tutorial";
 const notifier = require('./modules/notifier/index').default;
 
 Vue.use(Vuex);
@@ -50,6 +50,7 @@ const store = new Vuex.Store({
         city,
         premium,
         conference,
+        tutorial,
     }
 });
 
