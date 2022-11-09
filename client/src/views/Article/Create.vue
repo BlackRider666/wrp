@@ -145,6 +145,44 @@
                     prepend-inner-icon="mdi-card-text-outline"
                     :rules="[rules.required]"
                 ></v-textarea>
+                <v-autocomplete
+                    v-model="article.tags"
+                    :items="tags"
+                    hide-no-data
+                    multiple
+                    item-text="name"
+                    item-value="id"
+                    :label="$t('tags.placeholder.select','Tags')"
+                    :placeholder="$t('tags.placeholder.select','Tags')"
+                    prepend-inner-icon="mdi-database-search"
+                    :search-input.sync="tagSearch"
+                    @update:search-input="(value) => changeSearchTags(value)"
+                    @change="changeTags"
+                    return-object
+                    outlined
+                    chips
+                    deletable-chips
+                >
+                </v-autocomplete>
+                <v-autocomplete
+                    v-model="article.citations"
+                    :items="articles"
+                    hide-no-data
+                    multiple
+                    item-text="full_title"
+                    item-value="id"
+                    :label="$t('articles.placeholder.citation','Citation')"
+                    :placeholder="$t('articles.placeholder.citation','Citation')"
+                    prepend-inner-icon="mdi-database-search"
+                    :search-input.sync="articleSearch"
+                    @update:search-input="(value) => changeSearchArticles(value)"
+                    @change="changeArticles"
+                    outlined
+                    chips
+                    deletable-chips
+                    :loading="loadingCitation"
+                >
+                </v-autocomplete>
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
@@ -161,7 +199,8 @@
 
 <script>
 import {mapState} from "vuex";
-
+import {debouncer} from "../../plugins/l10s";
+const debounceRequest = debouncer(1500)
 export default {
   name: "Create",
   data() {
@@ -179,10 +218,16 @@ export default {
         country: null,
         patent_number: null,
         app_number: null,
+        tags:[],
+        citations: [],
       },
       rules: {
         required: value => !!value || 'Required.',
       },
+      tags:[],
+      tagSearch: null,
+      articleSearch: null,
+      loadingCitation: false,
     };
   },
   computed: {
@@ -191,6 +236,7 @@ export default {
       authors: (state) => state.user.users,
       countries: (state) => state.country.countries,
       cities: (state) => state.city.cities,
+      articles: (state) => state.article.articles,
     }),
   },
   mounted() {
@@ -198,6 +244,9 @@ export default {
     this.$store.dispatch('user/downloadAuthors');
     this.article.authors.push(this.$store.getters['account/getAccount'].id);
     this.$store.dispatch('country/downloadCountries');
+    this.$store.dispatch('tags/downloadTags').then( (tags) => {
+      this.tags = tags;
+    });
   },
   methods: {
     createArticle(e) {
@@ -237,7 +286,41 @@ export default {
       if (category.tech_name === 'conference') {
         return 'articles.placeholder.conference';
       }
-    }
+    },
+    changeSearchTags(item) {
+      if (item) {
+        let tag = this.tags.find((o) => o.name === item);
+        if (!tag) {
+          let tagById = this.tags.find((i) => i.id === 'new');
+          if (tagById) {
+            tagById.name = item;
+          } else {
+            this.tags.push({id:'new',name:item});
+          }
+        }
+      }
+    },
+    changeTags() {
+      let newItem = this.article.tags.findIndex((t) => t.id === 'new');
+      if (newItem > -1) this.article.tags[newItem].id = 'new_' + Date.now();
+      this.tagSearch = '';
+      this.tags = this.tags.filter((t) => t.id !== 'new');
+    },
+    changeSearchArticles(item) {
+      if (item) {
+        this.loadingCitation = true
+        debounceRequest(()=>{
+          this.$store.dispatch('article/searchForSelect', item).then(() => {
+            this.loadingCitation = false;
+          })
+        })
+      } else {
+        debounceRequest.cancel()
+      }
+    },
+    changeArticles() {
+      this.articleSearch = '';
+    },
   },
   watch: {
     'article.country_id': {

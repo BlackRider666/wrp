@@ -25,7 +25,7 @@ class AddUserIdToConferenceTable extends Migration
      */
     public function down()
     {
-        Schema::table('conference', function (Blueprint $table) {
+        Schema::table('conferences', function (Blueprint $table) {
             $table->dropColumn(['user_id']);
         });
     }

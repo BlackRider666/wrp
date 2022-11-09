@@ -16,6 +16,8 @@ import city from "./modules/city";
 import premium from "./modules/premium";
 import conference from "./modules/conference";
 import tutorial from "./modules/tutorial";
+import tags from './modules/tags';
+
 const notifier = require('./modules/notifier/index').default;
 
 Vue.use(Vuex);
@@ -51,6 +53,7 @@ const store = new Vuex.Store({
         premium,
         conference,
         tutorial,
+        tags,
     }
 });
 

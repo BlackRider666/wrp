@@ -34,7 +34,9 @@ const actions = {
             let byTitle = payload.title?`&title=${payload.title}`:''
             let country = payload.country_id?`&country_id=${payload.country_id}`:'';
             let city = payload.city_id?`&city_id=${payload.city_id}`:'';
-            let search = `perPage=${perPage}&page=${page}&sortBy=${payload.sortBy}&sortDesc=${payload.sortDesc}`;
+            let sortBy = payload.sortBy[0]?`$sortBy=${payload.sortBy[0]}`:''
+            let sortDesc = payload.sortDesc[0]?`&sortDesc=${payload.sortDesc[0]}`:''
+            let search = `perPage=${perPage}&page=${page}${sortBy}${sortDesc}`;
             let NonApproved = payload.nonApproved?'&nonApproved=true':'';
             axios.get('article?'+search+byUser+byTitle+country+city+NonApproved)
                 .then(res => {
@@ -107,6 +109,18 @@ const actions = {
                 })
         }))
     },
+    searchForSelect({commit}, payload) {
+        return new Promise(((resolve, reject) => {
+            axios.get('article?q='+payload+'&forSelect=1')
+                .then(res => {
+                    resolve(res.data.data)
+                    commit('UPDATE_ARTICLES', res.data.data)
+                })
+                .catch(errors => {
+                    reject(errors.response.data)
+                })
+        }))
+    }
 };
 
 const mutations = {

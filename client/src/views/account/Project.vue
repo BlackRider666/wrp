@@ -128,7 +128,7 @@ export default {
       total: (state) => state.project.total,
     }),
     fillProject() {
-      return this.$store.state.tutorial.step === 6 && this.$store.state.tutorial.show && this.createProjectDialog === false;
+      return this.$store.state.tutorial.step === 6 && this.$store.state.tutorial.tutorialCategory === 'account' && this.createProjectDialog === false;
     },
   },
   methods: {

@@ -4,6 +4,7 @@
 namespace App\Repo;
 
 use App\Models\Article\Article;
+use App\Models\Article\Citation\Citation;
 use App\Models\User\Work\Work;
 use BlackParadise\LaravelAdmin\Core\CoreRepo;
 use Carbon\Carbon;
@@ -25,12 +26,27 @@ class ArticleRepo extends CoreRepo
     public function create(array $data)
     {
         $data['year'] = Carbon::create($data['year']);
+        $tags = (new TagsRepo())->createMany($data['tags']);
         if (!$article = $this->query()->create($data)) {
             throw new RuntimeException('Error on creating article!',500);
         }
         if (!$article->authors()->sync($data['authors'])) {
             throw new RuntimeException('Error on assign authors to article!',500);
         }
+        if (!$article->tags()->sync($tags)) {
+            throw new RuntimeException('Error on assign tags to article!',500);
+        }
+        $citation = [];
+        foreach ($data['citations'] as $id) {
+            $citation[] = new Citation([
+                'article_id'    =>  $article->getKey(),
+                'citation_article_id'   =>  $id
+            ]);
+        }
+        if (!$article->citationAny()->saveMany($citation)) {
+            throw new RuntimeException('Error on assign citation to article!',500);
+        }
+
         return $article;
     }
 
@@ -41,7 +57,7 @@ class ArticleRepo extends CoreRepo
     public function search(array $data): LengthAwarePaginator
     {
         $perPage = array_key_exists('perPage',$data)?$data['perPage']:10;
-        $sortBy = $data['sortBy'] ?: 'year';
+        $sortBy = array_key_exists('sortBy',$data)?$data['sortBy'] : 'year';
         $sortDesc = array_key_exists('sortDesc',$data)?$data['sortDesc']:true;
         $query = $this->query();
 
@@ -64,7 +80,20 @@ class ArticleRepo extends CoreRepo
         if (array_key_exists('city_id',$data)) {
             $query->where('city_id', $data['city_id']);
         }
+        if (array_key_exists('q',$data)) {
+            $query->where(function($q) use ($data) {
+                $q->where('title','like','%'.$data['q'].'%')
+                ->orWhereHas('authors', function($subQ) use ($data) {
+                    $subQ->where('first_name','like', '%'.$data['q'].'%');
+                    $subQ->orWhere('second_name','like','%'.$data['q'].'%');
+                    $subQ->orWhere('surname','like','%'.$data['q'].'%');
 
+                });
+            });
+        }
+        if (array_key_exists('forSelect',$data) && $data['forSelect']) {
+            return $query->select(['title', 'id'])->paginate(20);
+        }
         return $query->with(['category','authors'])->orderBy($sortBy,$sortDesc?'desc':'asc')->paginate($perPage);
     }
 
@@ -107,7 +136,7 @@ class ArticleRepo extends CoreRepo
      */
     public function findWithCategory(int $id)
     {
-        return $this->query()->with(['category','countryCreate','city'])->find($id);
+        return $this->query()->with(['category','countryCreate','city','authors', 'tags'])->find($id);
     }
 
     /**

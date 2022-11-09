@@ -50,6 +50,20 @@ return [
             ],
             'validation_type' => 'default',
         ],
+        'tags' => [
+            'type'      =>  'default',
+            'entity'    =>  \App\Models\Tag\Tag::class,
+            'key'       =>  'id',
+            'paginate'  =>  10,
+            'table_headers'   =>  [
+                'name',
+            ],
+            'show_title'    => 'Tag Information',
+            'show_fields'   => [
+                'name',
+            ],
+            'validation_type' => 'default',
+        ],
         'categories' => [
             'type'      =>  'default',
             'entity'    =>  \App\Models\Article\Category\Category::class,
@@ -192,6 +206,7 @@ return [
             'items' => [
                 'categories',
                 'articles',
+                'tags',
             ],
         ],
         'locales' => [

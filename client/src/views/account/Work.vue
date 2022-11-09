@@ -272,7 +272,7 @@ export default {
       structureUnits: (state) => state.organization.structureUnits,
     }),
     fillWork() {
-      return this.$store.state.tutorial.step === 4 && this.$store.state.tutorial.show && this.createWorkDialog === false;
+      return this.$store.state.tutorial.step === 4 && this.$store.state.tutorial.tutorialCategory === 'account' && this.createWorkDialog === false;
     },
   },
   methods: {

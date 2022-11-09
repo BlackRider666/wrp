@@ -239,10 +239,10 @@ export default {
   },
   computed: {
     fillCommon() {
-      return this.$store.state.tutorial.step === 2 && this.$store.state.tutorial.show
+      return this.$store.state.tutorial.step === 2 && this.$store.state.tutorial.tutorialCategory === 'account';
     },
     fillAvatar() {
-      return this.$store.state.tutorial.step === 3 && this.$store.state.tutorial.show
+      return this.$store.state.tutorial.step === 3 && this.$store.state.tutorial.tutorialCategory === 'account';
     }
   },
   methods: {

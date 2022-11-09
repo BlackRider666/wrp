@@ -1,5 +1,6 @@
 const state = {
-    show: localStorage.getItem('tutorial') != null ? parseInt(localStorage.getItem('tutorial')): 1,
+    tutorialCategory: localStorage.getItem('tutorial_category'),
+    show: 1,
     step: localStorage.getItem('tutorial_step') != null ? parseInt(localStorage.getItem('tutorial_step')):0,
 };
 
@@ -16,19 +17,18 @@ const actions = {
     nextStep({commit}) {
         commit('NEXT_STEP')
     },
-    updateShowState({commit}, payload) {
-        commit('UPDATE_SHOW_STATE', payload)
-    },
     complete({commit}) {
-        commit('NEXT_STEP');
-        commit('UPDATE_SHOW', 0);
-    }
+        commit('CLEAR_STEP');
+        commit('CLEAR_TUTORIAL_CATEGORY');
+    },
+    selectTutorial({commit}, tutorial) {
+        commit('UPDATE_TUTORIAL_CATEGORY', tutorial);
+    },
 };
 
 const mutations = {
     UPDATE_SHOW (state, show) {
         state.show = show
-        localStorage.setItem('tutorial',show);
     },
     START_TUTORIAL (state) {
         state.step = 1
@@ -38,8 +38,17 @@ const mutations = {
         state.step += 1
         localStorage.setItem('tutorial_step',state.step);
     },
-    UPDATE_SHOW_STATE(state, show) {
-        state.show = show;
+    UPDATE_TUTORIAL_CATEGORY(state, category) {
+        state.tutorialCategory = category;
+        localStorage.setItem('tutorial_category',state.tutorialCategory);
+    },
+    CLEAR_STEP(state) {
+        state.step = 0;
+        localStorage.removeItem('tutorial_step');
+    },
+    CLEAR_TUTORIAL_CATEGORY(state) {
+        state.tutorialCategory = null;
+        localStorage.removeItem('tutorial_category');
     }
 };
 

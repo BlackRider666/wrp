@@ -26,7 +26,7 @@ class AddDescToArticles extends Migration
     public function down()
     {
         Schema::table('articles', function (Blueprint $table) {
-            $table->dropColumn('desc');
+            $table->dropColumn(['desc']);
         });
     }
 }

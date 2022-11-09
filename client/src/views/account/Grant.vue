@@ -128,7 +128,7 @@ export default {
       total: (state) => state.grant.total,
     }),
     fillGrant() {
-      return this.$store.state.tutorial.step === 5 && this.$store.state.tutorial.show && this.createGrantDialog === false;
+      return this.$store.state.tutorial.step === 5 && this.$store.state.tutorial.tutorialCategory === 'account' && this.createGrantDialog === false;
     },
   },
   methods: {

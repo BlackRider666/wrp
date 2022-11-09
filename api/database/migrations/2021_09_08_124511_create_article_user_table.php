@@ -33,9 +33,6 @@ class CreateArticleUserTable extends Migration
      */
     public function down()
     {
-        Schema::table('article_user', function (Blueprint $table) {
-            $table->dropForeign(['article_id', 'user_id']);
-        });
         Schema::dropIfExists('article_user');
     }
 }

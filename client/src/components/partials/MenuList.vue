@@ -9,7 +9,7 @@
       :nudge-bottom="options.nudgeBottom"
   >
     <template v-slot:activator="{ on }">
-      <div :data-v-step="dataStep" class="title font-weight-bold px-1" :class="toAccount?'blink '+options.iconsType: options.iconsType" v-on="on">
+      <div :data-v-step="dataStep" class="title font-weight-bold px-1" :class="toAccount|| toArticle?'blink '+options.iconsType: options.iconsType" v-on="on">
         <v-badge
             :content="options.badgeContent"
             :color="options.badgeColor"
@@ -48,7 +48,7 @@
           <v-list-item
               class="my-1"
               :to="item.to"
-              :class="item.blinkAccount && toAccount?'blink':''"
+              :class="(item.blinkAccount && toAccount) || (item.blinkArticles && toArticle)?'blink':''"
           >
             <v-list-item-avatar size="26" v-if="item.image || item.icon">
               <v-img v-if="item.image" :src="item.image"></v-img>
@@ -154,7 +154,10 @@ export default {
   },
   computed: {
     toAccount() {
-      return this.$route.name !== 'account' && this.$store.state.tutorial.step === 1 && this.$store.state.tutorial.show;
+      return this.$route.name !== 'account' && this.$store.state.tutorial.step === 1 && this.$store.state.tutorial.tutorialCategory === 'account';
+    },
+    toArticle() {
+      return this.$route.name !== 'Articles' && this.$store.state.tutorial.step === 1 && this.$store.state.tutorial.tutorialCategory === 'article';
     }
   }
 }

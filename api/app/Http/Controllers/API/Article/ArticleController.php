@@ -4,14 +4,13 @@ namespace App\Http\Controllers\API\Article;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Article\CreateArticleRequest;
+use App\Http\Requests\Article\SearchArticleRequest;
 use App\Http\Requests\Article\UpdateArticleRequest;
 use App\Models\Article\Article;
 use App\Repo\ArticleRepo;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class ArticleController extends Controller
 {
@@ -26,12 +25,12 @@ class ArticleController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param SearchArticleRequest $request
      * @return JsonResponse
      */
-    public function index(Request $request): JsonResponse
+    public function index(SearchArticleRequest $request): JsonResponse
     {
-        $data = $request->all();
+        $data = $request->validated();
 
         return new JsonResponse($this->repo->search($data));
     }
@@ -54,7 +53,7 @@ class ArticleController extends Controller
         } catch (Exception $e) {
             return new JsonResponse([
                 'message' => $e->getMessage(),
-            ], $e->getCode());
+            ], 500);
         }
 
         return new JsonResponse([

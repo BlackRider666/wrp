@@ -12,6 +12,7 @@ use App\Http\Controllers\API\Organization\OrganizationController;
 use App\Http\Controllers\API\Organization\StructuralUnitController;
 use App\Http\Controllers\API\OrganizerController;
 use App\Http\Controllers\API\PartnerController;
+use App\Http\Controllers\API\TagController;
 use App\Http\Controllers\API\User\GrantController;
 use App\Http\Controllers\API\User\PremiumController;
 use App\Http\Controllers\API\User\ProjectController;
@@ -101,11 +102,11 @@ Route::group(['prefix' => 'conference'], function() {
     Route::post('/add-editors/{conference_id}', [ConferenceController::class,'addEditors']);
     Route::post('/remove-editors/{conference_id}', [ConferenceController::class,'removeEditors']);
 });
-
-Route::get('test', function () {
-    (new IboxClient())->test();
-});
-Route::post('/test-result', function (Request $request) {
-    (new IboxClient())->testResult($request);
-});
+Route::get('tags', [TagController::class, 'index']);
+//Route::get('test', function () {
+//    (new IboxClient())->test();
+//});
+//Route::post('/test-result', function (Request $request) {
+//    (new IboxClient())->testResult($request);
+//});
 Route::get('/get-free-premium', [PremiumController::class, 'getFreePremium'])->middleware('auth:sanctum');

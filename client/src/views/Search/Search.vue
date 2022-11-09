@@ -124,7 +124,7 @@ export default {
   data() {
     return {
       articleHeaders: [
-        { text: this.$t('articles.placeholder.title','Title'), value: 'title' },
+        { text: this.$t('articles.placeholder.title','Title'), value: 'full_title' },
         { text: this.$t('articles.placeholder.category','Category'), value: 'category.title' },
         { text: this.$t('articles.placeholder.year','Year'), value: 'year' },
         { text: this.$t('articles.placeholder.actions','Actions'), value: 'actions', sortable: false },

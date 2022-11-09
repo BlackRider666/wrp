@@ -39,7 +39,11 @@ class CreateArticleRequest extends FormRequest
             'country'     => 'nullable|string|max:255',
             'patent_number' => 'nullable|string|max:255',
             'app_number'    => 'nullable|string|max:255',
-            'desc'          =>  'required|string',
+            'desc'          => 'required|string',
+            'tags'          => 'array',
+            'tags.*.id'     => 'required',
+            'citations'          => 'array',
+            'citations.*'        => 'int',
         ];
     }
 }

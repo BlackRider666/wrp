@@ -26,7 +26,7 @@ class AddDescToPartnersTable extends Migration
     public function down()
     {
         Schema::table('partners', function (Blueprint $table) {
-            $table->text('desc');
+            $table->dropColumn(['desc']);
         });
     }
 }

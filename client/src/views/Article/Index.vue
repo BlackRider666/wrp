@@ -2,7 +2,7 @@
   <v-row>
     <v-col cols="12">
       <v-card>
-        <v-card-text>
+        <v-card-text >
           <v-data-table
               :headers="headers"
               :items="articles"
@@ -15,10 +15,10 @@
           >
             <template v-slot:top>
               <v-toolbar dense flat>
-                <span class="text-h5">{{$t('articles.index.title','Articles')}}</span>
+                <span class="text-h5" :class="articlesTableTutor?'blink':''">{{$t('articles.index.title','Articles')}}</span>
                 <v-spacer></v-spacer>
-                <v-btn :to="{name:'Create Article'}" color="primary">{{$t('articles.create.btn.add','Add Article')}}</v-btn>
-                <v-btn class="ml-1" @click="getNonApproved" color="primary">{{nonApproved?$t('articles.create.btn.approved','Approved'):$t('articles.create.btn.non-approved','Non Approved')}}</v-btn>
+                <v-btn :to="{name:'Create Article'}" :class="addArticlesTutor?'blink':''" color="primary">{{$t('articles.create.btn.add','Add Article')}}</v-btn>
+                <v-btn class="ml-1" @click="getNonApproved" :class="nonApprovedTutor?'blink':''" color="primary">{{nonApproved?$t('articles.create.btn.approved','Approved'):$t('articles.create.btn.non-approved','Non Approved')}}</v-btn>
               </v-toolbar>
                 <v-dialog v-model="dialogDelete" max-width="500px">
                   <v-card>
@@ -173,7 +173,7 @@
                 </v-dialog>
             </template>
             <template v-slot:item.actions="{ item }">
-              <template v-if="!nonApproved">
+              <template v-if="!nonApproved" >
                 <v-icon
                     small
                     class="mr-2"
@@ -227,9 +227,10 @@ export default {
   data() {
     return {
       headers: [
-        { text: this.$t('articles.placeholder.title','Title'), value: 'title' },
+        { text: this.$t('articles.placeholder.title','Title'), value: 'full_title' },
         { text: this.$t('articles.placeholder.category','Category'), value: 'category.title' },
         { text: this.$t('articles.placeholder.year','Year'), value: 'year' },
+        { text: this.$t('articles.placeholder.citation','Citation this article'), value: 'citation_this_count' },
         { text: this.$t('articles.placeholder.actions','Actions'), value: 'actions', sortable: false },
       ],
       dialogEdit: false,
@@ -251,6 +252,15 @@ export default {
       countries: (state) => state.country.countries,
       cities: (state) => state.city.cities,
     }),
+    addArticlesTutor() {
+      return this.$store.state.tutorial.step === 2 && this.$store.state.tutorial.tutorialCategory === 'article';
+    },
+    nonApprovedTutor() {
+      return this.$store.state.tutorial.step === 3 && this.$store.state.tutorial.tutorialCategory === 'article';
+    },
+    articlesTableTutor() {
+      return this.$store.state.tutorial.step === 4 && this.$store.state.tutorial.tutorialCategory === 'article';
+    }
   },
   mounted() {
     this.getData();

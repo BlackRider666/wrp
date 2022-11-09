@@ -135,6 +135,7 @@ export default {
               name:'Articles',
             },
             divider: true,
+            blinkArticles: true,
           },
           {
             titleTKey: "header.menu.logout",
@@ -170,6 +171,7 @@ export default {
               name:'account',
             },
             divider: true,
+            blinkAccount: true,
           },
           {
             titleTKey: "header.menu.articles",
@@ -179,6 +181,7 @@ export default {
               name:'Articles',
             },
             divider: true,
+            blinkArticles: true,
           },
           {
             titleTKey: "header.menu.logout",
