@@ -16,7 +16,7 @@ class CreateLocaleKeysTable extends Migration
         Schema::create('locale_keys', function (Blueprint $table) {
             $table->unsignedBigInteger('key_id');
             $table->unsignedBigInteger('locale_id');
-            $table->string('value');
+            $table->text('value');
         });
     }
 
