@@ -18,7 +18,6 @@
       <excludeFolder url="file://$MODULE_DIR$/api/vendor/phpunit/phpunit" />
       <excludeFolder url="file://$MODULE_DIR$/api/vendor/phpunit/php-invoker" />
       <excludeFolder url="file://$MODULE_DIR$/api/vendor/phpunit/php-code-coverage" />
-      <excludeFolder url="file://$MODULE_DIR$/api/vendor/phpspec/prophecy" />
       <excludeFolder url="file://$MODULE_DIR$/api/vendor/phpunit/php-text-template" />
       <excludeFolder url="file://$MODULE_DIR$/api/vendor/phar-io/version" />
       <excludeFolder url="file://$MODULE_DIR$/api/vendor/phar-io/manifest" />
@@ -63,19 +62,14 @@
       <excludeFolder url="file://$MODULE_DIR$/api/vendor/psr/log" />
       <excludeFolder url="file://$MODULE_DIR$/api/vendor/composer" />
       <excludeFolder url="file://$MODULE_DIR$/api/vendor/php-parallel-lint/php-console-highlighter" />
-      <excludeFolder url="file://$MODULE_DIR$/api/vendor/black-paradise/laravel-admin" />
       <excludeFolder url="file://$MODULE_DIR$/api/vendor/php-parallel-lint/php-console-color" />
-      <excludeFolder url="file://$MODULE_DIR$/api/vendor/phpdocumentor/reflection-docblock" />
-      <excludeFolder url="file://$MODULE_DIR$/api/vendor/phpdocumentor/type-resolver" />
       <excludeFolder url="file://$MODULE_DIR$/api/vendor/dragonmantank/cron-expression" />
-      <excludeFolder url="file://$MODULE_DIR$/api/vendor/phpdocumentor/reflection-common" />
       <excludeFolder url="file://$MODULE_DIR$/api/vendor/intervention/image" />
       <excludeFolder url="file://$MODULE_DIR$/api/vendor/tijsverkoyen/css-to-inline-styles" />
       <excludeFolder url="file://$MODULE_DIR$/api/vendor/nunomaduro/collision" />
       <excludeFolder url="file://$MODULE_DIR$/api/vendor/swiftmailer/swiftmailer" />
       <excludeFolder url="file://$MODULE_DIR$/api/vendor/guzzlehttp/guzzle" />
       <excludeFolder url="file://$MODULE_DIR$/api/vendor/guzzlehttp/psr7" />
-      <excludeFolder url="file://$MODULE_DIR$/api/vendor/webmozart/assert" />
       <excludeFolder url="file://$MODULE_DIR$/api/vendor/guzzlehttp/promises" />
       <excludeFolder url="file://$MODULE_DIR$/api/vendor/sebastian/recursion-context" />
       <excludeFolder url="file://$MODULE_DIR$/api/vendor/sebastian/code-unit" />
@@ -104,10 +98,6 @@
       <excludeFolder url="file://$MODULE_DIR$/api/vendor/doctrine/inflector" />
       <excludeFolder url="file://$MODULE_DIR$/api/vendor/doctrine/lexer" />
       <excludeFolder url="file://$MODULE_DIR$/api/vendor/doctrine/instantiator" />
-      <excludeFolder url="file://$MODULE_DIR$/api/vendor/doctrine/cache" />
-      <excludeFolder url="file://$MODULE_DIR$/api/vendor/doctrine/deprecations" />
-      <excludeFolder url="file://$MODULE_DIR$/api/vendor/doctrine/event-manager" />
-      <excludeFolder url="file://$MODULE_DIR$/api/vendor/doctrine/dbal" />
       <excludeFolder url="file://$MODULE_DIR$/api/vendor/barryvdh/laravel-debugbar" />
       <excludeFolder url="file://$MODULE_DIR$/api/vendor/symfony/mime" />
       <excludeFolder url="file://$MODULE_DIR$/api/vendor/theseer/tokenizer" />
@@ -130,6 +120,12 @@
       <excludeFolder url="file://$MODULE_DIR$/api/vendor/symfony/polyfill-intl-idn" />
       <excludeFolder url="file://$MODULE_DIR$/api/vendor/symfony/polyfill-php73" />
       <excludeFolder url="file://$MODULE_DIR$/api/vendor/staudenmeir/belongs-to-through" />
+      <excludeFolder url="file://$MODULE_DIR$/api/vendor/google/longrunning" />
+      <excludeFolder url="file://$MODULE_DIR$/api/vendor/black-paradise/laravel-admin" />
+      <excludeFolder url="file://$MODULE_DIR$/api/vendor/doctrine/deprecations" />
+      <excludeFolder url="file://$MODULE_DIR$/api/vendor/doctrine/dbal" />
+      <excludeFolder url="file://$MODULE_DIR$/api/vendor/doctrine/event-manager" />
+      <excludeFolder url="file://$MODULE_DIR$/api/vendor/doctrine/cache" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

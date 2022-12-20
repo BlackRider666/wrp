@@ -62,13 +62,9 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-    ];
-
-    public $createWithRel = [
-        'roles_id' => [
-            'required' => true,
-            'type' => 'integer',
-        ],
+        'email'             => 'email',
+        'password'          => 'password',
+        'avatar'            => 'file'
     ];
 
     /**

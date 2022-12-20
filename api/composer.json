@@ -10,7 +10,7 @@
     "require": {
         "php": "^7.4",
         "ext-openssl": "^7.4",
-        "black-paradise/laravel-admin": "^0.3.0",
+        "black-paradise/laravel-admin": "^1.0",
         "fideloper/proxy": "^4.4",
         "guzzlehttp/guzzle": "^7.4",
         "intervention/image": "^2.6",
