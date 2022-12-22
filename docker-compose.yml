@@ -6,7 +6,7 @@ services:
     restart: unless-stopped
     ports:
       - "81:80"
-      - "443:80"
+      - "444:443"
     volumes:
       - ./api:/var/www/api
       - ./client:/var/www/client
