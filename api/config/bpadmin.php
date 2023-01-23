@@ -158,14 +158,12 @@ return [
             'key'       =>  'id',
             'paginate'  =>  10,
             'table_headers'   =>  [
-                'key_title',
-                'locale_title',
+                'key.key',
+                'locale.name',
                 'value'
             ],
             'show_title'    => 'Partner Information',
             'show_fields'   => [
-                'key_title',
-                'locale_title',
                 'value'
             ],
             'validation_type' => 'default',

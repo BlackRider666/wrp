@@ -21,11 +21,6 @@ class LocaleKey extends Pivot
         'value',
     ];
 
-    protected $appends = [
-        'locale_title',
-        'key_title',
-    ];
-
     /**
      * @return BelongsTo
      */
@@ -40,21 +35,5 @@ class LocaleKey extends Pivot
     public function locale(): BelongsTo
     {
         return $this->belongsTo(Locale::class);
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getLocaleTitleAttribute()
-    {
-        return $this->locale->name;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getKeyTitleAttribute()
-    {
-        return $this->key->key;
     }
 }

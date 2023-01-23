@@ -57,7 +57,7 @@ services:
       - db_wrp
 
   client_wrp:
-    image: node:lts-alpine
+    image: node:16-alpine
     container_name: client_wrp
     tty: true
     volumes:
