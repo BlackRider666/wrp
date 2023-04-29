@@ -55,6 +55,18 @@ const router = new VueRouter({
                     }
                 },
                 {
+                    path: '/contacts',
+                    name: 'contacts',
+                    component: () => import("../views/support/Contacts.vue"),
+                    meta: {
+                        breadcrumb: [
+                            { title: 'Home', to: '/' },
+                            { title: 'contact', active: true },
+                        ],
+                        pageTitle: 'Contact',
+                    }
+                },
+                {
                     path: '/article-create',
                     name: 'Create Article',
                     component: () => import('../views/Article/Create.vue'),
@@ -106,6 +118,16 @@ const router = new VueRouter({
                     path: '/organizer/:organizer_id',
                     name: 'Organizer',
                     component: () => import('../views/organizers/Show.vue'),
+                },
+                {
+                    path: '/organizations',
+                    name: 'organizations',
+                    component: () => import('../views/organizations/Index'),
+                },
+                {
+                    path: '/news',
+                    name: 'news',
+                    component: () => import('../views/news/Index'),
                 },
             ],
         },

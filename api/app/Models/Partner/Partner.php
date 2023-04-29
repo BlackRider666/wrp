@@ -20,13 +20,13 @@ class Partner extends Model
     ];
 
     protected $casts = [
-        'logo' => 'image',
+        'logo' => 'file',
     ];
 
     public function getLogoUrlAttribute(): string
     {
         return $this->logo ?
-            (new PathManager())->getFile($this->logo, 'partners')
+            (new PathManager())->getFile($this->logo, 'partners_logo')
             :
             (new PathManager())->getDefaultPicture();
     }

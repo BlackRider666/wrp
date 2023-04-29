@@ -5,27 +5,14 @@
       :close-on-content-click="options.closeOnContentClick"
       :offset-x="options.offsetX"
       :offset-y="options.offsetY"
-      left
+      right
       :nudge-bottom="options.nudgeBottom"
   >
     <template v-slot:activator="{ on }">
-      <div :data-v-step="dataStep" class="title font-weight-bold px-1" :class="toAccount|| toArticle?'blink '+options.iconsType: options.iconsType" v-on="on">
-        <v-badge
-            :content="options.badgeContent"
-            :color="options.badgeColor"
-            :value="options.badgeContent"
-            overlap
-        >
-          <flag style="max-width: 16px;" v-if="options.titleFlag" :iso="options.titleFlag" class="mr-2" />
-          <span v-if="options.title" v-html="options.title"></span>
-          <span v-if="options.titleTKey" :class="options.titleClass">{{ $t(options.titleTKey,options.titleTDefault) }}</span>
-          <img v-if="options.titleImage" :class="options.titleClass" :src="options.titleImage"/>
-          <template v-if="options.titleIcon">
-            <feather-icon v-if="options.iconsType && options.iconsType === 'feather'" :icon="options.titleIcon"/>
-            <v-icon v-else>{{options.titleIcon}}</v-icon>
-          </template>
-        </v-badge>
-        <v-icon v-if="options.showArrow">mdi-chevron-down</v-icon>
+      <div :data-v-step="dataStep" class="cursor-pointer mx-2" :class="toAccount|| toArticle?'blink '+options.iconsType: options.iconsType" v-on="on">
+        <v-avatar size="42">
+          <v-img :src="account.avatar_url" :alt="account.full_name"/>
+        </v-avatar>
       </div>
     </template>
     <v-list avatar class="py-0">
@@ -68,6 +55,8 @@
 </template>
 
 <script>
+import {mapState} from "vuex";
+
 export default {
   name: "MenuList",
   props: {
@@ -158,7 +147,10 @@ export default {
     },
     toArticle() {
       return this.$route.name !== 'Articles' && this.$store.state.tutorial.step === 1 && this.$store.state.tutorial.tutorialCategory === 'article';
-    }
+    },
+    ...mapState({
+      account: state => state.account.user,
+    })
   }
 }
 </script>
@@ -192,5 +184,8 @@ export default {
   -ms-animation: blink 1.0s linear infinite;
   -o-animation: blink 1.0s linear infinite;
   animation: blink 1.0s linear infinite;
+}
+.cursor-pointer {
+  cursor: pointer;
 }
 </style>

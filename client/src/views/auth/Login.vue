@@ -6,14 +6,14 @@
         outlined
     >
       <v-card-title class="d-flex align-center justify-center">
-        <router-link class="d-flex align-center auth__logo py-5" :to="{name: 'dashboard'}">
-          <h2 class="text-2xl font-weight-semibold">{{$t('main.company-name','WRP')}}</h2>
+        <router-link class="d-flex align-center auth__logo mt-4" :to="{name: 'dashboard'}">
+          <v-img :aspect-ratio="16/9" :src="require('@/assets/logo.png')" width="90" contain="contain"/>
         </router-link>
       </v-card-title>
       <v-card-text>
             <v-row justify="center">
-              <v-col cols="6" align="center">
-                <div class="headline">{{$t('login.welcome', 'Welcome')}}</div>
+              <v-col cols="12" align="center">
+                <div class="text-h5 font-weight-medium mb-8 mt-2">{{$t('login.title', 'Login')}}</div>
               </v-col>
             </v-row>
             <v-form
@@ -45,16 +45,15 @@
                   <v-icon color="primary" v-if="passwordType === 'text'" @click="passwordType = 'password'">mdi-eye</v-icon>
                 </template>
               </v-text-field>
-
-              <div class="d-flex justify-space-between">
-                <v-btn @click="$router.push({name: 'register'})" class="mt-3" color="primary" outlined>
-                  {{$t('btn.register', 'Register')}}
-                </v-btn>
-                <v-btn type="submit" class="mt-3" color="primary">
-                  {{$t('btn.login', 'Login')}}
-                </v-btn>
-              </div>
+              <v-btn type="submit" class="my-3 auth__btn" block tile>
+                {{$t('btn.login', 'Login')}}
+              </v-btn>
+              <v-btn @click="$router.push({name: 'register'})" class="my-3" color="primary" text block tile>
+                {{$t('btn.register', 'Register')}}
+              </v-btn>
             </v-form>
+            <v-divider/>
+            <v-btn color="primary" text block tile class="mt-3">{{$t('btn.forgot-password', 'Forgot Password')}}</v-btn>
       </v-card-text>
     </v-card>
   </v-col>
@@ -104,6 +103,16 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+.auth {
+  &__btn {
+    font-weight: 500;
+    box-shadow: none;
+    transition: all 0.2s ease-in-out;
+  &:hover {
+    color: #fff;
+    background: #1976D2;
+  }
+  }
+}
 </style>

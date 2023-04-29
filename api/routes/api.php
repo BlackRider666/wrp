@@ -78,7 +78,7 @@ Route::group(['prefix' => 'article', 'middleware' => 'auth:sanctum'], function (
     Route::delete('/{article_id}', [ArticleController::class, 'destroy']);
     Route::post('/{article_id}/approve', [ArticleController::class, 'approveAuthor']);
 });
-Route::group(['prefix' => 'organizations', 'middleware' => 'auth:sanctum'], function () {
+Route::group(['prefix' => 'organizations'], function () {
     Route::get('/', [OrganizationController::class,'index']);
     Route::get('/structure-units', [StructuralUnitController::class,'index']);
 });

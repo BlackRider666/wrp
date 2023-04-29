@@ -1,7 +1,6 @@
 <template>
   <v-footer
       class="font-weight-medium"
-      app
   >
     <v-col
         class="text-left"

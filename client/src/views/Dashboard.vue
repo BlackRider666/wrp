@@ -1,171 +1,151 @@
 <template>
-    <v-row dense>
-      <v-col cols="6" class="px-0">
+  <v-container>
+    <v-row>
+      <v-col cols="12">
         <v-card
-          tile
+            flat
         >
-          <v-img
-              src="https://picsum.photos/1280/720?random&id=666"
-          >
-            <v-card-title class="white--text mt-8">
-              <p>{{$t('home.first-text','Some text')}}</p>
-            </v-card-title>
-          </v-img>
+          <v-card-title class="pb-5 justify-space-between">
+            <span class="text-h4 font-weight-medium">{{$t('home.news.title','News')}}</span>
+            <v-btn text color="primary" :to="{name:'news'}" small>{{$t('home.news.all','All news')}}</v-btn>
+          </v-card-title>
+          <v-card-text>
+            <v-row>
+              <v-col cols="3" v-for="n in news" :key="n.id">
+                <NewsItem :n="n"/>
+              </v-col>
+            </v-row>
+          </v-card-text>
         </v-card>
       </v-col>
-      <v-col cols="6" class="px-0">
-        <v-card
-            tile
-        >
-          <v-img
-              src="https://picsum.photos/1280/720?random&id=777"
-          >
-            <v-card-text class="white--text mt-8">
-              <v-row justify="center">
-                <v-col cols="12">
-                  <p>{{$t('home.auth-info','Auth info')}}</p>
-                </v-col>
-                <v-col cols="6">
-                  <v-btn
-                      block
-                      outlined
-                      color="primary"
-                      :to="{name:'login'}"
-                  >{{$t('btn.sign-in','Sign In')}}</v-btn>
-                </v-col>
-              </v-row>
-            </v-card-text>
-          </v-img>
-        </v-card>
-      </v-col>
-      <v-container>
-        <v-row>
-          <v-col cols="12">
-            <v-card
-              flat
-            >
-              <v-card-title class="heading font-weight-medium">
-                {{$t('home.about-us.title','About us')}}
-              </v-card-title>
-              <v-card-text>
-                {{$t('home.about-us.message','Some long text')}}
-              </v-card-text>
-            </v-card>
-         </v-col>
-          <v-col cols="12">
-            <v-card
-                flat
-            >
-              <v-card-title class="heading font-weight-medium">
-                {{$t('home.news.title','News')}}
-              </v-card-title>
-              <v-card-text>
-                <v-row>
-                  <v-col cols="4" v-for="n in news" :key="n.id">
-                    <v-card
-                        class="mx-auto"
-                    >
-                      <v-img
-                          class="white--text align-end"
-                          height="200px"
-                          :src="n.main_photo_url"
-                      >
-                        <v-card-title>n.title</v-card-title>
-                      </v-img>
-
-                      <v-card-subtitle class="pb-0">
-                        {{ n.tag }}
-                      </v-card-subtitle>
-
-                      <v-card-text class="text--primary">
-                        <div>{{n.sub_title}}</div>
-                      </v-card-text>
-
-                      <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn
-                            color="primary"
-                            text
-                        >
-                          {{$t('btn.read-more','Read more')}}
-                        </v-btn>
-                      </v-card-actions>
-                    </v-card>
-                  </v-col>
-                </v-row>
-              </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="12">
-            <v-card
-                flat
-            >
-              <v-card-title class="heading font-weight-medium">
-                {{$t('home.organizers.title','Organizers')}}
-              </v-card-title>
-              <v-card-text>
-                <v-slide-group
-                    show-arrows
-                >
-                  <v-slide-item
-                      v-for="organizer in organizers"
-                      :key="organizer.id"
-                  >
-                    <router-link
-                        class="ma-4"
-                        :to="{name:'Organizer',params: { organizer_id:organizer.id } }"
-                    >
-                      <v-img contain :src="organizer.logo_url" :alt="organizer.title" height="90px" width="160px"/>
-                    </router-link>
-                  </v-slide-item>
-                </v-slide-group>
-              </v-card-text>
-            </v-card>
-          </v-col>
-          <v-col cols="12">
-            <v-card
-                flat
-            >
-              <v-card-title class="heading font-weight-medium">
-                {{$t('home.partners.title','Partners')}}
-              </v-card-title>
-              <v-card-text>
-              <v-slide-group
-                  :show-arrows="true"
-              >
-                <v-slide-item
-                    v-for="partner in partners"
-                    :key="partner.id"
-                >
-                  <router-link
-                      class="ma-4"
-                      :to="{name:'Partner',params: { partner_id:partner.id } }"
-                  >
-                    <v-img contain :src="partner.logo_url" width="160px" :alt="partner.title" height="90px"/>
-                  </router-link>
-                </v-slide-item>
-              </v-slide-group>
-              </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-container>
     </v-row>
+    <v-row>
+      <v-col cols="12">
+        <v-card
+            flat
+        >
+          <v-card-title class="pb-5 justify-space-between">
+            <span class="text-h4 font-weight-medium">{{$t('home.organization.title','Organization')}}</span>
+            <v-btn text color="primary" :to="{name:'organizations'}" small>{{$t('home.organization.all','All organization')}}</v-btn>
+          </v-card-title>
+          <v-card-text>
+            <v-row>
+              <v-col cols="3" v-for="org in organizations" :key="org.id">
+                <OrganizationItem :org="org"/>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12">
+        <v-card
+            flat
+        >
+          <v-card-title class="pb-5 justify-space-between">
+            <span class="text-h4 font-weight-medium">{{$t('home.about-us.title','About us')}}</span>
+          </v-card-title>
+          <v-card-text class="text-body-1">
+            {{$t('home.about-us.message','Some long text')}}
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12">
+        <v-card
+            flat
+        >
+          <v-card-title class="pb-5 justify-space-between">
+            <span class="text-h4 font-weight-medium">{{$t('home.contacts.title','Contacts')}}</span>
+          </v-card-title>
+          <v-card-text class="text-body-1">
+            <div>{{$t('home.contacts.email','Email address')}} : wrp@gmail.com</div>
+            <div>{{$t('home.contacts.phone','Contact center')}} : 044 535 35 35</div>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12">
+        <v-card
+            flat
+        >
+          <v-card-title class="pb-5 justify-space-between">
+            <span class="text-h4 font-weight-medium">{{$t('home.partners.title','Partners')}}</span>
+            <v-btn text color="primary" small>{{$t('home.partners.all','All partners')}}</v-btn>
+          </v-card-title>
+          <v-card-text>
+            <v-row>
+              <v-col cols="3" v-for="partner in partners" :key="partner.id">
+                <v-card
+                    flat
+                    class="mx-auto"
+                >
+                  <v-img
+                      :src="partner.logo_url"
+                      class="rounded-0 partners__img"
+                  >
+                  </v-img>
+                  <v-card-title class="justify-center"><span class="text-body-1">{{ partner.title }}</span></v-card-title>
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12">
+        <v-card
+            flat
+        >
+          <v-card-title class="pb-5 justify-space-between">
+            <span class="text-h4 font-weight-medium">{{$t('home.organizers.title','Organizers')}}</span>
+            <v-btn text color="primary" small>{{$t('home.organizers.all','All organizers')}}</v-btn>
+          </v-card-title>
+          <v-card-text>
+            <v-row>
+              <v-col cols="3" v-for="organizer in organizers" :key="organizer.id">
+                <v-card
+                    flat
+                    class="mx-auto"
+                >
+                  <v-img
+                      :src="organizer.logo_url"
+                      class="rounded-0 partners__img"
+                  >
+                  </v-img>
+                  <v-card-title class="justify-center"><span class="text-body-1">{{ organizer.title }}</span></v-card-title>
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
 import {mapState} from "vuex";
+import OrganizationItem from '@/components/organizations/OrganizationItem';
+import NewsItem from '@/components/news/NewsItem';
 
 export default {
   name: "Dashboard",
+  components: {
+    OrganizationItem,
+    NewsItem
+  },
   data() {
     return {
     };
   },
   mounted() {
     this.$store.dispatch('news/downloadNews');
+    this.$store.dispatch('organization/downloadOrganizations');
     this.$store.dispatch('organizer/downloadOrganizers');
     this.$store.dispatch('partner/downloadPartners');
   },
@@ -173,12 +153,19 @@ export default {
     ...mapState({
       news: (state) => state.news.news,
       partners: (state) => state.partner.partners,
+      organizations: (state) => state.organization.organizations,
       organizers: (state) => state.organizer.organizers,
     }),
   }
 }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+.partners {
+  &__img {
+    aspect-ratio: 1/1;
+    object-fit: contain;
+    width: 100%;
+  }
+}
 </style>

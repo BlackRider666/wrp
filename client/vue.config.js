@@ -9,7 +9,6 @@ module.exports = {
     },
     devServer: {
         compress: true,
-        public: 'wrp.org.ua',
-        // public: 'wrp.local',
+        public: process.env.APP_ENV === 'dev'?'localhost':'wrp.org.ua',
     }
 }

@@ -38,8 +38,7 @@
 </template>
 
 <script>
-import { mapMutations, mapState, } from "vuex";
-import MenuList from "./MenuList";
+import { mapState } from "vuex";
 
 export default {
   name: "LanguageSwitcher",
@@ -56,9 +55,6 @@ export default {
       locales: (state) => state.l10s.locales,
       activeLocale: (state) => state.l10s.locale,
     },),
-  },
-  components: {
-    MenuList,
   },
   methods: {
     changeLanguage(language) {

@@ -189,7 +189,7 @@ return [
             'paginate'  =>  10,
             'table_headers'   =>  [
                 'name',
-                'organization_title',
+                'organization.name',
             ],
             'show_title'    => 'Structural Unit Information',
             'show_fields'   => [

@@ -10,7 +10,7 @@ services:
     volumes:
       - ./api:/var/www/api
       - ./client:/var/www/client
-      - ./docker/nginx:/etc/nginx/conf.d/
+      - './docker/nginx/${APP_ENV}/:/etc/nginx/conf.d/'
       - ./docker/certs:/etc/nginx/certs
     networks:
       - wrp_network

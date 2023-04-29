@@ -5,56 +5,62 @@
       fixed
   >
     <router-link
-        class="text-decoration-none"
+        class="text-decoration-none subtitle-1 text--primary"
         :to="{name:'dashboard'}"
-    ><v-app-bar-nav-icon>{{$t('main.company-name', 'WRP')}}</v-app-bar-nav-icon>
+    >{{$t('main.company-name', 'WRP')}}
     </router-link>
     <v-spacer/>
-    <v-form
-      class="d-inline-flex"
-      ref="form"
-      lazy-validation
-      align="center"
-      @submit.prevent="mainSearch"
-    ><v-row no-gutters>
-        <v-col cols="6">
-          <v-text-field
-              v-model="search"
-              :placeholder="$t('search.placeholder', 'Search ...')"
-              hide-details
-              :rules="[rules.required]"
-          />
-        </v-col>
-        <v-col cols="3">
-          <v-select
-              v-model="searchType"
-              :items="types"
-              :placeholder="$t('search.type.placeholder', 'Choose')"
-              :item-text="(item) => $t('search.type.'+item.key, item.value)"
-              hide-details
-              :rules="[rules.required]"
-              return-object
-          ></v-select>
-        </v-col>
-        <v-col cols="3">
-          <v-btn
-              text
-              type="submit"
-          ><v-icon>mdi-magnify</v-icon></v-btn>
-        </v-col>
-      </v-row>
-    </v-form>
-    <v-btn :to="{name:'Main Search', params:{type:'articles'}}" color="primary">{{$t('articles.index.title','Articles')}}</v-btn>
-    <v-spacer/>
-    <template v-if="account.is_premium">
-      <v-btn v-if="isLoggedIn" :to="{name:'Create Article'}" color="primary" icon><v-icon>mdi-plus</v-icon></v-btn>
-      <div>{{$t('header.menu.premium-to','Premium to: ')+account.is_premium}}</div>
-    </template>
-    <v-divider vertical color="white" inset class="mr-2"></v-divider>
     <LanguageSwitcher/>
+    <v-btn icon :to="{name:'contacts'}" color="#000" class="ml-0 mr-4" width="20" height="20"><v-icon>mdi-information</v-icon></v-btn>
+    <v-divider vertical color="white" inset></v-divider>
+    <v-btn :to="{name:'Create Article'}" color="primary" text class="mx-2"><v-icon>mdi-plus</v-icon> Add new article</v-btn>
+    <v-divider vertical color="white" inset></v-divider>
     <template v-if="isLoggedIn">
+      <v-btn icon class="mx-2">
+        <v-icon>mdi-bell</v-icon>
+        <v-badge color="primary" content="6"></v-badge>
+      </v-btn>
       <MenuList :options="accountOptions" @itemClicked="goToPage" />
     </template>
+    <template v-else>
+      <v-btn :to="{name:'login'}" color="primary" outlined class="mx-2">Login</v-btn>
+      <v-btn :to="{name:'register'}" color="primary" class="mx-2">Register</v-btn>
+    </template>
+<!--    <v-form-->
+<!--      class="d-inline-flex"-->
+<!--      ref="form"-->
+<!--      lazy-validation-->
+<!--      align="center"-->
+<!--      @submit.prevent="mainSearch"-->
+<!--    ><v-row no-gutters>-->
+<!--        <v-col cols="6">-->
+<!--          <v-text-field-->
+<!--              v-model="search"-->
+<!--              :placeholder="$t('search.placeholder', 'Search ...')"-->
+<!--              hide-details-->
+<!--              :rules="[rules.required]"-->
+<!--          />-->
+<!--        </v-col>-->
+<!--        <v-col cols="3">-->
+<!--          <v-select-->
+<!--              v-model="searchType"-->
+<!--              :items="types"-->
+<!--              :placeholder="$t('search.type.placeholder', 'Choose')"-->
+<!--              :item-text="(item) => $t('search.type.'+item.key, item.value)"-->
+<!--              hide-details-->
+<!--              :rules="[rules.required]"-->
+<!--              return-object-->
+<!--          ></v-select>-->
+<!--        </v-col>-->
+<!--        <v-col cols="3">-->
+<!--          <v-btn-->
+<!--              text-->
+<!--              type="submit"-->
+<!--          ><v-icon>mdi-magnify</v-icon></v-btn>-->
+<!--        </v-col>-->
+<!--      </v-row>-->
+<!--    </v-form>-->
+<!--    <v-btn :to="{name:'Main Search', params:{type:'articles'}}" color="primary">{{$t('articles.index.title','Articles')}}</v-btn>-->
   </v-app-bar>
 </template>
 

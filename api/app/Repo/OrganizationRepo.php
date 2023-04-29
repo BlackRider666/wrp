@@ -25,7 +25,10 @@ class OrganizationRepo extends CoreRepo
     public function search(array $data): LengthAwarePaginator
     {
         $perPage = array_key_exists('perPage',$data)?$data['perPage']:10;
-        return $this->query()->paginate($perPage);
+        $query = $this->query();
+        $query->with(['country','city']);
+
+        return $query->paginate($perPage);
     }
 
     /**

@@ -22,13 +22,14 @@ class News extends Model
     ];
 
     protected $casts = [
-        'main_photo' => 'image',
+        'main_photo' => 'file',
+        'created_at' => 'datetime:d M Y H:i'
     ];
 
     public function getMainPhotoUrlAttribute(): string
     {
         return $this->main_photo ?
-            (new PathManager())->getFile($this->main_photo, 'news')
+            (new PathManager())->getFile($this->main_photo, 'news_main_photo')
             :
             (new PathManager())->getDefaultPicture();
     }
