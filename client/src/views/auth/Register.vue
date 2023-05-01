@@ -1,14 +1,15 @@
 <template>
   <v-col cols="12" md="5" sm="8">
     <v-card
-        class="mx-auto"
+        class="mx-auto pb-6"
         raised
         outlined
     >
-      <v-card-title class="d-flex align-center justify-center">
+      <v-card-title class="d-flex align-center justify-center auth__top__wrapper">
         <router-link class="d-flex align-center auth__logo mt-4" :to="{name: 'dashboard'}">
           <v-img :aspect-ratio="16/9" :src="require('@/assets/logo.png')" width="90" contain="contain"/>
         </router-link>
+        <v-btn large color="primary" icon class="auth__btn-close" @click="$router.push({name:'dashboard'})"><v-icon>mdi-close</v-icon></v-btn>
       </v-card-title>
       <v-card-text v-if="registerStepper < 4">
         <v-row justify="center">
@@ -50,6 +51,7 @@
                     lazy-validation
                     align="center"
                     @submit="nextStep"
+                    aria-autocomplete="none"
                 >
                   <v-text-field
                       v-model="user.first_name"
@@ -64,6 +66,7 @@
                       outlined
                       prepend-inner-icon="mdi-account-outline"
                       :rules="[rules.required]"
+                      aria-autocomplete="none"
                   />
                   <v-text-field
                       v-model="user.surname"
@@ -107,6 +110,9 @@
                       prepend-inner-icon="mdi-email-outline"
                       :label="$t('placeholder.email', 'Email')"
                       :rules="[rules.required, rules.email]"
+                      :error="emailError.length > 0"
+                      :error-messages="emailError"
+                      @change="clearErrors"
                       type="email"
                   />
                   <v-text-field
@@ -195,7 +201,7 @@
           {{$t('btn.register-agree', 'By registering I agree to the')}} <router-link :to="{name:'dashboard'}" class="auth__contract-link">{{$t('link.register-contract', 'contract, rules, and conditions of use of the WRP platform')}}</router-link>
         </template>
         </v-checkbox>
-        <v-btn color="primary" :disabled="!registerContractSuccess" block @click="register">{{$t('btn.register', 'Register')}}</v-btn>
+        <v-btn color="primary" :disabled="!registerContractSuccess" block @click="verifyRegister">{{$t('btn.register', 'Register')}}</v-btn>
       </v-card-text>
     </v-card>
   </v-col>
@@ -215,6 +221,7 @@ export default {
         password:'',
         password_confirmation:'',
       },
+      emailError: [],
       passwordType: 'password',
       registerStepper: 1,
       registerContractSuccess: false,
@@ -234,14 +241,32 @@ export default {
     }
   },
   methods: {
-    register(e) {
+    async register() {
+      let response;
+      this.$loading();
+      await this.$store.dispatch('auth/register', this.user)
+          .then(() => {
+            this.$loadingClose();
+            response = true;
+          })
+          .catch(error => {
+            this.$loadingClose();
+            this.$notify('', 'error', error.response.data.message);
+            this.emailError = error.response.data.errors.email;
+            response = false;
+          })
+      return response;
+    },
+    verifyRegister(e) {
       e.preventDefault();
       e.stopPropagation();
       this.$loading();
-      this.$store.dispatch('auth/register',this.user)
+      this.$store.dispatch('auth/verifyRegister',this.user)
           .then(() => {
             this.$loadingClose();
             this.$store.dispatch('account/downloadAccount')
+            localStorage.removeItem('regUser')
+            localStorage.removeItem('regStep')
             this.$router.push({name:'dashboard'})
           })
           .catch(error => {
@@ -249,7 +274,7 @@ export default {
             this.$notify('','error', error.response.data.message);
           })
     },
-    nextStep(e) {
+    async nextStep(e) {
       e.preventDefault();
       e.stopPropagation();
       switch (this.registerStepper) {
@@ -258,6 +283,9 @@ export default {
           break;
         case 2:
           if (!this.$refs.formRegStep2.validate()) return;
+          // eslint-disable-next-line no-case-declarations
+          let registered = await this.register();
+          if (!registered) return;
           break;
         case 3:
           if (!this.$refs.formRegStep3.validate()) return;
@@ -268,6 +296,9 @@ export default {
       this.registerStepper += 1;
       localStorage.setItem('regUser', JSON.stringify(this.user));
       localStorage.setItem('regStep', this.registerStepper);
+    },
+    clearErrors() {
+      this.emailError = [];
     }
   },
   created() {
@@ -277,7 +308,7 @@ export default {
       this.user = JSON.parse(regUser);
     }
     if (regStep) {
-      this.registerStepper = regStep;
+      this.registerStepper = parseInt(regStep);
     }
   },
   computed: {
@@ -306,6 +337,16 @@ export default {
   }
   &__contract-link {
     display: contents;
+  }
+  &__top__wrapper {
+    position: relative;
+    margin-right: 24px;
+    margin-left: 24px;
+  }
+  &__btn-close {
+    position: absolute;
+    top: 32px;
+    right: 16px;
   }
 }
 </style>

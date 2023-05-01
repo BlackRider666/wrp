@@ -23,9 +23,21 @@ const actions = {
                 })
         }))
     },
-    register({commit}, payload) {
+    // eslint-disable-next-line no-empty-pattern
+    register({},payload) {
         return new Promise(((resolve, reject) => {
             axios.post('auth/register', payload)
+                .then(res => {
+                    resolve(res.data.token)
+                })
+                .catch(errors => {
+                    reject(errors)
+                })
+        }))
+    },
+    verifyRegister({commit}, payload) {
+        return new Promise(((resolve, reject) => {
+            axios.post('auth/register-confirm', payload)
                 .then(res => {
                     commit('SET_AUTH_TOKEN',res.data.token)
                     resolve(res.data.token)

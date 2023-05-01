@@ -9,6 +9,7 @@ use BlackParadise\LaravelAdmin\Core\CoreRepo;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Hash;
 use RuntimeException;
 use Spatie\Permission\Models\Role;
 
@@ -147,5 +148,20 @@ class UserRepo extends CoreRepo
             'grants'    =>  $grants,
             'projects'  =>  $projects,
         ];
+    }
+
+    public function confirmRegister(array $data)
+    {
+        if (!$user = $this->findByEmail($data['email'])) {
+            throw new RuntimeException('User not found!',404);
+        }
+        if (!$user->update([
+            'password' => Hash::make($data['password']),
+            'verify'   => true,
+        ])) {
+            throw new RuntimeException('Error on verify user', 500);
+        }
+
+        return $user;
     }
 }

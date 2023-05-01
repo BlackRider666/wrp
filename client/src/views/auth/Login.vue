@@ -1,14 +1,15 @@
 <template>
   <v-col cols="12" md="5" sm="8">
     <v-card
-        class="mx-auto"
+        class="mx-auto px-6 pb-6"
         raised
         outlined
     >
-      <v-card-title class="d-flex align-center justify-center">
+      <v-card-title class="d-flex align-center justify-center auth__top__wrapper">
         <router-link class="d-flex align-center auth__logo mt-4" :to="{name: 'dashboard'}">
           <v-img :aspect-ratio="16/9" :src="require('@/assets/logo.png')" width="90" contain="contain"/>
         </router-link>
+        <v-btn large color="primary" icon class="auth__btn-close" @click="$router.push({name:'dashboard'})"><v-icon>mdi-close</v-icon></v-btn>
       </v-card-title>
       <v-card-text>
             <v-row justify="center">
@@ -113,6 +114,14 @@ export default {
     color: #fff;
     background: #1976D2;
   }
+  }
+  &__top__wrapper {
+    position: relative;
+  }
+  &__btn-close {
+    position: absolute;
+    top: 32px;
+    right: 16px;
   }
 }
 </style>

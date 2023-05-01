@@ -1,5 +1,37 @@
 <template>
   <v-container>
+    <v-row justify="center" class="my-16">
+      <v-col cols="8">
+        <v-row justify="center">
+          <v-col cols="6" class="text-center">
+            <v-img :width="150" :aspect-ratio="16/9" contain="contain" :src="require('@/assets/logo.svg')" class="mx-auto"/>
+            <div class="text-h6 dashboard__title">World Research Platform</div>
+          </v-col>
+        </v-row>
+        <v-form action="/search/articles">
+          <v-row>
+            <v-col cols="10" offset="1">
+              <v-text-field
+                  outlined
+                  :label="$t('home.search.label', 'Search by name or title of project')"
+                  hide-details
+                  name="title"
+              />
+              <p class="text-center text-caption text--secondary my-1">{{ $t('home.search.hint', 'A quick search on all materials of the platform') }}</p>
+            </v-col>
+            <v-col cols="1">
+              <v-btn fab color="primary" type="submit"><v-icon>mdi-magnify</v-icon></v-btn>
+            </v-col>
+          </v-row>
+        </v-form>
+        <v-row justify="center" class="my-6">
+          <v-btn tile class="dashboard__search__link mx-3" :to="{name:'Main Search', params: { type: 'articles'}}">Article</v-btn>
+          <v-btn tile class="dashboard__search__link mx-3">Authors</v-btn>
+          <v-btn tile class="dashboard__search__link mx-3" :to="{name:'Conferences'}">Conference</v-btn>
+          <v-btn tile class="dashboard__search__link mx-3">Grants</v-btn>
+        </v-row>
+      </v-col>
+    </v-row>
     <v-row>
       <v-col cols="12">
         <v-card
@@ -166,6 +198,17 @@ export default {
     aspect-ratio: 1/1;
     object-fit: contain;
     width: 100%;
+  }
+}
+.dashboard {
+  &__title {
+    color: #1976D2;
+  }
+  &__search {
+    &__link {
+      box-shadow: none;
+      font-weight: 700;
+    }
   }
 }
 </style>

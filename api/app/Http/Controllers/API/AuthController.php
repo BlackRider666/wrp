@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ChangePasswordRequest;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\RegisterConfirmRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\UpdatePhotoRequest;
 use App\Http\Requests\Auth\UpdateUserRequest;
@@ -39,7 +40,7 @@ class AuthController extends Controller
     {
         $data = $request->validated();
         $user = $this->repository->findByEmail($data['email']);
-        if (! $user || ! Hash::check($data['password'], $user->password)) {
+        if (! $user || ! Hash::check($data['password'], $user->password) || !$user->verify) {
             return new JsonResponse([
                 'message'   =>  'Wrong credentials',
             ],401);
@@ -57,12 +58,31 @@ class AuthController extends Controller
     public function register(RegisterRequest $request): JsonResponse
     {
         $data = $request->validated();
-        $data['password'] = Hash::make($data['password']);
+        $data['password'] = Hash::make('');
         $role = env('APP_DEFAULT_ROLE');
         $data['desc'] = '';//todo fix me
 
         try {
-            $user = $this->repository->create($data, $role);
+            $this->repository->create($data, $role);
+        } catch (Exception $e) {
+            return new JsonResponse([
+                'message' => $e->getMessage(),
+            ], $e->getCode());
+        }
+
+        return new JsonResponse([
+            'message'     =>  'Success',
+        ]);
+    }
+
+    /**
+     * @param RegisterConfirmRequest $request
+     * @return JsonResponse
+     */
+    public function registerConfirm(RegisterConfirmRequest $request): JsonResponse
+    {
+        try {
+            $user = $this->repository->confirmRegister($request->validated());
         } catch (Exception $e) {
             return new JsonResponse([
                 'message' => $e->getMessage(),

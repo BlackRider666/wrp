@@ -94,9 +94,11 @@ export default {
   computed: {
     accountOptions() {
       let items = [];
-      if (this.$store.getters['account/getAccount'].roles.filter((item) => item.name === 'superadmin').length > 0
+      let account = this.$store.getters['account/getAccount'];
+      if (
+          (account.length > 0 && account.roles.filter((item) => item.name === 'superadmin').length > 0)
           ||
-          this.$store.getters['account/getAccount'].roles.filter((item) => item.name === 'conference creator').length > 0
+          (account.length > 0 && account.roles.filter((item) => item.name === 'conference creator').length > 0)
       ) {
          items = [
           {

@@ -34,6 +34,7 @@ use Illuminate\Http\Request;
 Route::group(['prefix' => 'auth'], function () {
     Route::post('login', [ AuthController::class, 'login']);
     Route::post('register', [ AuthController::class, 'register']);
+    Route::post('register-confirm', [ AuthController::class, 'registerConfirm']);
     Route::group(['prefix' => 'user', 'middleware' => 'auth:sanctum'], function () {
         Route::get('/', [ AuthController::class, 'user']);
         Route::post('update', [ AuthController::class, 'update']);
