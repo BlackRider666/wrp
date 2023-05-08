@@ -12,9 +12,11 @@ const getters = {
 };
 
 const actions = {
-    downloadPartners({commit}) {
+    downloadPartners({commit}, payload) {
         return new Promise(((resolve, reject) => {
-            axios.get('partners')
+            let perPage = payload && payload.perPage?payload.perPage:10;
+            let search = `perPage=${perPage}`;
+            axios.get('partners?'+search)
                 .then(res => {
                     commit("UPDATE_PARTNERS", res.data.data);
                     resolve(res.data.data)

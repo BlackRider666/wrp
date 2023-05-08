@@ -27,7 +27,8 @@ const actions = {
         return new Promise(((resolve, reject) => {
             let perPage = payload.itemsPerPage?payload.itemsPerPage:10;
             let page = payload.page?payload.page:1;
-            let search = `perPage=${perPage}&page=${page}&title=${payload.title}&sortBy=${payload.sortBy}&sortDesc=${payload.sortDesc}`;
+            let title = payload.title? payload.title : null;
+            let search = `perPage=${perPage}&page=${page}&title=${title?title:''}&sortBy=${payload.sortBy}&sortDesc=${payload.sortDesc}`;
             axios.get('users?'+search)
                 .then(res => {
                     commit("UPDATE_USERS", res.data.data);

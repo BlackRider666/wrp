@@ -1,119 +1,122 @@
 <template>
-  <v-row>
-    <v-col cols="12">
-      <v-card
-          flat
-      >
-        <v-card-title class="heading font-weight-medium">
-          {{$t('search.title','Search')}}
-          <v-spacer></v-spacer>
-          <template v-if="isPremium">
-            <v-btn :to="{name:'Create Article'}" color="primary" icon><v-icon>mdi-plus</v-icon></v-btn>
-          </template>
-        </v-card-title>
-        <v-card-text>
-            <v-toolbar
-                dense
-                color="primary"
-                v-if="$route.params.type === 'articles'"
-            >
-              {{$t('search.articles.filters','Filters')}}
-              <v-spacer/>
-              <v-btn icon @click="showArticleFiltersSheet">
-                <v-icon v-if="articleFiltersSheet">mdi-chevron-up</v-icon>
-                <v-icon v-else>mdi-chevron-down</v-icon>
-              </v-btn>
-            </v-toolbar>
-            <v-sheet
-                v-if="articleFiltersSheet && $route.params.type === 'articles'"
-                outlined
-            >
-              <v-container>
-                <v-row>
-                  <v-col cols="12">
-                    <v-text-field
-                        v-model="articleFilters.title"
-                        :label="$t('articles.placeholder.title','Title')"
-                        outlined
-                        prepend-inner-icon="mdi-card-text-outline"
-                    />
-                  </v-col>
-                  <v-col cols="12">
-                    <v-select
-                        v-model="articleFilters.country_id"
-                        :items="countries"
-                        item-text="name"
-                        item-value="id"
-                        :label="$t('search.placeholder.country','Country')"
-                        :placeholder="$t('search.placeholder.country','Country')"
-                        prepend-inner-icon="mdi-database-search"
-                        outlined
-                    ></v-select>
-                  </v-col>
-                  <v-col cols="12">
-                    <v-select
-                        v-model="articleFilters.city_id"
-                        :items="cities"
-                        item-text="name"
-                        item-value="id"
-                        :label="$t('search.placeholder.city','City')"
-                        :placeholder="$t('search.placeholder.city','City')"
-                        prepend-inner-icon="mdi-database-search"
-                        outlined
-                    ></v-select>
-                  </v-col>
-                  <v-col cols="12">
-                    <v-btn color="primary" block @click="getData">{{$t('search.title','Search')}}</v-btn>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-sheet>
-          <v-data-table
-              v-if="$route.params.type === 'articles'"
-              :headers="articleHeaders"
-              :items="articles"
-              :options.sync="options"
-              :server-items-length="totalArticles"
-              :footer-props="{
-                  itemsPerPageOptions:[5,10,15,20]
-              }"
-              class="elevation-1"
-          >
-            <template v-slot:item.actions="{ item }">
-              <v-icon
-                  small
-                  class="mr-2"
-                  @click="showArticle(item)"
-              >
-                mdi-eye
-              </v-icon>
+  <v-container>
+    <v-row>
+      <v-col cols="12">
+        <v-card
+            flat
+        >
+          <v-card-title class="heading font-weight-medium">
+            {{$t('search.title','Search')}}
+            <v-spacer></v-spacer>
+            <template v-if="isPremium">
+              <v-btn :to="{name:'Create Article'}" color="primary" icon><v-icon>mdi-plus</v-icon></v-btn>
             </template>
-          </v-data-table>
-          <v-data-table
-              v-if="$route.params.type === 'users'"
-              :headers="userHeaders"
-              :items="users"
-              :options.sync="options"
-              :server-items-length="totalUsers"
-              :footer-props="{
-                  itemsPerPageOptions:[5,10,15,20]
-              }"
-              class="elevation-1"
-          >
-            <template v-slot:item.actions="{ item }">
-              <v-icon
-                  small
-                  class="mr-2"
-                  @click="showUser(item)"
+          </v-card-title>
+          <v-card-text>
+  <!--            <v-toolbar-->
+  <!--                dense-->
+  <!--                color="primary"-->
+  <!--            >-->
+  <!--              {{$t('search.articles.filters','Filters')}}-->
+  <!--              <v-spacer/>-->
+  <!--              <v-btn icon @click="showArticleFiltersSheet">-->
+  <!--                <v-icon v-if="articleFiltersSheet">mdi-chevron-up</v-icon>-->
+  <!--                <v-icon v-else>mdi-chevron-down</v-icon>-->
+  <!--              </v-btn>-->
+  <!--            </v-toolbar>-->
+  <!--            <v-sheet-->
+  <!--                v-if="articleFiltersSheet && $route.params.type === 'articles'"-->
+  <!--                outlined-->
+  <!--            >-->
+  <!--              <v-container>-->
+  <!--                <v-row>-->
+  <!--                  <v-col cols="12">-->
+  <!--                    <v-text-field-->
+  <!--                        v-model="articleFilters.title"-->
+  <!--                        :label="$t('articles.placeholder.title','Title')"-->
+  <!--                        outlined-->
+  <!--                        prepend-inner-icon="mdi-card-text-outline"-->
+  <!--                    />-->
+  <!--                  </v-col>-->
+  <!--                  <v-col cols="12">-->
+  <!--                    <v-select-->
+  <!--                        v-model="articleFilters.country_id"-->
+  <!--                        :items="countries"-->
+  <!--                        item-text="name"-->
+  <!--                        item-value="id"-->
+  <!--                        :label="$t('search.placeholder.country','Country')"-->
+  <!--                        :placeholder="$t('search.placeholder.country','Country')"-->
+  <!--                        prepend-inner-icon="mdi-database-search"-->
+  <!--                        outlined-->
+  <!--                    ></v-select>-->
+  <!--                  </v-col>-->
+  <!--                  <v-col cols="12">-->
+  <!--                    <v-select-->
+  <!--                        v-model="articleFilters.city_id"-->
+  <!--                        :items="cities"-->
+  <!--                        item-text="name"-->
+  <!--                        item-value="id"-->
+  <!--                        :label="$t('search.placeholder.city','City')"-->
+  <!--                        :placeholder="$t('search.placeholder.city','City')"-->
+  <!--                        prepend-inner-icon="mdi-database-search"-->
+  <!--                        outlined-->
+  <!--                    ></v-select>-->
+  <!--                  </v-col>-->
+  <!--                  <v-col cols="12">-->
+  <!--                    <v-btn color="primary" block @click="getData">{{$t('search.title','Search')}}</v-btn>-->
+  <!--                  </v-col>-->
+  <!--                </v-row>-->
+  <!--              </v-container>-->
+  <!--            </v-sheet>-->
+            <v-data-table
+                v-if="searchType[$route.params.type].showArticlesTable"
+                :headers="articleHeaders"
+                :items="articles"
+                :options.sync="options"
+                :server-items-length="totalArticles"
+                :footer-props="{
+                    itemsPerPageOptions:[5,10,15,20]
+                }"
+                class="elevation-1"
+            >
+              <template v-slot:item.actions="{ item }">
+                <v-icon
+                    small
+                    class="mr-2"
+                    @click="showArticle(item)"
+                >
+                  mdi-eye
+                </v-icon>
+              </template>
+            </v-data-table>
+            <template v-if="searchType[$route.params.type].showUsersTable">
+              <div class="text-h5 font-weight-medium mb-4">Authors</div>
+              <v-data-table
+                  :headers="userHeaders"
+                  :items="users"
+                  :options.sync="options"
+                  :server-items-length="totalUsers"
+                  :footer-props="{
+                      itemsPerPageOptions:[5,10,15,20]
+                  }"
+                  class="elevation-1"
               >
-                mdi-eye
-              </v-icon>
+                <template v-slot:item.actions="{ item }">
+                  <v-icon
+                      small
+                      class="mr-2"
+                      @click="showUser(item)"
+                  >
+                    mdi-eye
+                  </v-icon>
+                </template>
+              </v-data-table>
             </template>
-          </v-data-table>
-        </v-card-text>
-      </v-card>
-    </v-col>
-  </v-row>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -139,6 +142,20 @@ export default {
         country_id:null,
         city_id: null,
         title: null,
+      },
+      searchType: {
+        all: {
+          showArticlesTable:true,
+          showUsersTable:true,
+        },
+        articles: {
+          showArticlesTable: true,
+          showUsersTable:false,
+        },
+        authors: {
+          showArticlesTable: false,
+          showUsersTable: true,
+        },
       },
     };
   },
@@ -171,7 +188,7 @@ export default {
     },
     getData() {
       this.$loading()
-      if (this.$route.params.type === 'articles') {
+      if (this.searchType[this.$route.params.type].showArticlesTable) {
         this.$store.dispatch('article/downloadArticles', {
           user_id:null,
           title: this.$route.query.title,
@@ -181,7 +198,7 @@ export default {
           this.$loadingClose();
         });
       }
-      if (this.$route.params.type === 'users') {
+      if (this.searchType[this.$route.params.type].showUsersTable) {
         this.$store.dispatch('user/downloadUsers', {
           title: this.$route.query.title,
           ...this.options,

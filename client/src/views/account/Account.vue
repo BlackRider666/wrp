@@ -183,6 +183,7 @@
             <Work/>
             <Grant :user_id="user.id"/>
             <Project :user_id="user.id"/>
+            <SocialLink/>
           </v-row>
         </v-card-text>
       </v-card>
@@ -195,10 +196,12 @@ import Grant from "@/views/account/Grant";
 import Project from "@/views/account/Project";
 import Work from "@/views/account/Work";
 import Occupancy from "./Occupancy";
+import SocialLink from "./SocialLink";
 
 export default {
   name: "Account",
   components: {
+    SocialLink,
     Project,
     Grant,
     Work,

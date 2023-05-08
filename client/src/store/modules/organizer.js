@@ -12,9 +12,11 @@ const getters = {
 };
 
 const actions = {
-    downloadOrganizers({commit}) {
+    downloadOrganizers({commit}, payload) {
         return new Promise(((resolve, reject) => {
-            axios.get('organizers')
+            let perPage = payload && payload.perPage?payload.perPage:10;
+            let search = `perPage=${perPage}`;
+            axios.get('organizers?'+search)
                 .then(res => {
                     commit("UPDATE_ORGANIZERS", res.data.data);
                     resolve(res.data.data)

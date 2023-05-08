@@ -10,6 +10,7 @@ use App\Models\Conference\OrganizationalCommittee\OrganizationalCommittee;
 use App\Models\User\Grant\Grant;
 use App\Models\User\Premium\Premium;
 use App\Models\User\Project\Project;
+use App\Models\User\SocialLink\SocialLink;
 use App\Models\User\Work\Work;
 use BlackParadise\LaravelAdmin\Core\PathManager;
 use Carbon\Carbon;
@@ -194,5 +195,13 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Conference::class,'editorial_boards')
                     ->using(EditorialBoard::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function socialLinks(): HasMany
+    {
+        return $this->hasMany(SocialLink::class);
     }
 }

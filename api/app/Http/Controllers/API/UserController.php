@@ -59,6 +59,7 @@ class UserController extends Controller
                     'projects',
                     'articles',
                     'articles.category',
+                    'socialLinks'
                     ]),
         ]);
     }

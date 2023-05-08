@@ -7,10 +7,7 @@
           class="rounded-0 organization__img"
       >
       </v-img>
-      <v-card-title class="text-body-1">{{ org.name }}</v-card-title>
-      <!--                      <v-card-subtitle class="pb-0">-->
-      <!--                        {{ n.tag }}-->
-      <!--                      </v-card-subtitle>-->
+      <v-card-title :title="org.name" class="text-body-1" >{{org.name.length > 106 ? org.name.substring(0,103)+'...':org.name }}</v-card-title>
 
       <v-card-text class="text-md-caption">
         <v-row>

@@ -7,7 +7,13 @@
     <router-link
         class="text-decoration-none subtitle-1 text--primary"
         :to="{name:'dashboard'}"
-    >{{$t('main.company-name', 'WRP')}}
+    >
+      <template v-if="$route.name !== 'dashboard'">
+        <v-img :width="67" :aspect-ratio="16/9" contain="contain" :src="require('@/assets/logo.svg')"/>
+      </template>
+      <template v-else>
+        {{$t('main.company-name', 'WRP')}}
+      </template>
     </router-link>
     <v-spacer/>
     <LanguageSwitcher/>

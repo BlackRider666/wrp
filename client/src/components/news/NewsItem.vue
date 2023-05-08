@@ -7,7 +7,7 @@
         class="rounded-0 news__img"
     >
     </v-img>
-    <v-card-title class="text-body-1">{{ n.title }}</v-card-title>
+    <v-card-title :title="n.title" class="text-body-1">{{n.title.length > 106 ? n.title.substring(0,103)+'...':n.title }}</v-card-title>
     <!--                      <v-card-subtitle class="pb-0">-->
     <!--                        {{ n.tag }}-->
     <!--                      </v-card-subtitle>-->

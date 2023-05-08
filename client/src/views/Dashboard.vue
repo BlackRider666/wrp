@@ -120,7 +120,7 @@
                       class="rounded-0 partners__img"
                   >
                   </v-img>
-                  <v-card-title class="justify-center"><span class="text-body-1">{{ partner.title }}</span></v-card-title>
+                  <v-card-title class="justify-center"><span class="text-body-1" :title="partner.title">{{partner.title.length > 106 ? partner.title.substring(0,103)+'...':partner.title }}</span></v-card-title>
                 </v-card>
               </v-col>
             </v-row>
@@ -149,7 +149,7 @@
                       class="rounded-0 partners__img"
                   >
                   </v-img>
-                  <v-card-title class="justify-center"><span class="text-body-1">{{ organizer.title }}</span></v-card-title>
+                  <v-card-title class="justify-center"><span class="text-body-1">{{organizer.title.length > 106 ? organizer.title.substring(0,103)+'...':organizer.title }}</span></v-card-title>
                 </v-card>
               </v-col>
             </v-row>
@@ -176,10 +176,10 @@ export default {
     };
   },
   mounted() {
-    this.$store.dispatch('news/downloadNews');
-    this.$store.dispatch('organization/downloadOrganizations');
-    this.$store.dispatch('organizer/downloadOrganizers');
-    this.$store.dispatch('partner/downloadPartners');
+    this.$store.dispatch('news/downloadNews', {perPage:4});
+    this.$store.dispatch('organization/downloadOrganizations',{perPage:4});
+    this.$store.dispatch('organizer/downloadOrganizers',{perPage:4});
+    this.$store.dispatch('partner/downloadPartners',{perPage:4});
   },
   computed: {
     ...mapState({

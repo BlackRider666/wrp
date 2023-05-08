@@ -16,6 +16,7 @@ use App\Http\Controllers\API\TagController;
 use App\Http\Controllers\API\User\GrantController;
 use App\Http\Controllers\API\User\PremiumController;
 use App\Http\Controllers\API\User\ProjectController;
+use App\Http\Controllers\API\User\SocialLinkController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\UserWorkController;
 use App\Service\IboxClient;
@@ -103,11 +104,13 @@ Route::group(['prefix' => 'conference'], function() {
     Route::post('/add-editors/{conference_id}', [ConferenceController::class,'addEditors']);
     Route::post('/remove-editors/{conference_id}', [ConferenceController::class,'removeEditors']);
 });
+
+Route::group(['prefix' => 'social-link', 'auth' => 'auth:sanctum'], static function () {
+    Route::get('/',[SocialLinkController::class,'index']);
+    Route::post('/',[SocialLinkController::class,'store']);
+    Route::post('/{link_id}',[SocialLinkController::class,'update']);
+    Route::delete('/{link_id}',[SocialLinkController::class,'destroy']);
+});
+
 Route::get('tags', [TagController::class, 'index']);
-//Route::get('test', function () {
-//    (new IboxClient())->test();
-//});
-//Route::post('/test-result', function (Request $request) {
-//    (new IboxClient())->testResult($request);
-//});
 Route::get('/get-free-premium', [PremiumController::class, 'getFreePremium'])->middleware('auth:sanctum');
