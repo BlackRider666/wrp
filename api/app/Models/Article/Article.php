@@ -9,17 +9,21 @@ use App\Models\Country\City\City;
 use App\Models\Country\Country;
 use App\Models\Tag\Tag;
 use App\Models\User\User;
+use BlackParadise\LaravelAdmin\Core\PathManager;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Znck\Eloquent\Relations\BelongsToThrough;
+use Znck\Eloquent\Traits\BelongsToThrough as BelongsToThroughTrait;
 
 class Article extends Model
 {
+    use BelongsToThroughTrait;
+
     protected $table = 'articles';
 
     protected $fillable = [
-        'country_id',
         'city_id',
         'title',
         'category_id',
@@ -29,26 +33,22 @@ class Article extends Model
         'number',
         'pages',
         'publisher',
-        'country',
         'patent_number',
         'app_number',
         'desc',
+        'full_text',
+        'file'
     ];
 
     protected $casts = [
         'year'  =>  'date:Y',
+        'file'  =>  'file',
     ];
 
     protected $appends = [
         'full_title',
         'citation_this_count',
-    ];
-
-    public $createWithRel = [
-        'authors_id' => [
-            'required' => true,
-            'type' => 'integer',
-        ],
+        'file_path',
     ];
 
     /**
@@ -75,11 +75,11 @@ class Article extends Model
     }
 
     /**
-     * @return BelongsTo
+     * @return BelongsToThrough
      */
-    public function countryCreate(): BelongsTo
+    public function country(): BelongsToThrough
     {
-        return $this->belongsTo(Country::class, 'country_id', 'id');
+        return $this->BelongsToThrough(Country::class,City::class);
     }
 
     /**
@@ -129,5 +129,13 @@ class Article extends Model
     public function getCitationThisCountAttribute(): int
     {
         return $this->citationsThis()->count();
+    }
+
+    /**
+     * @return string
+     */
+    public function getFilePathAttribute(): string
+    {
+        return (new PathManager())->getFile($this->file,'articles_file');
     }
 }

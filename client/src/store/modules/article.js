@@ -29,16 +29,17 @@ const actions = {
     downloadArticles({commit}, payload) {
         return new Promise(((resolve, reject) => {
             let perPage = payload.itemsPerPage?payload.itemsPerPage:10;
-            let page = payload.page?payload.page:1;
+            let page = payload.page?'&page='+payload.page:'';
             let byUser = payload.user_id?`&user_id=${payload.user_id}`:''
             let byTitle = payload.title?`&title=${payload.title}`:''
             let country = payload.country_id?`&country_id=${payload.country_id}`:'';
             let city = payload.city_id?`&city_id=${payload.city_id}`:'';
-            let sortBy = payload.sortBy[0]?`$sortBy=${payload.sortBy[0]}`:''
+            let sortBy = payload.sortBy[0]?`&sortBy=${payload.sortBy[0]}`:''
             let sortDesc = payload.sortDesc[0]?`&sortDesc=${payload.sortDesc[0]}`:''
-            let search = `perPage=${perPage}&page=${page}${sortBy}${sortDesc}`;
-            let NonApproved = payload.nonApproved?'&nonApproved=true':'';
-            axios.get('article?'+search+byUser+byTitle+country+city+NonApproved)
+            let search = `perPage=${perPage}${page}${sortBy}${sortDesc}`;
+            let NonApproved = payload.nonApproved?'&nonApproved=1':'';
+            let byCategoryName = payload.category_name?'&category_name='+payload.category_name:'';
+            axios.get('article?'+search+byUser+byTitle+country+city+NonApproved+byCategoryName)
                 .then(res => {
                     commit("UPDATE_ARTICLES", res.data.data);
                     commit("UPDATE_TOTAL", res.data.total);

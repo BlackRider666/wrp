@@ -7,6 +7,9 @@ use App\Models\Article\ArticleAuthor\ArticleAuthor;
 use App\Models\Conference\Conference;
 use App\Models\Conference\EditorialBoard\EditorialBoard;
 use App\Models\Conference\OrganizationalCommittee\OrganizationalCommittee;
+use App\Models\Country\City\City;
+use App\Models\Country\Country;
+use App\Models\Organization\Organization;
 use App\Models\User\Grant\Grant;
 use App\Models\User\Premium\Premium;
 use App\Models\User\Project\Project;
@@ -14,6 +17,7 @@ use App\Models\User\SocialLink\SocialLink;
 use App\Models\User\Work\Work;
 use BlackParadise\LaravelAdmin\Core\PathManager;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -21,10 +25,12 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Znck\Eloquent\Relations\BelongsToThrough;
+use Znck\Eloquent\Traits\BelongsToThrough as BelongsToThroughTrait;
 
 class User extends Authenticatable
 {
-    use Notifiable, HasApiTokens, HasRoles;
+    use Notifiable, HasApiTokens, HasRoles, BelongsToThroughTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -41,6 +47,10 @@ class User extends Authenticatable
         'phone',
         'desc',
         'verify',
+        'degree',
+        'position',
+        'city_id',
+        'organization_id',
     ];
 
     protected $appends = [
@@ -203,5 +213,29 @@ class User extends Authenticatable
     public function socialLinks(): HasMany
     {
         return $this->hasMany(SocialLink::class);
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function city(): BelongsTo
+    {
+        return $this->belongsTo(City::class);
+    }
+
+    /**
+     * @return BelongsToThrough
+     */
+    public function country(): BelongsToThrough
+    {
+        return $this->BelongsToThrough(Country::class,City::class);
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function organization(): BelongsTo
+    {
+        return $this->belongsTo(Organization::class);
     }
 }

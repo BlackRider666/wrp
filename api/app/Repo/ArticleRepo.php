@@ -7,6 +7,7 @@ use App\Models\Article\Article;
 use App\Models\Article\Citation\Citation;
 use App\Models\User\Work\Work;
 use BlackParadise\LaravelAdmin\Core\CoreRepo;
+use BlackParadise\LaravelAdmin\Core\StorageManager;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -27,6 +28,8 @@ class ArticleRepo extends CoreRepo
     {
         $data['year'] = Carbon::create($data['year']);
         $tags = (new TagsRepo())->createMany($data['tags']);
+        $data['file'] = (new StorageManager())->saveFile($data['file'],'articles_file');
+
         if (!$article = $this->query()->create($data)) {
             throw new RuntimeException('Error on creating article!',500);
         }
@@ -37,14 +40,18 @@ class ArticleRepo extends CoreRepo
             throw new RuntimeException('Error on assign tags to article!',500);
         }
         $citation = [];
-        foreach ($data['citations'] as $id) {
-            $citation[] = new Citation([
-                'article_id'    =>  $article->getKey(),
-                'citation_article_id'   =>  $id
-            ]);
+        if (array_key_exists('citations', $data)) {
+            foreach ($data['citations'] as $id) {
+                $citation[] = new Citation([
+                    'article_id'    =>  $article->getKey(),
+                    'citation_article_id'   =>  $id
+                ]);
+            }
         }
-        if (!$article->citationAny()->saveMany($citation)) {
-            throw new RuntimeException('Error on assign citation to article!',500);
+        if (count($citation) > 0) {
+            if (!$article->citationAny()->saveMany($citation)) {
+                throw new RuntimeException('Error on assign citation to article!',500);
+            }
         }
 
         return $article;
@@ -91,9 +98,15 @@ class ArticleRepo extends CoreRepo
                 });
             });
         }
+        if (array_key_exists('category_name', $data) && $data['category_name']) {
+            $query->whereHas('category', static function ($sub) use ($data) {
+                $sub->where('tech_name',$data['category_name']);
+            });
+        }
         if (array_key_exists('forSelect',$data) && $data['forSelect']) {
             return $query->select(['title', 'id'])->paginate(20);
         }
+
         return $query->with(['category','authors'])->orderBy($sortBy,$sortDesc?'desc':'asc')->paginate($perPage);
     }
 
@@ -122,6 +135,7 @@ class ArticleRepo extends CoreRepo
         if (!$article = $this->query()->find($id)) {
             throw new RuntimeException('Article not found!',404);
         }
+        (new StorageManager())->deleteFile($article->file,'articles_file');
         if (!$article->authors()->sync([])) {
             throw new RuntimeException('Error on remove authors from article!',500);
         }
@@ -136,7 +150,7 @@ class ArticleRepo extends CoreRepo
      */
     public function findWithCategory(int $id)
     {
-        return $this->query()->with(['category','countryCreate','city','authors', 'tags'])->find($id);
+        return $this->query()->with(['category','country','city','authors', 'tags'])->find($id);
     }
 
     /**

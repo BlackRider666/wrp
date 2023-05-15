@@ -26,8 +26,8 @@
         </v-form>
         <v-row justify="center" class="my-6">
           <v-btn tile class="dashboard__search__link mx-3" :to="{name:'Main Search', params: { type: 'articles'}}">Article</v-btn>
-          <v-btn tile class="dashboard__search__link mx-3">Authors</v-btn>
-          <v-btn tile class="dashboard__search__link mx-3" :to="{name:'Conferences'}">Conference</v-btn>
+          <v-btn tile class="dashboard__search__link mx-3" :to="{name:'Main Search', params: { type: 'authors'}}">Authors</v-btn>
+          <v-btn tile class="dashboard__search__link mx-3">Conference</v-btn>
           <v-btn tile class="dashboard__search__link mx-3">Grants</v-btn>
         </v-row>
       </v-col>

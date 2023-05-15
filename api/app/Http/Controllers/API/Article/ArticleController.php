@@ -11,6 +11,7 @@ use App\Repo\ArticleRepo;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 
 class ArticleController extends Controller
 {
@@ -47,8 +48,10 @@ class ArticleController extends Controller
         $user = $request->user();
         try {
             $article = $this->repo->create($data);
-            if ((array_search($user->getKey(), $data['authors'], true)) !== false) {
-                $article->authors()->where('user_id', $user->getKey())->update(['approved' => true]);
+            Log::info($data['authors']);
+            if ((array_search($user->getKey(), $data['authors'])) !== false) {
+                Log::info('Set Update aprroved');
+                $article->authors()->where('user_id', $user->getKey())->update(['approved' => 1]);
             }
         } catch (Exception $e) {
             return new JsonResponse([

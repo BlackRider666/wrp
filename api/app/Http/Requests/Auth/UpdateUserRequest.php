@@ -30,6 +30,10 @@ class UpdateUserRequest extends FormRequest
             'email'         => 'required|string|email|max:255|unique:users,email,'.request()->user()->getKey(),
             'phone'         => 'required|string|max:255',
             'desc'          => 'required|string',
+            'degree'        => 'nullable|string|max:255',
+            'position'      => 'nullable|string|max:255',
+            'city_id'       => 'nullable|int|exists:cities,id',
+            'organization_id' => 'nullable|int|exists:organization,id',
         ];
     }
 }

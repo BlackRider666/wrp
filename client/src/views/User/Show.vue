@@ -29,8 +29,20 @@
                     <div class="text-subtitle-1 pt-1">ID: {{user.id}}</div>
                   </v-col>
                   <v-col cols="4">
+                    <div v-if="user.degree" class="pb-4">
+                      <div class="text-subtitle-1">{{$t('placeholder.degree','Degree')}}</div>
+                      <div class="text-h6 font-weight-regular">
+                        {{user.degree}}
+                      </div>
+                    </div>
+                    <div v-if="user.city_id" class="pb-4">
+                      <div class="text-subtitle-1">{{$t('placeholder.country','Country')}}, {{ $t('placeholder.city', 'City') }}</div>
+                      <div class="text-h6 font-weight-regular">
+                        {{user.country.name}},{{user.city.name}}
+                      </div>
+                    </div>
                     <div>
-                      <div class="text-subtitle-1">Phone</div>
+                      <div class="text-subtitle-1">{{$t('placeholder.phone','Phone')}}</div>
                       <div class="text-h6 font-weight-regular">
                         <template v-if="haveAccess">
                           {{user.phone}}
@@ -44,8 +56,20 @@
                     </div>
                   </v-col>
                   <v-col cols="4">
+                    <div v-if="user.position" class="pb-4">
+                      <div class="text-subtitle-1">{{$t('placeholder.position','Position')}}</div>
+                      <div class="text-h6 font-weight-regular">
+                        {{user.position}}
+                      </div>
+                    </div>
+                    <div v-if="user.organization_id" class="pb-4">
+                      <div class="text-subtitle-1">{{$t('placeholder.organization','Organization')}}</div>
+                      <div class="text-h6 font-weight-regular">
+                        {{user.organization.name.length > 47 ? user.organization.name.substring(0,44)+'...':user.organization.name }}
+                      </div>
+                    </div>
                     <div>
-                      <div class="text-subtitle-1">@Email</div>
+                      <div class="text-subtitle-1">@{{$t('placeholder.email','Email')}}</div>
                       <div class="text-h6 font-weight-regular">
                         <template v-if="haveAccess">
                           {{user.email}}
@@ -69,7 +93,7 @@
                 <v-btn class="font-weight-bold" tile :to="{name:'account'}" block color="#F5F5F5">{{$t('users.edit-profile', 'Edit profile')}}</v-btn>
               </v-col>
             </v-row>
-            <v-tabs grow>
+            <v-tabs v-model="tab" grow v-on:change="changeTab">
               <v-tab>{{$t('placeholder.desc', 'Desc')}}</v-tab>
               <v-tab>{{$t('works.title','Works')}}</v-tab>
               <v-tab>{{$t('articles.index.title','Articles')}}</v-tab>
@@ -138,9 +162,7 @@
                       </div>
                     </div>
                   </v-col>
-                  <v-col cols="12">
-                    {{user.desc}}
-                  </v-col>
+                  <v-col cols="12" v-html="user.desc"></v-col>
                 </v-row>
               </v-tab-item>
               <v-tab-item>
@@ -159,7 +181,7 @@
               <v-tab-item>
                 <v-data-table
                     :headers="headersArticles"
-                    :items="user.articles"
+                    :items="articles"
                     class="elevation-1"
                 >
                   <template v-slot:item.actions="{ item }">
@@ -176,7 +198,7 @@
               <v-tab-item>
                 <v-data-table
                     :headers="headersArticles"
-                    :items="user.articles"
+                    :items="articles"
                     class="elevation-1"
                 >
                   <template v-slot:item.actions="{ item }">
@@ -193,7 +215,7 @@
               <v-tab-item>
                 <v-data-table
                     :headers="headersArticles"
-                    :items="user.articles"
+                    :items="articles"
                     class="elevation-1"
                 >
                   <template v-slot:item.actions="{ item }">
@@ -210,7 +232,7 @@
               <v-tab-item>
                 <v-data-table
                     :headers="headersArticles"
-                    :items="user.articles"
+                    :items="articles"
                     class="elevation-1"
                 >
                   <template v-slot:item.actions="{ item }">
@@ -280,12 +302,14 @@ export default {
         scopus: null,
         science: null,
       },
+      tab: 'desc',
     };
   },
   computed: {
     ...mapState({
       user: (state) => state.user.user,
-      account: (state) => state.account.user
+      account: (state) => state.account.user,
+      articles: (state) => state.article.articles,
     }),
     haveAccess() {
       let user = this.user;
@@ -307,6 +331,35 @@ export default {
     showArticle(item) {
       this.$router.push( { name: 'Article', params: { article_id: item.id } });
     },
+    changeTab() {
+      let user_id = this.$route.params.user_id;
+      switch (this.tab) {
+        case 2:
+          this.$loading();
+          this.$store.dispatch('article/downloadArticles',{user_id:user_id, sortBy:['id'], sortDesc:[1]}).then( () => {
+            this.$loadingClose();
+          })
+          break;
+        case 3:
+          this.$loading();
+          this.$store.dispatch('article/downloadArticles',{user_id:user_id, category_name:'book', sortBy:['id'], sortDesc:[1]}).then( () => {
+            this.$loadingClose();
+          })
+          break;
+        case 4:
+          this.$loading();
+          this.$store.dispatch('article/downloadArticles',{user_id:user_id, category_name:'conference',sortBy:['id'], sortDesc:[1]}).then( () => {
+            this.$loadingClose();
+          })
+          break;
+        case 5:
+          this.$loading();
+          this.$store.dispatch('article/downloadArticles',{user_id:user_id, category_name:'patent', sortBy:['id'], sortDesc:[1]}).then( () => {
+            this.$loadingClose();
+          })
+          break;
+      }
+    }
   },
 }
 </script>

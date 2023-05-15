@@ -63,13 +63,52 @@
                         prepend-inner-icon="mdi-phone"
                         :rules="[rules.required, rules.phone]"
                     />
-                    <v-textarea
+                    <simple-editor
                         v-model="user.desc"
-                        :label="$t('placeholder.desc', 'Desc')"
+                        :placeholder="$t('placeholder.desc', 'Desc')"
+                    ></simple-editor>
+                    <v-text-field
+                        v-model="user.degree"
+                        :label="$t('placeholder.degree', 'Degree')"
                         outlined
-                        prepend-inner-icon="mdi-card-text-outline"
-                        :rules="[rules.required]"
-                    ></v-textarea>
+                        prepend-inner-icon="mdi-account"
+                    />
+                    <v-text-field
+                        v-model="user.position"
+                        :label="$t('placeholder.position', 'Position')"
+                        outlined
+                        prepend-inner-icon="mdi-account"
+                    />
+                    <v-autocomplete
+                        v-model="user.organization_id"
+                        :items="organizations"
+                        hide-no-data
+                        item-text="name"
+                        item-value="id"
+                        :label="$t('placeholder.organization','Organization')"
+                        :placeholder="$t('works.placeholder.organization','Organization')"
+                        prepend-inner-icon="mdi-database-search"
+                        :search-input="organizationSearch"
+                        outlined
+                    ></v-autocomplete>
+                    <v-select
+                        v-model="user.country_id"
+                        :items="countries"
+                        item-text="name"
+                        item-value="id"
+                        :label="$t('placeholder.country','Country')"
+                        prepend-inner-icon="mdi-database-search"
+                        outlined
+                    ></v-select>
+                    <v-select
+                        v-model="user.city_id"
+                        :items="cities"
+                        item-text="name"
+                        item-value="id"
+                        :label="$t('placeholder.city','City')"
+                        prepend-inner-icon="mdi-database-search"
+                        outlined
+                    ></v-select>
                   </v-card-text>
                   <v-card-actions>
                     <v-spacer></v-spacer>
@@ -197,10 +236,13 @@ import Project from "@/views/account/Project";
 import Work from "@/views/account/Work";
 import Occupancy from "./Occupancy";
 import SocialLink from "./SocialLink";
+import {mapState} from "vuex";
+import SimpleEditor from "../../components/editor/SimpleEditor";
 
 export default {
   name: "Account",
   components: {
+    SimpleEditor,
     SocialLink,
     Project,
     Grant,
@@ -212,6 +254,7 @@ export default {
       showCommon: true,
       showAvatar: true,
       changePassword: false,
+      organizationSearch:'',
       user: {
         first_name: '',
         second_name: '',
@@ -219,6 +262,11 @@ export default {
         email: '',
         phone: '',
         desc: '',
+        degree:'',
+        position:'',
+        country_id: null,
+        city_id:null,
+        organization_id: null,
       },
       avatar: null,
       changePasswordRequest: {
@@ -239,6 +287,9 @@ export default {
   },
   mounted() {
     this.user = this.$store.getters['account/getAccount'];
+    this.user.country_id = this.user.country?this.user.country.id:null;
+    this.$store.dispatch('country/downloadCountries');
+    this.$store.dispatch('organization/downloadOrganizations');
   },
   computed: {
     fillCommon() {
@@ -246,7 +297,12 @@ export default {
     },
     fillAvatar() {
       return this.$store.state.tutorial.step === 3 && this.$store.state.tutorial.tutorialCategory === 'account';
-    }
+    },
+    ...mapState({
+      countries: (state) => state.country.countries,
+      cities: (state) => state.city.cities,
+      organizations: (state) => state.organization.organizations,
+    }),
   },
   methods: {
     showCommonSheet() {
@@ -314,6 +370,14 @@ export default {
             this.$loadingClose();
             this.$notify('','error', error.response.data.message);
           })
+    },
+  },
+  watch: {
+    'user.country_id': {
+      handler () {
+        this.$store.dispatch('city/downloadCities');
+      },
+      deep: true,
     },
   },
 }

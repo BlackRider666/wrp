@@ -57,9 +57,11 @@ class UserController extends Controller
                     'works',
                     'grants',
                     'projects',
-                    'articles',
-                    'articles.category',
-                    'socialLinks'
+                    'socialLinks',
+                    'city',
+                    'country',
+                    'organization',
+                    'articles'
                     ]),
         ]);
     }

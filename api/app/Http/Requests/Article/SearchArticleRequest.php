@@ -34,7 +34,8 @@ class SearchArticleRequest extends FormRequest
             'title'     =>  'string|max:255',
             'country_id'    =>  'int',
             'city_id'       =>  'int',
-            'nonApproved'   =>  'boolean'
+            'nonApproved'   =>  'boolean',
+            'category_name' => 'nullable|string',
         ];
     }
 }

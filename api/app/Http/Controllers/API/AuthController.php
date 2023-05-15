@@ -114,7 +114,7 @@ class AuthController extends Controller
     public function user(Request $request): JsonResponse
     {
         try {
-            $user = $this->repository->findWith($request->user()->getKey(),['roles']);
+            $user = $this->repository->findWith($request->user()->getKey(),['roles','city', 'country']);
         } catch (Exception $e) {
             return new JsonResponse([
                 'message' => $e->getMessage(),

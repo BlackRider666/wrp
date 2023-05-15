@@ -7,16 +7,6 @@ use Illuminate\Foundation\Http\FormRequest;
 class CreateArticleRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize(): bool
-    {
-        return true;
-    }
-
-    /**
      * Get the validation rules that apply to the request.
      *
      * @return array
@@ -40,6 +30,8 @@ class CreateArticleRequest extends FormRequest
             'patent_number' => 'nullable|string|max:255',
             'app_number'    => 'nullable|string|max:255',
             'desc'          => 'required|string',
+            'full_text'     => 'required|string',
+            'file'          => 'required|file|mimes:pdf',
             'tags'          => 'array',
             'tags.*.id'     => 'required',
             'citations'          => 'array',

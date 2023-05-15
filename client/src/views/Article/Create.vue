@@ -138,13 +138,12 @@
                     prepend-inner-icon="mdi-card-text-outline"
                     :rules="[rules.required]"
                 />
-                <v-textarea
+<!--                TODO:Add rules-->
+                <SimpleEditor
                     v-model="article.desc"
-                    :label="$t('articles.placeholder.desc', 'Desc')"
-                    outlined
-                    prepend-inner-icon="mdi-card-text-outline"
-                    :rules="[rules.required]"
-                ></v-textarea>
+                    :placeholder="$t('articles.placeholder.desc', 'Desc')"
+                ></SimpleEditor>
+                <FullEditor v-model="article.full_text" :placeholder="$t('articles.placeholder.full_text', 'Full text')"/>
                 <v-autocomplete
                     v-model="article.tags"
                     :items="tags"
@@ -183,6 +182,15 @@
                     :loading="loadingCitation"
                 >
                 </v-autocomplete>
+                <v-file-input
+                    :rules="[rules.required]"
+                    accept="file/pdf"
+                    prepend-inner-icon="mdi-file"
+                    prepend-icon=""
+                    :label="$t('placeholder.file','File')"
+                    outlined
+                    v-model="file"
+                ></v-file-input>
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
@@ -199,10 +207,16 @@
 
 <script>
 import {mapState} from "vuex";
-import {debouncer} from "../../plugins/l10s";
+import {debouncer} from '@/plugins/l10s';
+import FullEditor from '@/components/editor/FullEditor';
+import SimpleEditor from "@/components/editor/SimpleEditor";
 const debounceRequest = debouncer(1500)
 export default {
   name: "Create",
+  components: {
+    SimpleEditor,
+    FullEditor,
+  },
   data() {
     return {
       article: {
@@ -220,7 +234,9 @@ export default {
         app_number: null,
         tags:[],
         citations: [],
+        full_text:'',
       },
+      file: null,
       rules: {
         required: value => !!value || 'Required.',
       },
@@ -254,7 +270,26 @@ export default {
       e.stopPropagation();
       if (!this.$refs.form.validate()) return;
       this.$loading();
-      this.$store.dispatch('article/createArticle', this.article)
+      let form = new FormData();
+      for (const [key, value] of Object.entries(this.article)) {
+        if (Array.isArray(value)) {
+          for(let i =0; i < value.length; i++) {
+            if (typeof value[i] === 'object') {
+              for (let k in value[i] ) {
+                form.append(key+'['+i+']'+'['+k+']', value[i][k]);
+              }
+            } else {
+              form.append(key+'['+i+']',value[i])
+            }
+          }
+        } else {
+          if (value) {
+            form.append(key,value);
+          }
+        }
+      }
+      form.append('file', this.file);
+      this.$store.dispatch('article/createArticle', form)
       .then( () => {
         this.$loadingClose();
         this.$notify('','success', this.$t('messages.success','Success'));

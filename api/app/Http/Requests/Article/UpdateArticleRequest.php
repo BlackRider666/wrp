@@ -40,6 +40,8 @@ class UpdateArticleRequest extends FormRequest
             'patent_number' => 'nullable|string|max:255',
             'app_number'    => 'nullable|string|max:255',
             'desc'          =>  'required|string',
+            'full_text'     => 'required|string',
+            'file'          => 'required|file|mimes:pdf',
         ];
     }
 }

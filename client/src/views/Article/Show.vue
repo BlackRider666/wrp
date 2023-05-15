@@ -1,201 +1,107 @@
 <template>
-<v-row>
-  <v-col cols="12">
-    <v-card v-if="article">
-      <v-card-title class="pb-0">
-        <v-toolbar dense color="primary">
-          {{article.category.title}} - {{article.title}}
-        </v-toolbar>
-      </v-card-title>
-      <v-card-text>
-        <v-list outlined>
-          <div v-if="article.country_id">
-            <v-list-item >
-              <v-list-item-action>
-                <v-icon>mdi-account</v-icon>
-              </v-list-item-action>
-              <v-list-item-content>
-                <v-list-item-subtitle>{{$t('articles.placeholder.country', 'Country')}}</v-list-item-subtitle>
-                <v-list-item-title>{{article.country_create.name}}</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
+  <v-container>
+    <v-row>
+      <v-col cols="12">
+        <v-card v-if="article" flat>
+          <v-card-title>
+            <v-row justify="end">
+              <v-btn class="font-weight-bold" tile @click="editArticles">Edit article</v-btn>
+              <v-btn class="font-weight-bold ml-3" color="#f5f5f5" tile @click="copyLink">Copy link</v-btn>
+            </v-row>
+          </v-card-title>
+          <v-card-text>
+            <div class="pb-8">
+              <span class="text-subtitle-2 pb-1">{{$t('articles.placeholder.title', 'Title')}}</span>
+              <div class="text-h4 font-weight-medium">{{article.title}}</div>
+            </div>
             <v-divider/>
-          </div>
-          <div v-if="article.city_id">
-            <v-list-item >
-              <v-list-item-action>
-                <v-icon>mdi-account</v-icon>
-              </v-list-item-action>
-              <v-list-item-content>
-                <v-list-item-subtitle>{{$t('articles.placeholder.city', 'City')}}</v-list-item-subtitle>
-                <v-list-item-title>{{article.city.name}}</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
+            <div class="py-8">
+              <p class="text-subtitle-2 mb-1">{{$t('articles.placeholder.authors','Authors')}}</p>
+              <div class="d-inline-flex">
+                <div class="text-center" v-for="author in article.authors" :key="author.id">
+                  <v-avatar class="d-flex my-2 mx-auto" size="70">
+                    <v-img :src="author.avatar_url"></v-img>
+                  </v-avatar>
+                  <span>{{author.full_name}}</span>
+                </div>
+              </div>
+            </div>
             <v-divider/>
-          </div>
-          <div v-if="article.title">
-            <v-list-item >
-              <v-list-item-action>
-                <v-icon>mdi-account</v-icon>
-              </v-list-item-action>
-              <v-list-item-content>
-                <v-list-item-subtitle>{{$t('articles.placeholder.title', 'Title')}}</v-list-item-subtitle>
-                <v-list-item-title>{{article.title}}</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
+            <div class="d-inline-flex py-8">
+              <div class="pr-12">
+                <div class="text-subtitle-2 pb-2">{{$t('articles.placeholder.city', 'City')}}, {{$t('articles.placeholder.country', 'Country')}}</div>
+                <div class="text-body-1">{{article.city.name}}, {{article.country.name}}</div>
+              </div>
+              <div class="px-12">
+                <div class="text-subtitle-2  pb-2">{{$t('articles.placeholder.published_at', 'Published at')}}</div>
+                <div class="text-body-1">{{article.year}}</div>
+              </div>
+              <div class="px-12">
+                <div class="text-subtitle-2 pb-2">{{$t('articles.placeholder.category', 'Category')}}</div>
+                <div class="text-body-1">{{article.category.title}}</div>
+              </div>
+            </div>
             <v-divider/>
-          </div>
-          <div v-if="article.category">
-            <v-list-item>
-              <v-list-item-action>
-                <v-icon>mdi-account</v-icon>
-              </v-list-item-action>
-              <v-list-item-content>
-                <v-list-item-subtitle>{{$t('articles.placeholder.category', 'Category')}}</v-list-item-subtitle>
-                <v-list-item-title>{{article.category.title}}</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
+            <div class="py-8">
+              <span class="text-subtitle-2" v-if="article.journal">{{$t(checkCategoryTitleLabelTranslate(), 'Journal')}}</span>
+              <p class="text-body-1 mb-4" v-if="article.journal">{{article.journal}}</p>
+              <div class="d-inline-flex py-4">
+                <div v-if="article.part" class="pr-16">
+                  <span class="text-subtitle-2 pb-2">{{$t('articles.placeholder.part', 'Part')}}</span>
+                  <div class="text-body-1">{{article.part}}</div>
+                </div>
+                <div v-if="article.number" class="pr-16">
+                  <span class="text-subtitle-2 pb-2">{{$t('articles.placeholder.number', 'Number')}}</span>
+                  <div class="text-body-1">{{article.number}}</div>
+                </div>
+                <div v-if="article.pages" class="pr-16">
+                  <span class="text-subtitle-2 pb-2">{{$t('articles.placeholder.pages', 'Pages')}}</span>
+                  <div class="text-body-1">{{article.pages}}</div>
+                </div>
+                <div v-if="article.publisher" class="pr-16">
+                  <span class="text-subtitle-2 pb-2">{{$t('articles.placeholder.publisher', 'Publisher')}}</span>
+                  <div class="text-body-1">{{article.publisher}}</div>
+                </div>
+                <div v-if="article.patent_number" class="pr-16">
+                  <span class="text-subtitle-2 pb-2">{{$t('articles.placeholder.patent_number', 'Patent Number')}}</span>
+                  <div class="text-body-1">{{article.patent_number}}</div>
+                </div>
+                <div v-if="article.app_number" class="pr-16">
+                  <span class="text-subtitle-2 pb-2">{{$t('articles.placeholder.app_number', 'App Number')}}</span>
+                  <div class="text-body-1">{{article.app_number}}</div>
+                </div>
+              </div>
+              <div class="py-4">
+                <span class="text-subtitle-2 pb-2">{{$t('articles.placeholder.citation_this_count', 'Citations')}}</span>
+                <p class="text-body-1 mb-0">{{article.citation_this_count}}</p>
+              </div>
+              <div class="pt-4">
+                <span class="text-subtitle-2 pb-2 d-flex">{{$t('articles.placeholder.file', 'PDF file')}}</span>
+                <a :href="article.file_path" :download="article.title" class="align-content-center align-self-center d-flex text-decoration-none">
+                  <v-icon color="primary" class="mr-3">mdi-export</v-icon>
+                  <span class="text-body-1 text-decoration-underline">{{article.title}}.pdf</span>
+                </a>
+              </div>
+            </div>
             <v-divider/>
-          </div>
-          <div  v-if="article.year">
-            <v-list-item>
-              <v-list-item-action>
-                <v-icon>mdi-account</v-icon>
-              </v-list-item-action>
-              <v-list-item-content>
-                <v-list-item-subtitle>{{$t('articles.placeholder.year', 'Year')}}</v-list-item-subtitle>
-                <v-list-item-title>{{article.year}}</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-divider/>
-          </div>
-          <div v-if="article.journal">
-            <v-list-item>
-              <v-list-item-action>
-                <v-icon>mdi-account</v-icon>
-              </v-list-item-action>
-              <v-list-item-content>
-                <v-list-item-subtitle>{{$t(checkCategoryTitleLabelTranslate(), 'Journal')}}</v-list-item-subtitle>
-                <v-list-item-title>{{article.journal}}</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-divider/>
-          </div>
-          <div v-if="article.part">
-            <v-list-item >
-              <v-list-item-action>
-                <v-icon>mdi-account</v-icon>
-              </v-list-item-action>
-              <v-list-item-content>
-                <v-list-item-subtitle>{{$t('articles.placeholder.part', 'Part')}}</v-list-item-subtitle>
-                <v-list-item-title>{{article.part}}</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-divider/>
-          </div>
-          <div v-if="article.number">
-            <v-list-item>
-              <v-list-item-action>
-                <v-icon>mdi-account</v-icon>
-              </v-list-item-action>
-              <v-list-item-content>
-                <v-list-item-subtitle>{{$t('articles.placeholder.number', 'Number')}}</v-list-item-subtitle>
-                <v-list-item-title>{{article.number}}</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-divider/>
-          </div>
-          <div v-if="article.pages">
-            <v-list-item>
-              <v-list-item-action>
-                <v-icon>mdi-account</v-icon>
-              </v-list-item-action>
-              <v-list-item-content>
-                <v-list-item-subtitle>{{$t('articles.placeholder.pages', 'Pages')}}</v-list-item-subtitle>
-                <v-list-item-title>{{article.pages}}</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-divider/>
-          </div>
-          <div v-if="article.publisher">
-            <v-list-item>
-              <v-list-item-action>
-                <v-icon>mdi-account</v-icon>
-              </v-list-item-action>
-              <v-list-item-content>
-                <v-list-item-subtitle>{{$t('articles.placeholder.publisher', 'Publisher')}}</v-list-item-subtitle>
-                <v-list-item-title>{{article.publisher}}</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-divider/>
-          </div>
-          <div v-if="article.country">
-            <v-list-item>
-              <v-list-item-action>
-                <v-icon>mdi-account</v-icon>
-              </v-list-item-action>
-              <v-list-item-content>
-                <v-list-item-subtitle>{{$t('articles.placeholder.patent_country', 'Patent Country')}}</v-list-item-subtitle>
-                <v-list-item-title>{{article.country}}</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-divider/>
-          </div>
-          <div v-if="article.patent_number">
-            <v-list-item>
-              <v-list-item-action>
-                <v-icon>mdi-account</v-icon>
-              </v-list-item-action>
-              <v-list-item-content>
-                <v-list-item-subtitle>{{$t('articles.placeholder.patent_number', 'Patent Number')}}</v-list-item-subtitle>
-                <v-list-item-title>{{article.patent_number}}</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-divider/>
-          </div>
-          <div v-if="article.app_number">
-            <v-list-item>
-              <v-list-item-action>
-                <v-icon>mdi-account</v-icon>
-              </v-list-item-action>
-              <v-list-item-content>
-                <v-list-item-subtitle>{{$t('articles.placeholder.app_number', 'App Number')}}</v-list-item-subtitle>
-                <v-list-item-title>{{article.app_number}}</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-divider/>
-          </div>
-          <div v-if="article.desc">
-            <v-list-item>
-              <v-list-item-action>
-                <v-icon>mdi-account</v-icon>
-              </v-list-item-action>
-              <v-list-item-content>
-                <v-list-item-subtitle>{{$t('articles.placeholder.desc', 'Description')}}</v-list-item-subtitle>
-                <v-list-item-title>{{article.desc}}</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-divider/>
-          </div>
-          <div v-if="article.tags">
-            <v-list-item>
-              <v-list-item-action>
-                <v-icon>mdi-account</v-icon>
-              </v-list-item-action>
-              <v-list-item-content>
-                <v-list-item-subtitle>{{$t('tags.placeholder.tags','Tags')}}</v-list-item-subtitle>
-                <v-list-item-title>
-                  <v-chip v-for="tag in article.tags" :key="tag.id" class="ma-1">{{tag.name}}</v-chip>
-                </v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-divider/>
-          </div>
-        </v-list>
-      </v-card-text>
-    </v-card>
-  </v-col>
-</v-row>
+            <div class="py-8">
+              <span class="text-subtitle-2 pb-2">{{$t('articles.placeholder.desc', 'Description')}}</span>
+              <p class="text-body-1 mb-8" v-html="article.desc"></p>
+              <span class="text-subtitle-2 pb-2">{{$t('articles.placeholder.full_text', 'Full text')}}</span>
+              <p class="text-body-1 mb-0" v-html="article.full_text"></p>
+            </div>
+            <v-divider></v-divider>
+            <div class="py-8">
+              <span class="text-subtitle-2 pb-2">{{$t('articles.placeholder.tags', 'Tags')}}</span>
+              <p class="text-body-1 mb-0">
+                <v-chip v-for="tag in article.tags" :key="tag.id" class="ma-1">{{tag.name}}</v-chip>
+              </p>
+            </div>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 <script>
 import {mapState} from "vuex";
@@ -217,12 +123,18 @@ export default {
       if (category.tech_name === 'article') {
         return 'articles.placeholder.journal';
       }
-      if (category.tech_name === 'section') {
+      if (category.tech_name === 'book') {
         return 'articles.placeholder.book';
       }
       if (category.tech_name === 'conference') {
         return 'articles.placeholder.conference';
       }
+    },
+    copyLink() {
+      console.log('Copy');
+    },
+    editArticles() {
+
     }
   },
 }
