@@ -8,9 +8,9 @@
           <v-card-title class="heading font-weight-medium">
             {{$t('search.title','Search')}}
             <v-spacer></v-spacer>
-            <template v-if="isPremium">
-              <v-btn :to="{name:'Create Article'}" color="primary" icon><v-icon>mdi-plus</v-icon></v-btn>
-            </template>
+<!--            <template v-if="isPremium">-->
+<!--              <v-btn :to="{name:'Create Article'}" color="primary" icon><v-icon>mdi-plus</v-icon></v-btn>-->
+<!--            </template>-->
           </v-card-title>
           <v-card-text>
   <!--            <v-toolbar-->
@@ -68,28 +68,30 @@
   <!--                </v-row>-->
   <!--              </v-container>-->
   <!--            </v-sheet>-->
-            <v-data-table
-                v-if="searchType[$route.params.type].showArticlesTable"
-                :headers="articleHeaders"
-                :items="articles"
-                :options.sync="options"
-                :server-items-length="totalArticles"
-                :footer-props="{
-                    itemsPerPageOptions:[5,10,15,20]
-                }"
-                class="elevation-1"
-            >
-              <template v-slot:item.actions="{ item }">
-                <v-icon
-                    small
-                    class="mr-2"
-                    @click="showArticle(item)"
-                >
-                  mdi-eye
-                </v-icon>
-              </template>
-            </v-data-table>
-            <template v-if="searchType[$route.params.type].showUsersTable">
+            <template v-if="searchType[type].showArticlesTable">
+              <div class="text-h5 font-weight-medium mb-4">Articles</div>
+              <v-data-table
+                  :headers="articleHeaders"
+                  :items="articles"
+                  :options.sync="options"
+                  :server-items-length="totalArticles"
+                  :footer-props="{
+                      itemsPerPageOptions:[5,10,15,20]
+                  }"
+                  class="elevation-1 mb-5"
+              >
+                <template v-slot:item.actions="{ item }">
+                  <v-icon
+                      small
+                      class="mr-2"
+                      @click="showArticle(item)"
+                  >
+                    mdi-eye
+                  </v-icon>
+                </template>
+              </v-data-table>
+            </template>
+            <template v-if="searchType[type].showUsersTable">
               <div class="text-h5 font-weight-medium mb-4">Authors</div>
               <v-data-table
                   :headers="userHeaders"
@@ -174,6 +176,14 @@ export default {
       }
       return false;
     },
+    type() {
+      if (this.$route.params.type) {
+        if (this.searchType[this.$route.params.type]) {
+          return this.$route.params.type;
+        }
+      }
+      return 'all';
+    }
   },
   mounted() {
     this.$store.dispatch('country/downloadCountries');

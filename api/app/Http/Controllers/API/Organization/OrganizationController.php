@@ -27,4 +27,20 @@ class OrganizationController extends Controller
     {
         return new JsonResponse($this->repo->search($request->all()));
     }
+
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function show(int $id): JsonResponse
+    {
+        if (!$organization = $this->repo->findWith($id)) {
+            return new JsonResponse([
+                'message'   =>  'Not Found!'
+            ],404);
+        }
+        return new JsonResponse([
+            'organization'   =>  $organization,
+        ]);
+    }
 }

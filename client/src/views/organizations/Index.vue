@@ -31,8 +31,8 @@
         </v-card-title>
         <v-card-text>
           <v-row>
-            <v-col cols="3" v-for="org in organizations" :key="org.id">
-              <OrganizationItem :org="org"/>
+            <v-col :cols="detailed?6:3" v-for="org in organizations" :key="org.id">
+              <OrganizationItem :org="org" :detailed="detailed"/>
             </v-col>
           </v-row>
         </v-card-text>

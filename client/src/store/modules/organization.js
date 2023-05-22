@@ -3,6 +3,7 @@ import axios from "axios";
 const state = {
     organizations: [],
     structureUnits: [],
+    organization: null,
 };
 
 const getters = {
@@ -37,6 +38,18 @@ const actions = {
                 })
         }))
     },
+    getOrganization({commit}, payload) {
+        return new Promise(((resolve, reject) => {
+            axios.get('organizations/'+payload)
+                .then(res => {
+                    commit("UPDATE_ORGANIZATION", res.data.organization);
+                    resolve(res.data.organization)
+                })
+                .catch(errors => {
+                    reject(errors.response.data)
+                })
+        }))
+    },
     clearStructureUnits({commit}) {
         commit("CLEAR_STRUCTURE_UNITS")
     },
@@ -51,6 +64,9 @@ const mutations = {
     },
     CLEAR_STRUCTURE_UNITS (state) {
         state.structureUnits = [];
+    },
+    UPDATE_ORGANIZATION(state, organization) {
+        state.organization = organization;
     }
 };
 

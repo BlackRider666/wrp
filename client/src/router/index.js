@@ -125,6 +125,11 @@ const router = new VueRouter({
                     component: () => import('../views/organizations/Index'),
                 },
                 {
+                    path: '/organizations/:organization_id',
+                    name: 'organization',
+                    component: () => import('../views/organizations/Show'),
+                },
+                {
                     path: '/news',
                     name: 'news',
                     component: () => import('../views/news/Index'),

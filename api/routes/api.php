@@ -82,6 +82,7 @@ Route::group(['prefix' => 'article', 'middleware' => 'auth:sanctum'], function (
 });
 Route::group(['prefix' => 'organizations'], function () {
     Route::get('/', [OrganizationController::class,'index']);
+    Route::get('/{organization_id}', [OrganizationController::class,'show']);
     Route::get('/structure-units', [StructuralUnitController::class,'index']);
 });
 Route::group(['prefix' => 'locales'], function () {
