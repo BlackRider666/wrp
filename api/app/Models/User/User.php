@@ -46,11 +46,11 @@ class User extends Authenticatable
         'password',
         'phone',
         'desc',
-        'verify',
         'degree',
         'position',
         'city_id',
         'organization_id',
+        'verify',
     ];
 
     protected $appends = [

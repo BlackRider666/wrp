@@ -100,7 +100,7 @@ class AuthController extends Controller
      */
     public function logout(Request $request): JsonResponse
     {
-        $this->repository->logout($request->user()->getKey());
+        $this->repository->logout($request->user('api')->getKey());
 
         return new JsonResponse([
             'message'   =>  'Logout success',
@@ -114,7 +114,7 @@ class AuthController extends Controller
     public function user(Request $request): JsonResponse
     {
         try {
-            $user = $this->repository->findWith($request->user()->getKey(),['roles','city', 'country']);
+            $user = $this->repository->findWith($request->user('api')->getKey(),['roles','city', 'country']);
         } catch (Exception $e) {
             return new JsonResponse([
                 'message' => $e->getMessage(),
@@ -133,7 +133,7 @@ class AuthController extends Controller
     public function update(UpdateUserRequest $request): JsonResponse
     {
         $data = $request->validated();
-        $user = $request->user();
+        $user = $request->user('api');
 
         try {
             $user = $this->repository->update($user->getKey(), $data);
@@ -154,7 +154,7 @@ class AuthController extends Controller
      */
     public function updatePhoto(UpdatePhotoRequest $request): JsonResponse
     {
-        $user = $request->user();
+        $user = $request->user('api');
         $storage = new StorageManager();
         if ($user->avatar !== null) {
             $storage->deleteFile($user->avatar,'user_avatar');
@@ -182,7 +182,7 @@ class AuthController extends Controller
     public function changePassword(ChangePasswordRequest $request): JsonResponse
     {
         $data = $request->validated();
-        $user = $request->user();
+        $user = $request->user('api');
         $data['password'] = Hash::make($data['password']);
 
         try {

@@ -130,6 +130,11 @@ const router = new VueRouter({
                     component: () => import('../views/organizations/Show'),
                 },
                 {
+                    path: '/organizations/:organization_id/edit',
+                    name: 'organization-edit',
+                    component: () => import('../views/organizations/Edit'),
+                },
+                {
                     path: '/news',
                     name: 'news',
                     component: () => import('../views/news/Index'),

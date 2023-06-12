@@ -44,10 +44,10 @@ class OrganizationRepo extends CoreRepo
         return $organization;
     }
 
-    public function findWith(int $id)
+    public function findWith(int $id, array $with)
     {
         $query = $this->query();
 
-        return $query->with(['country','city'])->find($id);
+        return $query->with($with)->find($id);
     }
 }

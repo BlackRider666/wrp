@@ -5,9 +5,11 @@ namespace App\Models\Organization;
 use App\Models\Country\City\City;
 use App\Models\Country\Country;
 use App\Models\Organization\StructuralUnit\StructuralUnit;
+use App\Models\User\User;
 use BlackParadise\LaravelAdmin\Core\PathManager;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Organization extends Model
@@ -36,7 +38,7 @@ class Organization extends Model
      */
     public function units(): HasMany
     {
-        return $this->hasMany(StructuralUnit::class);
+        return $this->hasMany(StructuralUnit::class)->where('parent_id', null);
     }
 
     /**
@@ -61,5 +63,13 @@ class Organization extends Model
             (new PathManager())->getFile($this->img, 'organizations_img')
             :
             (new PathManager())->getDefaultPicture();
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+    public function editors(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class,'organization_user');
     }
 }

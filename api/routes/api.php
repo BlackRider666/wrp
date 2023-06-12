@@ -83,7 +83,13 @@ Route::group(['prefix' => 'article', 'middleware' => 'auth:sanctum'], function (
 Route::group(['prefix' => 'organizations'], function () {
     Route::get('/', [OrganizationController::class,'index']);
     Route::get('/{organization_id}', [OrganizationController::class,'show']);
-    Route::get('/structure-units', [StructuralUnitController::class,'index']);
+    Route::get('/{organization_id}/edit', [OrganizationController::class,'edit']);
+});
+Route::group(['prefix' => 'structure-units'], static function () {
+    Route::get('/',[StructuralUnitController::class,'index']);
+    Route::post('/',[StructuralUnitController::class,'store']);
+    Route::post('/{unit_id}',[StructuralUnitController::class,'update']);
+    Route::delete('/{unit_id}',[StructuralUnitController::class,'destroy']);
 });
 Route::group(['prefix' => 'locales'], function () {
     Route::get('/',[LocaleController::class,'index']);

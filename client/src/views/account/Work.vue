@@ -362,8 +362,6 @@ export default {
           let org = this.organizations.find((i) => i.id === 'new');
           if (org) {
             org.name = item;
-          } else {
-            this.organizations.push({id:'new',name:item});
           }
         }
       }
@@ -375,8 +373,6 @@ export default {
           let structureUnit = this.structureUnits.find((i) => i.id === 'new');
           if (structureUnit) {
             structureUnit.name = item;
-          } else {
-            this.structureUnits.push({id:'new',name:item});
           }
         }
       }

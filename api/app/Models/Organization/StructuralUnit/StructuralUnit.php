@@ -15,6 +15,8 @@ class StructuralUnit extends Model
     protected $fillable = [
         'name',
         'organization_id',
+        'parent_id',
+        'type',
         ];
 
     protected $appends = [
@@ -39,5 +41,21 @@ class StructuralUnit extends Model
     public function getOrganizationTitleAttribute()
     {
         return $this->organization->name;
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(self::class,'parent_id');
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function child(): HasMany
+    {
+        return $this->hasMany(self::class,'parent_id')->with('child');
     }
 }
