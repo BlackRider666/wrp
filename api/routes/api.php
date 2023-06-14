@@ -84,6 +84,7 @@ Route::group(['prefix' => 'organizations'], function () {
     Route::get('/', [OrganizationController::class,'index']);
     Route::get('/{organization_id}', [OrganizationController::class,'show']);
     Route::get('/{organization_id}/edit', [OrganizationController::class,'edit']);
+    Route::post('/{organization_id}/update', [OrganizationController::class,'update']);
 });
 Route::group(['prefix' => 'structure-units'], static function () {
     Route::get('/',[StructuralUnitController::class,'index']);

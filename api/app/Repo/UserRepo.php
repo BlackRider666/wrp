@@ -8,6 +8,7 @@ use App\Models\User\User;
 use BlackParadise\LaravelAdmin\Core\CoreRepo;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 use RuntimeException;
@@ -81,9 +82,9 @@ class UserRepo extends CoreRepo
 
     /**
      * @param array $data
-     * @return LengthAwarePaginator
+     * @return LengthAwarePaginator|Builder[]|Collection|Model[]
      */
-    public function search(array $data): LengthAwarePaginator
+    public function search(array $data)
     {
         $perPage = array_key_exists('perPage',$data)?$data['perPage']:10;
         $sortBy = 'first_name';
@@ -96,6 +97,20 @@ class UserRepo extends CoreRepo
                 $q->orWhere('surname','like','%'.$data['title'].'%');
             });
         }
+
+        if (array_key_exists('organization_id',$data)) {
+            $query->whereHas('works', static function ($subQ) use ($data) {
+                $subQ->whereHas('unit', static function ($q) use ($data) {
+                    $q->where('organization_id', $data['organization_id']);
+                });
+                $subQ->where('finish',null);
+            });
+        }
+
+        if (array_key_exists('forSelect', $data) && $data['forSelect']) {
+            return $query->get(['id','first_name','second_name','surname']);
+        }
+
         return $query->orderBy($sortBy,$sortDesc?'desc':'asc')->paginate($perPage);
     }
 

@@ -52,6 +52,19 @@ const actions = {
                 })
         }))
     },
+    downloadStaff({commit}, payload) {
+        return new Promise(((resolve, reject) => {
+            let search = `organization_id=${payload}&forSelect=true`;
+            axios.get('users?'+search)
+                .then(res => {
+                    commit("UPDATE_USERS", res.data);
+                    resolve(res.data)
+                })
+                .catch(errors => {
+                    reject(errors.response.data)
+                })
+        }))
+    },
 };
 
 const mutations = {

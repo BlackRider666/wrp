@@ -23,6 +23,7 @@ class Organization extends Model
         'city_id',
         'rate',
         'verified',
+        'user_id',
     ];
 
     protected $casts = [
@@ -71,5 +72,18 @@ class Organization extends Model
     public function editors(): BelongsToMany
     {
         return $this->belongsToMany(User::class,'organization_user');
+    }
+
+    public function staff(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class,'organization_staff');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

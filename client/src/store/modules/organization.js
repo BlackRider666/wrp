@@ -62,6 +62,18 @@ const actions = {
                 })
         }))
     },
+    updateOrganization({commit}, payload) {
+        return new Promise(((resolve, reject) => {
+            axios.post('organizations/'+payload.organization_id+'/update', payload)
+                .then(res => {
+                    commit("UPDATE_ORGANIZATION", res.data.organization);
+                    resolve(res.data.organization)
+                })
+                .catch(errors => {
+                    reject(errors.response.data)
+                })
+        }))
+    },
     createStructureUnit({commit}, payload) {
         return new Promise(((resolve, reject) => {
             axios.post('structure-units/',payload)

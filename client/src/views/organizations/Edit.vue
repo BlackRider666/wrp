@@ -5,6 +5,7 @@
         <v-card-title>
           <v-toolbar dense color="primary" class="white--text">
             <span class="flex-fill">Edit {{organization.name}}</span>
+            <v-btn icon color="white" @click="openStaffDialog()"><v-icon>mdi-account-group</v-icon></v-btn>
             <v-btn icon color="white" @click="openAddItem(null)"><v-icon>mdi-plus</v-icon></v-btn>
           </v-toolbar>
         </v-card-title>
@@ -53,6 +54,14 @@
         :selectedItem="selectedItem"
         @closeDialog="closeEditItem"/>
     <delete-dialog :deleteDialog="deleteDialog" :item="selectedItem" @closeDialog="closeDeleteItem"/>
+    <staff-dialog
+      :staffDialog="staffDialog"
+      :items="users"
+      :organization_id="organization?organization.id:null"
+      :staff="organization?organization.staff:[]"
+      :rector="organization?organization.user_id:null"
+      @closeDialog="closeStaffDialog"
+    ></staff-dialog>
   </v-row>
 </template>
 
@@ -61,6 +70,7 @@ import {mapState} from "vuex";
 import DeleteDialog from "@/components/organizations/units/DeleteDialog";
 import CreateDialog from "@/components/organizations/units/CreateDialog";
 import EditDialog from "@/components/organizations/units/EditDialog";
+import StaffDialog from "@/components/organizations/staff/StaffDialog";
 
 export default {
   name: "Edit",
@@ -68,6 +78,7 @@ export default {
     CreateDialog,
     EditDialog,
     DeleteDialog,
+    StaffDialog,
   },
   data() {
     return {
@@ -75,6 +86,7 @@ export default {
       createDialog:false,
       editDialog:false,
       deleteDialog:false,
+      staffDialog: false,
       selectedItem: null,
       unitTypes: [
         {
@@ -116,11 +128,13 @@ export default {
     ...mapState({
       organization: (state) => state.organization.organization,
       structureUnits: (state) => state.organization.structureUnits,
+      users: (state) => state.user.users,
     })
   },
   mounted() {
     this.$store.dispatch('organization/editOrganization', this.$route.params.organization_id);
     this.$store.dispatch('organization/downloadStructureUnits', this.$route.params.organization_id);
+    this.$store.dispatch('user/downloadStaff', this.$route.params.organization_id);
   },
   methods: {
     checkShowUnit(unit) {
@@ -153,6 +167,12 @@ export default {
       this.selectedItem = null;
       this.$store.dispatch('organization/downloadStructureUnits', this.$route.params.organization_id);
       this.deleteDialog = false;
+    },
+    openStaffDialog() {
+      this.staffDialog = true;
+    },
+    closeStaffDialog() {
+      this.staffDialog = false;
     }
   }
 }

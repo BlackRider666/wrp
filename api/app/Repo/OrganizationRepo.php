@@ -50,4 +50,25 @@ class OrganizationRepo extends CoreRepo
 
         return $query->with($with)->find($id);
     }
+
+    /**
+     * @param Organization $organization
+     * @param array $data
+     * @return Organization
+     */
+    public function updateStaff(Organization $organization, array $data): Organization
+    {
+        if (!$organization->staff()->sync($data['users'])) {
+            throw new RuntimeException('Error on updating staff organization!',500);
+        }
+
+        if (!$organization->update($data)) {
+            throw new RuntimeException('Error on updating rector organization!',500);
+        }
+
+        $organization->fresh();
+        $organization->load(['country','city', 'units', 'units.child','staff']);
+
+        return $organization;
+    }
 }

@@ -92,9 +92,35 @@
           </v-container>
         </template>
       </v-col>
+      <v-col cols="12" v-if="organization">
+        <div class="d-flex justify-space-between text-h5 font-weight-medium pb-4">
+          <span>Rector</span>
+          <span>Prorectorat</span>
+        </div>
+        <v-row>
+          <v-col cols="3">
+            <div class="d-inline-flex flex-column align-center" v-if="organization.user">
+              <v-avatar justify-self="center" size="64" class="mb-2">
+                <v-img :src="organization.user.avatar_url"></v-img>
+              </v-avatar>
+              <span class="text-body-1">{{organization.user.full_name}}</span>
+            </div>
+          </v-col>
+          <v-col cols="9" class="d-flex justify-end">
+            <template v-if="organization.staff.length > 0" >
+              <div class="d-inline-flex flex-column align-center" v-for="staff in organization.staff" :key="staff.id">
+                <v-avatar justify-self="center" size="64" class="mb-2">
+                  <v-img :src="staff.avatar_url"></v-img>
+                </v-avatar>
+                <span class="text-body-1">{{staff.full_name}}</span>
+              </div>
+            </template>
+          </v-col>
+        </v-row>
+      </v-col>
       <v-col cols="12"><v-divider/></v-col>
       <v-col cols="12">
-        <v-tabs>
+        <v-tabs grow>
           <v-tab>{{$t('placeholder.desc', 'Desc')}}</v-tab>
           <v-tab>{{$t('placeholder.structure','Structure')}}</v-tab>
           <v-tab>{{$t('placeholder.contacts','Contacts')}}</v-tab>
