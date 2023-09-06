@@ -15,7 +15,7 @@
         </v-img>
         </v-col>
         <v-col :cols="detailed?6:12" class="pa-0">
-          <v-card-title :title="org.name" class="text-h6 organization__title" >{{org.name.length > 106 ? org.name.substring(0,103)+'...':org.name }}</v-card-title>
+          <v-card-title v-if="org.name" :title="org.name[locale.iso_code]" class="text-h6 organization__title" >{{org.name[locale.iso_code].length > 106 ? org.name[locale.iso_code].substring(0,103)+'...':org.name[locale.iso_code] }}</v-card-title>
 
           <v-card-text class="text-md-caption">
             <v-list class="organization__list" dense v-if="detailed">
@@ -113,12 +113,19 @@
 </template>
 
 <script>
+import {mapState} from "vuex";
+
 export default {
   name: "OrganizationItem",
   props: [
       'org',
       'detailed'
   ],
+  computed: {
+    ...mapState({
+      locale: (state) => state.l10s.locale,
+    }),
+  },
 }
 </script>
 

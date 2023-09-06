@@ -12,7 +12,7 @@
           <v-container>
             <v-row>
               <v-col cols="12">
-                <div class="text-h4 font-weight-medium">{{organization.name}}</div>
+                <div class="text-h4 font-weight-medium" v-if="organization.name">{{organization.name[locale.iso_code]}}</div>
               </v-col>
               <v-col cols="4">
                 <div>
@@ -21,16 +21,16 @@
                     {{organization.city_id? organization.city.name : ''}}, {{organization.country_id? organization.country.name: ''}}
                   </div>
                 </div>
-                <div>
-                  <div class="text-subtitle-1">@{{$t('placeholder.address','Address')}}</div>
+                <div v-if="organization.address">
+                  <div class="text-subtitle-1">{{$t('placeholder.address','Address')}}</div>
                   <div class="text-h6 font-weight-regular">
-                    Address
+                    {{organization.address}}
                   </div>
                 </div>
-                <div>
-                  <div class="text-subtitle-1">@{{$t('placeholder.zip_code','Zip code')}}</div>
+                <div v-if="organization.zip_code">
+                  <div class="text-subtitle-1">{{$t('placeholder.zip_code','Zip code')}}</div>
                   <div class="text-h6 font-weight-regular">
-                    05505
+                    {{organization.zip_code}}
                   </div>
                 </div>
               </v-col>
@@ -38,19 +38,19 @@
                 <div>
                   <div class="text-subtitle-1">{{$t('placeholder.code_wrp','Code WRP')}}</div>
                   <div class="text-h6 font-weight-regular">
-                    #113321
+                    #{{organization.code_platform}}
                   </div>
                 </div>
-                <div>
-                  <div class="text-subtitle-1">@{{$t('placeholder.site','Site')}}</div>
+                <div v-if="organization.site">
+                  <div class="text-subtitle-1">{{$t('placeholder.site','Site')}}</div>
                   <div class="text-h6 font-weight-regular">
-                    <a href="#">https://www.site.com</a>
+                    <a :href="organization.site">{{organization.site}}</a>
                   </div>
                 </div>
-                <div>
-                  <div class="text-subtitle-1">@{{$t('placeholder.phone','Phone')}}</div>
+                <div v-if="organization.phone">
+                  <div class="text-subtitle-1">{{$t('placeholder.phone','Phone')}}</div>
                   <div class="text-h6 font-weight-regular">
-                    +38 (012)345 67 89
+                    {{organization.phone}}
                   </div>
                 </div>
               </v-col>
@@ -129,14 +129,54 @@
           <v-tab>{{$t('articles.patents.title','Patents')}}</v-tab>
           <v-tab>{{$t('grants.title','Grants')}}</v-tab>
           <v-tab-item>
-            <div class="text-body-1 mt-6">
-              Lorem ipsum dolor sit amet consectetur. Pellentesque quam ut tellus sed. Adipiscing et feugiat fringilla vitae pellentesque egestas mi venenatis ornare. In eget ornare ultrices varius pulvinar euismod lobortis sed. Tempus urna iaculis orci leo quam penatibus odio. Vel hendrerit amet urna ultrices arcu. Est massa orci praesent vitae. Sed mauris risus lobortis erat aenean sed. Semper mauris at mauris dolor amet duis. Sit porta purus phasellus ridiculus sagittis. Nisl massa nec donec vel eu justo lacinia eu non. Tristique arcu nunc condimentum interdum ut bibendum amet. Mi hac sit ut tempus nunc cursus eget at semper.
-              Sagittis consectetur egestas feugiat interdum ipsum duis mi arcu. Elit malesuada sem lorem rutrum bibendum ultricies elit malesuada. Praesent magnis quis tincidunt ut leo in. Pharetra facilisis posuere fermentum metus nullam risus proin mattis eget. Nunc nullam hendrerit eget nunc non sit sem in neque. Morbi duis sit sit malesuada nullam. Id tortor eu elementum turpis in augue. Arcu arcu erat amet id velit malesuada sit netus. Etiam consequat eget tellus blandit lectus. Hendrerit orci non dapibus sit sed ullamcorper vitae ipsum. Ac at nulla arcu consectetur faucibus.
-              Lorem ipsum dolor sit amet consectetur. Pellentesque quam ut tellus sed. Adipiscing et feugiat fringilla vitae pellentesque egestas mi venenatis ornare. In eget ornare ultrices varius pulvinar euismod lobortis sed. Tempus urna iaculis orci leo quam penatibus odio. Vel hendrerit amet urna ultrices arcu. Est massa orci praesent vitae. Sed mauris risus lobortis erat aenean sed. Semper mauris at mauris dolor amet duis. Sit porta purus phasellus ridiculus sagittis. Nisl massa nec donec vel eu justo lacinia eu non. Tristique arcu nunc condimentum interdum ut bibendum amet. Mi hac sit ut tempus nunc cursus eget at semper.
-            </div>
+            <div class="text-body-1 mt-6" v-if="organization && organization.desc" v-html="organization.desc[locale.iso_code]"></div>
           </v-tab-item>
           <v-tab-item>
-            Structure
+            <div class="text-body-1 warning--text py-5">Оберіть структурну одиницю, щоб побачити тільки ті одиниці які їй належать</div>
+            <v-row justify="space-between" v-if="organization">
+              <v-col cols="4">
+                <div class="text-h5 font-weight-medium">
+                  <template v-for="(key, index) in unitTitles(organization.units)">
+                    {{$t('organization.type.' + key,key.toUpperCase())}}{{index < unitTitles(organization.units).length - 1 ? '/' : '' }}</template>
+                </div>
+              </v-col>
+              <v-col cols="4" class="d-flex justify-end">
+                <template v-for="key in unitTitles(organization.units)">
+                  <v-btn
+                    class="font-weight-bold"
+                    text
+                    color="secondary"
+                    :value="key"
+                  >{{$t('organization.type.' + key,key.toUpperCase())}}</v-btn>
+                </template>
+                <v-btn
+                  class="font-weight-bold"
+                  text
+                  value="all"
+                  color="primary"
+                >{{$t('organization.type.all','All')}}</v-btn>
+              </v-col>
+            </v-row>
+            <v-row v-if="organization">
+              <v-col cols="2" v-for="unit in organization.units" :key="unit.id">
+                <div class="d-flex flex-column align-center cursor-pointer" @click="selectUnit(unit)">
+                  <v-avatar justify-self="center" size="64" class="mb-2" color="primary">U</v-avatar>
+                  <span class="text-caption">{{unit.name}}</span>
+                </div>
+              </v-col>
+            </v-row>
+            <v-row v-if="selectedItem" class="my-4">
+              <template v-if="selectedItem.child.length > 0">
+                <v-treeview :items="selectedItem.child" item-children="child" open-on-click expand-icon="">
+                  <template v-slot:label="{item}">
+                    <div class="d-flex flex-column align-center cursor-pointer">
+                      <v-avatar justify-self="center" size="64" class="mb-2" color="primary">U</v-avatar>
+                      <span class="text-caption">{{item.name}}</span>
+                    </div>
+                  </template>
+                </v-treeview>
+              </template>
+            </v-row>
           </v-tab-item>
           <v-tab-item>
             Contacts
@@ -164,13 +204,31 @@ import {mapState} from "vuex";
 
 export default {
   name: "Show",
+  data() {
+    return {
+        selectedItem: null,
+    };
+  },
   computed: {
     ...mapState({
       organization: (state) => state.organization.organization,
-    })
+      locale: (state) => state.l10s.locale,
+    }),
   },
   mounted() {
     this.$store.dispatch('organization/getOrganization', this.$route.params.organization_id);
+  },
+  methods: {
+    unitTitles(units) {
+      return units.map((item) => {
+        return item.type;
+      }).filter((value, index, array) => {
+        return array.indexOf(value) === index;
+      });
+    },
+    selectUnit(unit) {
+      this.selectedItem = unit;
+    }
   },
 }
 </script>
@@ -182,5 +240,8 @@ export default {
     bottom: 16px;
     right: 16px;
   }
+}
+.cursor-pointer {
+  cursor: pointer;
 }
 </style>

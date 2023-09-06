@@ -11,9 +11,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\Translatable\HasTranslations;
 
 class Organization extends Model
 {
+    use HasTranslations;
+
     protected $table = 'organization';
 
     protected $fillable = [
@@ -24,6 +27,11 @@ class Organization extends Model
         'rate',
         'verified',
         'user_id',
+        'address',
+        'zip_code',
+        'site',
+        'phone',
+        'desc'
     ];
 
     protected $casts = [
@@ -31,7 +39,17 @@ class Organization extends Model
     ];
 
     protected $appends = [
-        'img_url'
+        'img_url',
+        'code_platform',
+    ];
+
+    public $translatable = [
+        'name',
+        'desc',
+    ];
+
+    public $editable = [
+       'desc',
     ];
 
     /**
@@ -39,7 +57,15 @@ class Organization extends Model
      */
     public function units(): HasMany
     {
-        return $this->hasMany(StructuralUnit::class)->where('parent_id', null);
+        return $this->unitsAll()->where('parent_id', null);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function unitsAll(): HasMany
+    {
+        return $this->hasMany(StructuralUnit::class);
     }
 
     /**
@@ -85,5 +111,13 @@ class Organization extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * @return string
+     */
+    public function getCodePlatformAttribute(): string
+    {
+        return str_pad($this->id, 6, '0', STR_PAD_LEFT);
     }
 }
