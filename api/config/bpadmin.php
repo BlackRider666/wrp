@@ -199,6 +199,51 @@ return [
             ],
             'validation_type' => 'default',
         ],
+        'countries' => [
+            'type'      =>  'default',
+            'entity'    =>  \App\Models\Country\Country::class,
+            'key'       =>  'id',
+            'paginate'  =>  10,
+            'table_headers'   =>  [
+                'name',
+            ],
+            'show_title'    => 'Country Information',
+            'show_fields'   => [
+                'name',
+            ],
+            'validation_type' => 'default',
+        ],
+        'cities' => [
+            'type'      =>  'default',
+            'entity'    =>  \App\Models\Country\City\City::class,
+            'key'       =>  'id',
+            'paginate'  =>  10,
+            'table_headers'   =>  [
+                'name',
+                'country.name',
+            ],
+            'show_title'    => 'City Information',
+            'show_fields'   => [
+                'name',
+                'country_id'
+            ],
+            'validation_type' => 'default',
+        ],
+        'page' => [
+            'type'      =>  'default',
+            'entity'    =>  \App\Models\Pages\Page::class,
+            'key'       =>  'id',
+            'paginate'  =>  10,
+            'table_headers'   =>  [
+                'title',
+            ],
+            'show_title'    => 'Page Information',
+            'show_fields'   => [
+                'title',
+                'content'
+            ],
+            'validation_type' => 'default',
+        ],
     ],
     'menu' => [
         'users' => [
@@ -261,6 +306,20 @@ return [
                     'icon' => 'mdi-book',
                 ],
             ],
+        ],
+        'countries' => [
+            'icon' => 'mdi-flag',
+            'items' => [
+                'countries' => [
+                    'icon' => 'mdi-flag',
+                ],
+                'cities' => [
+                    'icon' => 'mdi-city',
+                ],
+            ],
+        ],
+        'page' => [
+            'icon' => 'mdi-file-document-outline',
         ],
     ],
 ];

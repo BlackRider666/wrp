@@ -5,7 +5,7 @@
       <v-container fluid class="px-0">
         <v-row>
           <v-col cols="12" class="py-0">
-            <Breadcrumbs/>
+<!--            <Breadcrumbs/>-->
             <router-view />
           </v-col>
         </v-row>
@@ -17,12 +17,12 @@
 
 <script>
 import AppHeader from "@/components/partials/AppHeader";
-import Breadcrumbs from "@/components/partials/Breadcrumbs";
+// import Breadcrumbs from "@/components/partials/Breadcrumbs";
 import Footer from "@/components/partials/Footer";
 
 export default {
   name: "Main",
-  components: {AppHeader, Breadcrumbs, Footer},
+  components: {AppHeader,  Footer},
   data() {
     return {
     }

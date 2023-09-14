@@ -11,6 +11,7 @@ use App\Http\Controllers\API\Organization\CountryController;
 use App\Http\Controllers\API\Organization\OrganizationController;
 use App\Http\Controllers\API\Organization\StructuralUnitController;
 use App\Http\Controllers\API\OrganizerController;
+use App\Http\Controllers\API\PageController;
 use App\Http\Controllers\API\PartnerController;
 use App\Http\Controllers\API\TagController;
 use App\Http\Controllers\API\User\GrantController;
@@ -122,3 +123,5 @@ Route::group(['prefix' => 'social-link', 'auth' => 'auth:sanctum'], static funct
 
 Route::get('tags', [TagController::class, 'index']);
 Route::get('/get-free-premium', [PremiumController::class, 'getFreePremium'])->middleware('auth:sanctum');
+
+Route::get('/contact-info',[PageController::class,'contacts']);

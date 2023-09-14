@@ -18,6 +18,7 @@ import conference from "./modules/conference";
 import tutorial from "./modules/tutorial";
 import tags from './modules/tags';
 import socialLink from "./modules/socialLink";
+import pages from "./modules/pages";
 
 const notifier = require('./modules/notifier/index').default;
 
@@ -55,7 +56,8 @@ const store = new Vuex.Store({
         conference,
         tutorial,
         tags,
-        socialLink
+        socialLink,
+        pages,
     }
 });
 
