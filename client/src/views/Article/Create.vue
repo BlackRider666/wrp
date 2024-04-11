@@ -36,13 +36,30 @@
                     prepend-inner-icon="mdi-database-search"
                     outlined
                 ></v-select>
-                <v-text-field
-                    v-model="article.title"
-                    :label="$t('articles.placeholder.title','Title')"
-                    outlined
-                    prepend-inner-icon="mdi-card-text-outline"
-                    :rules="[rules.required]"
-                />
+                <v-tabs v-model="activeTitleTab" right class="pb-1">
+                  <v-tab key="en">English</v-tab>
+                  <v-tab key="uk">Українська</v-tab>
+                </v-tabs>
+                <v-tabs-items v-model="activeTitleTab" class="pt-2">
+                  <v-tab-item key="en">
+                    <v-text-field
+                        v-model="article.title.en"
+                        :label="$t('articles.placeholder.title','Title')"
+                        outlined
+                        prepend-inner-icon="mdi-card-text-outline"
+                        :rules="[rules.required]"
+                    />
+                  </v-tab-item>
+                  <v-tab-item key="uk">
+                    <v-text-field
+                        v-model="article.title.uk"
+                        :label="$t('articles.placeholder.title','Title')"
+                        outlined
+                        prepend-inner-icon="mdi-card-text-outline"
+                        :rules="[rules.required]"
+                    />
+                  </v-tab-item>
+                </v-tabs-items>
                 <v-select
                   v-model="article.category_id"
                   :label="$t('articles.placeholder.category','Category')"
@@ -138,12 +155,36 @@
                     prepend-inner-icon="mdi-card-text-outline"
                     :rules="[rules.required]"
                 />
-<!--                TODO:Add rules-->
-                <SimpleEditor
-                    v-model="article.desc"
-                    :placeholder="$t('articles.placeholder.desc', 'Desc')"
-                ></SimpleEditor>
-                <FullEditor v-model="article.full_text" :placeholder="$t('articles.placeholder.full_text', 'Full text')"/>
+                <v-tabs v-model="activeDescTab" right class="pb-1">
+                  <v-tab key="en">English</v-tab>
+                  <v-tab key="uk">Українська</v-tab>
+                </v-tabs>
+                <v-tabs-items v-model="activeDescTab">
+                  <v-tab-item key="en">
+                    <SimpleEditor
+                        v-model="article.desc.en"
+                        :placeholder="$t('articles.placeholder.desc', 'Desc')"
+                    ></SimpleEditor>
+                  </v-tab-item>
+                  <v-tab-item key="uk">
+                    <SimpleEditor
+                        v-model="article.desc.uk"
+                        :placeholder="$t('articles.placeholder.desc', 'Desc')"
+                    ></SimpleEditor>
+                  </v-tab-item>
+                </v-tabs-items>
+                <v-tabs v-model="activeFullTextTab" right class="pb-1">
+                  <v-tab key="en">English</v-tab>
+                  <v-tab key="uk">Українська</v-tab>
+                </v-tabs>
+                <v-tabs-items v-model="activeFullTextTab">
+                  <v-tab-item key="en">
+                    <FullEditor v-model="article.full_text.en" :placeholder="$t('articles.placeholder.full_text', 'Full text')"/>
+                  </v-tab-item>
+                  <v-tab-item key="uk">
+                    <FullEditor v-model="article.full_text.uk" :placeholder="$t('articles.placeholder.full_text', 'Full text')"/>
+                  </v-tab-item>
+                </v-tabs-items>
                 <v-autocomplete
                     v-model="article.tags"
                     :items="tags"
@@ -220,7 +261,10 @@ export default {
   data() {
     return {
       article: {
-        title: '',
+        title: {
+          en: '',
+          uk: '',
+        },
         category_id: null,
         year: '',
         authors: [],
@@ -234,7 +278,14 @@ export default {
         app_number: null,
         tags:[],
         citations: [],
-        full_text:'',
+        desc: {
+          en: '',
+          uk: '',
+        },
+        full_text:{
+          en: '',
+          uk: '',
+        },
       },
       file: null,
       rules: {
@@ -244,6 +295,9 @@ export default {
       tagSearch: null,
       articleSearch: null,
       loadingCitation: false,
+      activeTitleTab: 'en',
+      activeDescTab: 'en',
+      activeFullTextTab: 'en',
     };
   },
   computed: {
@@ -283,7 +337,11 @@ export default {
             }
           }
         } else {
-          if (value) {
+          if (value && typeof value === 'object') {
+            Object.entries(value).forEach(([keyInObject, valueInObject]) => {
+              form.append(`${key}[${keyInObject}]`, valueInObject);
+            });
+          } else if (value) {
             form.append(key,value);
           }
         }

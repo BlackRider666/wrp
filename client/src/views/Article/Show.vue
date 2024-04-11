@@ -12,7 +12,7 @@
           <v-card-text>
             <div class="pb-8">
               <span class="text-subtitle-2 pb-1">{{$t('articles.placeholder.title', 'Title')}}</span>
-              <div class="text-h4 font-weight-medium">{{article.title}}</div>
+              <div class="text-h4 font-weight-medium">{{article.title[locale.iso_code] }}</div>
             </div>
             <v-divider/>
             <div class="py-8">
@@ -77,18 +77,18 @@
               </div>
               <div class="pt-4">
                 <span class="text-subtitle-2 pb-2 d-flex">{{$t('articles.placeholder.file', 'PDF file')}}</span>
-                <a :href="article.file_path" :download="article.title" class="align-content-center align-self-center d-flex text-decoration-none">
+                <a :href="article.file_path" :download="article.title[locale.iso_code]" class="align-content-center align-self-center d-flex text-decoration-none">
                   <v-icon color="primary" class="mr-3">mdi-export</v-icon>
-                  <span class="text-body-1 text-decoration-underline">{{article.title}}.pdf</span>
+                  <span class="text-body-1 text-decoration-underline">{{article.title[locale.iso_code]}}.pdf</span>
                 </a>
               </div>
             </div>
             <v-divider/>
             <div class="py-8">
               <span class="text-subtitle-2 pb-2">{{$t('articles.placeholder.desc', 'Description')}}</span>
-              <p class="text-body-1 mb-8" v-html="article.desc"></p>
+              <p class="text-body-1 mb-8" v-html="article.desc[locale.iso_code]"></p>
               <span class="text-subtitle-2 pb-2">{{$t('articles.placeholder.full_text', 'Full text')}}</span>
-              <p class="text-body-1 mb-0" v-html="article.full_text"></p>
+              <p class="text-body-1 mb-0" v-html="article.full_text[locale.iso_code]"></p>
             </div>
             <v-divider></v-divider>
             <div class="py-8">
@@ -111,6 +111,7 @@ export default {
   computed: {
     ...mapState({
       article: (state) => state.article.article,
+      locale: (state) => state.l10s.locale,
     })
   },
   mounted() {

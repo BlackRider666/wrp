@@ -3,7 +3,7 @@
 return [
     'title' => 'BPAdmin',
     'userEntity'    => App\Models\User\User::class,
-    'languages' => ['en'],
+    'languages' => ['en','uk'],
 
     'entities' => [
         'users' => [

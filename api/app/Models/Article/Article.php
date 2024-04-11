@@ -14,12 +14,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\Translatable\HasTranslations;
 use Znck\Eloquent\Relations\BelongsToThrough;
 use Znck\Eloquent\Traits\BelongsToThrough as BelongsToThroughTrait;
 
 class Article extends Model
 {
-    use BelongsToThroughTrait;
+    use BelongsToThroughTrait, HasTranslations;
 
     protected $table = 'articles';
 
@@ -51,6 +52,11 @@ class Article extends Model
         'file_path',
     ];
 
+    public $translatable = [
+        'title',
+        'desc',
+        'full_text',
+    ];
     /**
      * @return BelongsTo
      */
