@@ -1,6 +1,6 @@
 <template>
   <v-footer
-      class="font-weight-medium"
+      class="font-weight-medium bg-grey-lighten-5"
   >
     <v-col
         class="text-left"
@@ -12,19 +12,17 @@
         class="text-right"
         cols="6"
     >
-      <v-btn text href="https://www.patprofi.world/">Розробник: PATProfi</v-btn>
-      <v-tooltip top>
-        <template v-slot:activator="{ on, attrs }">
+      <v-btn variant="text" href="https://www.patprofi.world/">Розробник: PATProfi</v-btn>
+      <v-tooltip location="top" text="Асоціація науки та освіти України">
+        <template v-slot:activator="{props}">
           <v-btn
-              text
-              v-bind="attrs"
-              v-on="on"
+              variant="text"
+              v-bind="props"
               href="https://aseu.eu/"
           >
             Розпорядник: АНОУ
           </v-btn>
         </template>
-        <span>Асоціація науки та освіти України</span>
       </v-tooltip>
     </v-col>
   </v-footer>

@@ -19,18 +19,20 @@
 </template>
 
 <script>
-import {mapState} from "vuex";
+import {mapActions, mapState} from "pinia";
+import {useAccountStore} from "@/stores/account";
 
 export default {
   name: "Occupancy",
   computed: {
-    ...mapState({
-      occupancy: (state) => state.account.occupancy,
-    }),
+    ...mapState(useAccountStore,['occupancy']),
   },
   mounted() {
-    this.$store.dispatch('account/getOccupancyAccount');
-  }
+    this.getOccupancyAccount();
+  },
+  methods: {
+    ...mapActions(useAccountStore,['getOccupancyAccount'])
+  },
 }
 </script>
 

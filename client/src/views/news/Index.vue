@@ -38,8 +38,9 @@
 </template>
 
 <script>
-import NewsItem from '@/components/news/NewsItem';
-import {mapState} from "vuex";
+import NewsItem from '@/components/news/NewsItem.vue';
+import {mapActions, mapState} from "pinia";
+import {useNewsStore} from "@/stores/news";
 
 export default {
   name: "Index",
@@ -49,24 +50,25 @@ export default {
       detailed: false,
       sortItems: [
         {
-          text:'test',
+          title:'test',
           value: 'test',
         },
         {
-          text:'test2',
+          title:'test2',
           value: 'test2',
         }
       ],
     }
   },
   mounted() {
-    this.$store.dispatch('news/downloadNews');
+    this.downloadNews();
   },
   computed: {
-    ...mapState({
-      news: (state) => state.news.news,
-    }),
+    ...mapState(useNewsStore,['news']),
   },
+  methods:{
+    ...mapActions(useNewsStore,['downloadNews'])
+  }
 }
 </script>
 

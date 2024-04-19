@@ -57,7 +57,7 @@ services:
       - db_wrp
 
   client_wrp:
-    image: node:16-alpine
+    image: node:20-alpine
     container_name: client_wrp
     tty: true
     volumes:
@@ -65,7 +65,7 @@ services:
     working_dir: /client
     environment:
       NODE_ENV: development
-    command: npm run serve
+    command: npm run dev
     networks:
       - wrp_network
 

@@ -9,13 +9,10 @@
         <v-card-text>
           <v-row>
             <v-col cols="6">
-              <v-toolbar dense dark color="primary" :class="fillCommon?'blink':''">
+              <v-toolbar dense dark color="primary" :class="fillCommon?'blink':''"  class="pl-2">
                 {{$t('account.common-title','Common')}}
                 <v-spacer/>
-                <v-btn icon @click="showCommonSheet">
-                  <v-icon v-if="showCommon">mdi-chevron-up</v-icon>
-                  <v-icon v-else :class="fillCommon?'blink':''">mdi-chevron-down</v-icon>
-                </v-btn>
+                <v-btn :icon="showCommon?'mdi-chevron-up':'mdi-chevron-down'" @click="showCommonSheet"></v-btn>
               </v-toolbar>
 
               <v-sheet v-if="showCommon" outlined>
@@ -30,27 +27,27 @@
                     <v-text-field
                         v-model="user.first_name"
                         :label="$t('placeholder.first_name', 'First Name')"
-                        outlined
+                        variant="outlined"
                         prepend-inner-icon="mdi-account-outline"
                         :rules="[rules.required]"
                     />
                     <v-text-field
                         v-model="user.second_name"
                         :label="$t('placeholder.second_name', 'Second Name')"
-                        outlined
+                        variant="outlined"
                         prepend-inner-icon="mdi-account-outline"
                         :rules="[rules.required]"
                     />
                     <v-text-field
                         v-model="user.surname"
                         :label="$t('placeholder.surname', 'Surname')"
-                        outlined
+                        variant="outlined"
                         prepend-inner-icon="mdi-account-outline"
                         :rules="[rules.required]"
                     />
                     <v-text-field
                         v-model="user.email"
-                        outlined
+                        variant="outlined"
                         prepend-inner-icon="mdi-email-outline"
                         :label="$t('placeholder.email', 'Email')"
                         type="email"
@@ -59,7 +56,7 @@
                     <v-text-field
                         v-model="user.phone"
                         :label="$t('placeholder.phone', 'Phone')"
-                        outlined
+                        variant="outlined"
                         prepend-inner-icon="mdi-phone"
                         :rules="[rules.required, rules.phone]"
                     />
@@ -70,44 +67,44 @@
                     <v-text-field
                         v-model="user.degree"
                         :label="$t('placeholder.degree', 'Degree')"
-                        outlined
+                        variant="outlined"
                         prepend-inner-icon="mdi-account"
                     />
                     <v-text-field
                         v-model="user.position"
                         :label="$t('placeholder.position', 'Position')"
-                        outlined
+                        variant="outlined"
                         prepend-inner-icon="mdi-account"
                     />
                     <v-autocomplete
                         v-model="user.organization_id"
                         :items="organizations"
                         hide-no-data
-                        item-text="name"
+                        :item-title="`name.${locale.iso_code}`"
                         item-value="id"
                         :label="$t('placeholder.organization','Organization')"
                         :placeholder="$t('works.placeholder.organization','Organization')"
                         prepend-inner-icon="mdi-database-search"
                         :search-input="organizationSearch"
-                        outlined
+                        variant="outlined"
                     ></v-autocomplete>
                     <v-select
                         v-model="user.country_id"
                         :items="countries"
-                        item-text="name"
+                        item-title="name"
                         item-value="id"
                         :label="$t('placeholder.country','Country')"
                         prepend-inner-icon="mdi-database-search"
-                        outlined
+                        variant="outlined"
                     ></v-select>
                     <v-select
                         v-model="user.city_id"
                         :items="cities"
-                        item-text="name"
+                        item-title="name"
                         item-value="id"
                         :label="$t('placeholder.city','City')"
                         prepend-inner-icon="mdi-database-search"
-                        outlined
+                        variant="outlined"
                     ></v-select>
                   </v-card-text>
                   <v-card-actions>
@@ -121,7 +118,7 @@
             <v-col cols="6">
               <v-row>
                 <v-col cols="12">
-                  <v-toolbar dense dark :class="fillAvatar?'blink':''" color="primary">
+                  <v-toolbar dense dark :class="fillAvatar?'blink':''" color="primary"  class="pl-2">
                     {{$t('avatar.title','Avatar')}}
                     <v-spacer/>
                     <v-btn icon @click="showAvatarSheet">
@@ -153,7 +150,7 @@
                             prepend-inner-icon="mdi-camera"
                             prepend-icon=""
                             :label="$t('placeholder.avatar','Avatar')"
-                            outlined
+                            variant="outlined"
                             v-model="avatar"
                             @change="changeAvatarFile"
                         ></v-file-input>
@@ -167,7 +164,7 @@
                   </v-sheet>
                 </v-col>
                 <v-col cols="12">
-                  <v-toolbar dark dense color="primary">
+                  <v-toolbar dark dense color="primary"  class="pl-2">
                     {{$t('change-password.title','Change password')}}
                     <v-spacer/>
                     <v-btn icon @click="showChangePasswordSheet">
@@ -188,13 +185,13 @@
                         <v-text-field
                             v-model="changePasswordRequest.password"
                             :rules="[rules.required, rules.min]"
-                            outlined
+                            variant="outlined"
                             prepend-inner-icon="mdi-lock"
                             color="primary"
                             :type="changePasswordRequest.passwordType"
                             :label="$t('placeholder.password', 'Password')"
                         >
-                          <template v-slot:append>
+                          <template v-slot:append-inner>
                             <v-icon color="secondary" v-if="changePasswordRequest.passwordType === 'password'" @click="changePasswordRequest.passwordType = 'text'">mdi-eye</v-icon>
                             <v-icon color="primary" v-if="changePasswordRequest.passwordType === 'text'" @click="changePasswordRequest.passwordType = 'password'">mdi-eye</v-icon>
                           </template>
@@ -204,7 +201,7 @@
                             :type="changePasswordRequest.passwordType"
                             :label="$t('placeholder.password_confirmation', 'Confirm Password')"
                             color="primary"
-                            outlined
+                            variant="outlined"
                             prepend-inner-icon="mdi-lock"
                             :rules="[rules.required, rules.min, rules.confirmation]"
                         />
@@ -231,13 +228,18 @@
 </template>
 
 <script>
-import Grant from "@/views/account/Grant";
-import Project from "@/views/account/Project";
-import Work from "@/views/account/Work";
-import Occupancy from "./Occupancy";
-import SocialLink from "./SocialLink";
-import {mapState} from "vuex";
-import SimpleEditor from "../../components/editor/SimpleEditor";
+import Grant from "@/views/account/Grant.vue";
+import Project from "@/views/account/Project.vue";
+import Work from "@/views/account/Work.vue";
+import Occupancy from "./Occupancy.vue";
+import SocialLink from "./SocialLink.vue";
+import {mapActions, mapState} from "pinia";
+import SimpleEditor from "@/components/editor/SimpleEditor.vue";
+import {useCountryStore} from "@/stores/country";
+import {useCityStore} from "@/stores/city";
+import {useOrganizationStore} from "@/stores/organization";
+import {useAccountStore} from "@/stores/account";
+import {useLocalesStore} from "@/stores/l10s";
 
 export default {
   name: "Account",
@@ -286,23 +288,22 @@ export default {
     }
   },
   mounted() {
-    this.user = this.$store.getters['account/getAccount'];
+    this.user = useAccountStore().user;
     this.user.country_id = this.user.country?this.user.country.id:null;
-    this.$store.dispatch('country/downloadCountries');
-    this.$store.dispatch('organization/downloadOrganizations');
+    this.downloadCountries();
+    this.downloadOrganizations();
   },
   computed: {
-    fillCommon() {
-      return this.$store.state.tutorial.step === 2 && this.$store.state.tutorial.tutorialCategory === 'account';
-    },
-    fillAvatar() {
-      return this.$store.state.tutorial.step === 3 && this.$store.state.tutorial.tutorialCategory === 'account';
-    },
-    ...mapState({
-      countries: (state) => state.country.countries,
-      cities: (state) => state.city.cities,
-      organizations: (state) => state.organization.organizations,
-    }),
+    // fillCommon() {
+    //   return this.$store.state.tutorial.step === 2 && this.$store.state.tutorial.tutorialCategory === 'account';
+    // },
+    // fillAvatar() {
+    //   return this.$store.state.tutorial.step === 3 && this.$store.state.tutorial.tutorialCategory === 'account';
+    // },
+    ...mapState(useCountryStore,['countries']),
+    ...mapState(useCityStore,['cities']),
+    ...mapState(useOrganizationStore,['organizations']),
+    ...mapState(useLocalesStore,['locale'])
   },
   methods: {
     showCommonSheet() {
@@ -318,11 +319,11 @@ export default {
       e.preventDefault();
       e.stopPropagation();
       this.$loading();
-      this.$store.dispatch('account/update',this.user)
+      this.update(this.user)
           .then((res) => {
             this.user = res;
             this.$loadingClose();
-            this.$store.dispatch('account/downloadAccount');
+            this.downloadAccount();
             this.$notify('','success', 'Success');
           })
           .catch(error => {
@@ -336,11 +337,11 @@ export default {
       this.$loading();
       let form = new FormData();
       form.append('photo', this.avatar);
-      this.$store.dispatch('account/updatePhoto',form)
+      this.updatePhoto(form)
           .then((res) => {
             this.user = res;
             this.$loadingClose();
-            this.$store.dispatch('account/downloadAccount');
+            this.downloadAccount();
             this.$notify('','success', 'Success');
           })
           .catch(error => {
@@ -359,11 +360,11 @@ export default {
       e.preventDefault();
       e.stopPropagation();
       this.$loading();
-      this.$store.dispatch('account/updatePassword',this.changePasswordRequest)
+      this.updatePassword(this.changePasswordRequest)
           .then((res) => {
             this.user = res;
             this.$loadingClose();
-            this.$store.dispatch('account/downloadAccount')
+            this.downloadAccount()
             this.$notify('','success','Success');
           })
           .catch(error => {
@@ -371,11 +372,15 @@ export default {
             this.$notify('','error', error.response.data.message);
           })
     },
+    ...mapActions(useCountryStore,['downloadCountries']),
+    ...mapActions(useCityStore,['downloadCities']),
+    ...mapActions(useOrganizationStore,['downloadOrganizations']),
+    ...mapActions(useAccountStore,['downloadAccount','update','updatePhoto','updatePassword']),
   },
   watch: {
     'user.country_id': {
       handler () {
-        this.$store.dispatch('city/downloadCities');
+        this.downloadCities();
       },
       deep: true,
     },

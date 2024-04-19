@@ -1,15 +1,16 @@
 <template>
   <v-menu
-      :open-on-hover="options.openOnHover"
-      :close-on-click="options.closeOnClick"
-      :close-on-content-click="options.closeOnContentClick"
-      :offset-x="options.offsetX"
-      :offset-y="options.offsetY"
-      right
-      :nudge-bottom="options.nudgeBottom"
+      open-on-click
+      close-on-click
+      close-on-content-click
+      :offset="15"
+      bottom
+      location-strategy="connected"
   >
-    <template v-slot:activator="{ on }">
-      <div :data-v-step="dataStep" class="cursor-pointer mx-2" :class="toAccount|| toArticle?'blink '+options.iconsType: options.iconsType" v-on="on">
+    <template v-slot:activator="{ props }">
+      <div :data-v-step="dataStep" class="cursor-pointer mx-2"
+           :class="options.iconsType"
+           v-bind="props">
         <v-avatar size="42">
           <v-img :src="account.avatar_url" :alt="account.full_name"/>
         </v-avatar>
@@ -29,33 +30,40 @@
           </v-card-title>
         </v-card>
       </template>
-      <v-list-item-group class="px-2 py-1">
+      <v-list class="px-2 py-1">
         <div v-for="(item, index) in options.items"
              :key="index">
           <v-list-item
               class="my-1"
               :to="item.to"
-              :class="(item.blinkAccount && toAccount) || (item.blinkArticles && toArticle)?'blink':''"
           >
-            <v-list-item-avatar size="26" v-if="item.image || item.icon">
-              <v-img v-if="item.image" :src="item.image"></v-img>
-              <v-icon v-if="item.icon">{{item.icon}}</v-icon>
-            </v-list-item-avatar>
-            <flag v-if="item.flag" :iso="item.flag" class="mr-2" />
-            <v-list-item-content>
-              <v-list-item-subtitle :class="item.subtitleClass" v-if="item.title" v-html="item.title"></v-list-item-subtitle>
-              <v-list-item-subtitle :class="item.subtitleClass" v-if="item.titleTKey">{{$t(item.titleTKey,item.titleTDefault)}}</v-list-item-subtitle>
-            </v-list-item-content>
+            <v-list-item-subtitle :class="item.subtitleClass" v-if="item.title">
+              <v-avatar size="26" v-if="item.image || item.icon">
+                <v-img v-if="item.image" :src="item.image"></v-img>
+                <v-icon v-if="item.icon">{{item.icon}}</v-icon>
+              </v-avatar>
+              <flag v-if="item.flag" :iso="item.flag" class="mr-2" />
+              <span class="ml-3">{{item.title}}</span>
+            </v-list-item-subtitle>
+            <v-list-item-title :class="item.subtitleClass" v-if="item.titleTKey">
+              <v-avatar size="26" v-if="item.image || item.icon">
+                <v-img v-if="item.image" :src="item.image"></v-img>
+                <v-icon v-if="item.icon">{{item.icon}}</v-icon>
+              </v-avatar>
+              <flag v-if="item.flag" :iso="item.flag" class="mr-2" />
+              <span class="ml-3">{{$t(item.titleTKey,item.titleTDefault)}}</span>
+            </v-list-item-title>
           </v-list-item>
           <div :class="{'list-divider': item.divider}"></div>
         </div>
-      </v-list-item-group>
+      </v-list>
     </v-list>
   </v-menu>
 </template>
 
 <script>
-import {mapState} from "vuex";
+import {mapState} from "pinia";
+import {useAccountStore} from "@/stores/account";
 
 export default {
   name: "MenuList",
@@ -143,13 +151,17 @@ export default {
   },
   computed: {
     toAccount() {
-      return this.$route.name !== 'account' && this.$store.state.tutorial.step === 1 && this.$store.state.tutorial.tutorialCategory === 'account';
+      return this.$route.name !== 'account'
+          // && this.$store.state.tutorial.step === 1
+          // && this.$store.state.tutorial.tutorialCategory === 'account';
     },
     toArticle() {
-      return this.$route.name !== 'Articles' && this.$store.state.tutorial.step === 1 && this.$store.state.tutorial.tutorialCategory === 'article';
+      return this.$route.name !== 'Articles'
+          // && this.$store.state.tutorial.step === 1
+          // && this.$store.state.tutorial.tutorialCategory === 'article';
     },
-    ...mapState({
-      account: state => state.account.user,
+    ...mapState(useAccountStore,{
+      account: 'user',
     })
   }
 }

@@ -1,11 +1,9 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-Vue.use(VueRouter);
+import { createRouter, createWebHistory } from 'vue-router'
 
-const router = new VueRouter({
-    mode: 'history',
+const router = createRouter({
+    history: createWebHistory(),
     scrollBehavior () {
-        return { x: 0, y: 0 }
+        return { left: 0, top: 0 }
     },
     routes: [
 
@@ -85,6 +83,11 @@ const router = new VueRouter({
                     component: () => import('../views/Article/Show.vue'),
                 },
                 {
+                    path: '/articles/:article_id/edit',
+                    name: 'Article Edit',
+                    component: () => import('../views/Article/Edit.vue'),
+                },
+                {
                     path:'/search/:type',
                     name: 'Main Search',
                     component: () => import('../views/Search/Search.vue'),
@@ -92,23 +95,23 @@ const router = new VueRouter({
                 {
                     path:'/users/:user_id',
                     name: 'User',
-                    component: () => import('../views/User/Show'),
+                    component: () => import('../views/User/Show.vue'),
                 },
                 {
                     path:'/premium',
                     name: 'Premium',
-                    component: () => import('../views/premium/Index'),
+                    component: () => import('../views/premium/Index.vue'),
                 },
-                {
-                    path: '/conferences',
-                    name: 'Conferences',
-                    component: () => import('../views/Conference/Index.vue'),
-                },
-                {
-                    path: '/conferences/:conference_id',
-                    name: 'Conference',
-                    component: () => import('../views/Conference/Show.vue'),
-                },
+                // {
+                //     path: '/conferences',
+                //     name: 'Conferences',
+                //     component: () => import('../views/Conference/Index.vue'),
+                // },
+                // {
+                //     path: '/conferences/:conference_id',
+                //     name: 'Conference',
+                //     component: () => import('../views/Conference/Show.vue'),
+                // },
                 {
                     path: '/partners/:partner_id',
                     name: 'Partner',
@@ -122,22 +125,22 @@ const router = new VueRouter({
                 {
                     path: '/organizations',
                     name: 'organizations',
-                    component: () => import('../views/organizations/Index'),
+                    component: () => import('../views/organizations/Index.vue'),
                 },
                 {
                     path: '/organizations/:organization_id',
                     name: 'organization',
-                    component: () => import('../views/organizations/Show'),
+                    component: () => import('../views/organizations/Show.vue'),
                 },
-                {
-                    path: '/organizations/:organization_id/edit',
-                    name: 'organization-edit',
-                    component: () => import('../views/organizations/Edit'),
-                },
+                // {
+                //     path: '/organizations/:organization_id/edit',
+                //     name: 'organization-edit',
+                //     component: () => import('../views/organizations/Edit.vue'),
+                // },
                 {
                     path: '/news',
                     name: 'news',
-                    component: () => import('../views/news/Index'),
+                    component: () => import('../views/news/Index.vue'),
                 },
             ],
         },
@@ -188,7 +191,7 @@ const router = new VueRouter({
             ]
         },
         {
-            path: '*',
+            path: '/:pathMatch(.*)*',
             redirect: '/404',
             meta: {
                 withoutAuth: true,
@@ -197,8 +200,14 @@ const router = new VueRouter({
     ],
 });
 
-// router.beforeEach((to, from, next) => {
-//
-// });
+router.beforeEach((to, from, next) => {
+    if (!to.name) {
+        next({ name: 'dashboard' });
+    } else {
+        next();
+    }
+});
+
+
 
 export default router

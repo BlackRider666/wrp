@@ -1,4 +1,4 @@
-FROM php:7.4-fpm
+FROM php:8.3.6-fpm
 
 # Arguments defined in docker-compose.yml
 ARG user
@@ -35,7 +35,7 @@ RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 RUN docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ && \
     docker-php-ext-install -j$(nproc) gd
 
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_20.x | bash -
 RUN apt-get install -y nodejs
 
 ENV LANG en_US.UTF-8

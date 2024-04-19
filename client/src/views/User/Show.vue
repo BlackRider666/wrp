@@ -65,7 +65,7 @@
                     <div v-if="user.organization_id" class="pb-4">
                       <div class="text-subtitle-1">{{$t('placeholder.organization','Organization')}}</div>
                       <div class="text-h6 font-weight-regular">
-                        {{user.organization.name.length > 47 ? user.organization.name.substring(0,44)+'...':user.organization.name }}
+                        {{user.organization.name[locale.iso_code].length > 47 ? user.organization.name[locale.iso_code].substring(0,44)+'...':user.organization.name[locale.iso_code] }}
                       </div>
                     </div>
                     <div>
@@ -87,13 +87,13 @@
             </v-row>
             <v-row justify="center" class="pt-2 pb-10" v-if="user.id === account.id">
               <v-col cols="3">
-                <v-btn tile block :to="{name:'Premium'}" class="font-weight-bold" color="#FFD600" >{{$t('users.activate-premium', 'Activate Premium')}}</v-btn>
+<!--                <v-btn tile block :to="{name:'Premium'}" class="font-weight-bold" color="#FFD600" >{{$t('users.activate-premium', 'Activate Premium')}}</v-btn>-->
               </v-col>
               <v-col cols="3">
-                <v-btn class="font-weight-bold" tile :to="{name:'account'}" block color="#F5F5F5">{{$t('users.edit-profile', 'Edit profile')}}</v-btn>
+                <v-btn class="font-weight-bold" variant="flat" tile :to="{name:'account'}" block color="#F5F5F5">{{$t('users.edit-profile', 'Edit profile')}}</v-btn>
               </v-col>
             </v-row>
-            <v-tabs v-model="tab" grow v-on:change="changeTab">
+            <v-tabs v-model="tab" grow @update:modelValue="changeTab">
               <v-tab>{{$t('placeholder.desc', 'Desc')}}</v-tab>
               <v-tab>{{$t('works.title','Works')}}</v-tab>
               <v-tab>{{$t('articles.index.title','Articles')}}</v-tab>
@@ -101,8 +101,9 @@
               <v-tab>{{$t('articles.conferences.title','Conferences')}}</v-tab>
               <v-tab>{{$t('articles.patents.title','Patents')}}</v-tab>
               <v-tab>{{$t('grants.title','Grants')}}</v-tab>
-
-              <v-tab-item>
+            </v-tabs>
+            <v-window v-model="tab">
+              <v-window-item>
                 <v-row justify="space-between" class="pt-3">
                   <v-col cols="4">
                     <div class="text-subtitle-1 font-weight-medium">Science profile</div>
@@ -164,8 +165,8 @@
                   </v-col>
                   <v-col cols="12" v-html="user.desc"></v-col>
                 </v-row>
-              </v-tab-item>
-              <v-tab-item>
+              </v-window-item>
+              <v-window-item>
                 <v-data-table
                     :headers="headersWorks"
                     :items="user.works"
@@ -177,13 +178,16 @@
                     {{item.finish?item.finish: $t('works.now','Now')}}
                   </template>
                 </v-data-table>
-              </v-tab-item>
-              <v-tab-item>
+              </v-window-item>
+              <v-window-item>
                 <v-data-table
                     :headers="headersArticles"
                     :items="articles"
                     class="elevation-1"
                 >
+                  <template v-slot:item.full_title="{ item }">
+                    {{item.full_title[locale.iso_code]}}
+                  </template>
                   <template v-slot:item.actions="{ item }">
                     <v-icon
                         small
@@ -194,13 +198,16 @@
                     </v-icon>
                   </template>
                 </v-data-table>
-              </v-tab-item>
-              <v-tab-item>
+              </v-window-item>
+              <v-window-item>
                 <v-data-table
                     :headers="headersArticles"
                     :items="articles"
                     class="elevation-1"
                 >
+                  <template v-slot:item.full_title="{ item }">
+                    {{item.full_title[locale.iso_code]}}
+                  </template>
                   <template v-slot:item.actions="{ item }">
                     <v-icon
                         small
@@ -211,13 +218,16 @@
                     </v-icon>
                   </template>
                 </v-data-table>
-              </v-tab-item>
-              <v-tab-item>
+              </v-window-item>
+              <v-window-item>
                 <v-data-table
                     :headers="headersArticles"
                     :items="articles"
                     class="elevation-1"
                 >
+                  <template v-slot:item.full_title="{ item }">
+                    {{item.full_title[locale.iso_code]}}
+                  </template>
                   <template v-slot:item.actions="{ item }">
                     <v-icon
                         small
@@ -228,13 +238,16 @@
                     </v-icon>
                   </template>
                 </v-data-table>
-              </v-tab-item>
-              <v-tab-item>
+              </v-window-item>
+              <v-window-item>
                 <v-data-table
                     :headers="headersArticles"
                     :items="articles"
                     class="elevation-1"
                 >
+                  <template v-slot:item.full_title="{ item }">
+                    {{item.full_title[locale.iso_code]}}
+                  </template>
                   <template v-slot:item.actions="{ item }">
                     <v-icon
                         small
@@ -245,8 +258,8 @@
                     </v-icon>
                   </template>
                 </v-data-table>
-              </v-tab-item>
-              <v-tab-item>
+              </v-window-item>
+              <v-window-item>
                 <v-data-table
                     :headers="headersGrants"
                     :items="user.grants"
@@ -254,11 +267,11 @@
                     class="elevation-1"
                     hide-default-footer
                 ></v-data-table>
-              </v-tab-item>
-            </v-tabs>
+              </v-window-item>
+            </v-window>
             <v-row justify="end" v-if="user.id === account.id">
               <v-col cols="2">
-                <v-btn tile :to="{name:'account'}" class="font-weight-bold" block color="#F5F5F5">{{$t('users.edit', 'Edit')}}</v-btn>
+                <v-btn tile :to="{name:'account'}" class="font-weight-bold" variant="flat" block color="#F5F5F5">{{$t('users.edit', 'Edit')}}</v-btn>
               </v-col>
             </v-row>
           </v-card-text>
@@ -269,28 +282,32 @@
 </template>
 
 <script>
-import {mapState} from "vuex";
+import {mapActions, mapState} from "pinia";
+import {useUserStore} from "@/stores/user";
+import {useAccountStore} from "@/stores/account";
+import {useArticleStore} from "@/stores/article";
+import {useLocalesStore} from "@/stores/l10s";
 
 export default {
   name: "Show",
   data() {
     return {
       headersWorks: [
-        { text: this.$t('works.placeholder.title', 'Title'), value: 'title' },
-        { text: this.$t('works.placeholder.start', 'Worked from'), value: 'start' },
-        { text: this.$t('works.placeholder.finish','Worked Until'), value: 'finish' },
+        { title: this.$t('works.placeholder.title', 'Title'), value: 'title' },
+        { title: this.$t('works.placeholder.start', 'Worked from'), value: 'start' },
+        { title: this.$t('works.placeholder.finish','Worked Until'), value: 'finish' },
       ],
       headersProjects: [
-        { text: this.$t('projects.placeholder.name', 'Name'), value: 'name' },
+        { title: this.$t('projects.placeholder.name', 'Name'), value: 'name' },
       ],
       headersGrants: [
-        { text: this.$t('grants.placeholder.name', 'Name'), value: 'name' },
+        { title: this.$t('grants.placeholder.name', 'Name'), value: 'name' },
       ],
       headersArticles: [
-        { text: this.$t('articles.placeholder.title','Title'), value: 'title' },
-        { text: this.$t('articles.placeholder.category','Category'), value: 'category.title' },
-        { text: this.$t('articles.placeholder.year','Year'), value: 'year' },
-        { text: this.$t('articles.placeholder.actions','Actions'), value: 'actions', sortable: false },
+        { title: this.$t('articles.placeholder.title','Title'), value: 'full_title' },
+        { title: this.$t('articles.placeholder.category','Category'), value: 'category.title' },
+        { title: this.$t('articles.placeholder.year','Year'), value: 'year' },
+        { title: this.$t('articles.placeholder.actions','Actions'), value: 'actions', sortable: false },
       ],
       socialLinks: {
         academia: null,
@@ -302,15 +319,16 @@ export default {
         scopus: null,
         science: null,
       },
-      tab: 'desc',
+      tab: 0,
     };
   },
   computed: {
-    ...mapState({
-      user: (state) => state.user.user,
-      account: (state) => state.account.user,
-      articles: (state) => state.article.articles,
+    ...mapState(useUserStore,['user']),
+    ...mapState(useAccountStore,{
+      account:'user'
     }),
+    ...mapState(useArticleStore,['articles']),
+    ...mapState(useLocalesStore,['locale']),
     haveAccess() {
       let user = this.user;
       let acc = this.account;
@@ -321,7 +339,8 @@ export default {
     }
   },
   mounted() {
-    this.$store.dispatch('user/downloadUser', this.$route.params.user_id).then( (res) => {
+    this.downloadUser(this.$route.params.user_id)
+        .then( (res) => {
         res.user.social_links.forEach( (item) => {
           this.socialLinks[item.type] = item.url;
         })
@@ -332,34 +351,37 @@ export default {
       this.$router.push( { name: 'Article', params: { article_id: item.id } });
     },
     changeTab() {
+      console.log(this.tab)
       let user_id = this.$route.params.user_id;
       switch (this.tab) {
         case 2:
           this.$loading();
-          this.$store.dispatch('article/downloadArticles',{user_id:user_id, sortBy:['id'], sortDesc:[1]}).then( () => {
+          this.downloadArticles({user_id:user_id, sortBy:['id'], sortDesc:[1]}).then( () => {
             this.$loadingClose();
           })
           break;
         case 3:
           this.$loading();
-          this.$store.dispatch('article/downloadArticles',{user_id:user_id, category_name:'book', sortBy:['id'], sortDesc:[1]}).then( () => {
+          this.downloadArticles({user_id:user_id, category_name:'book', sortBy:['id'], sortDesc:[1]}).then( () => {
             this.$loadingClose();
           })
           break;
         case 4:
           this.$loading();
-          this.$store.dispatch('article/downloadArticles',{user_id:user_id, category_name:'conference',sortBy:['id'], sortDesc:[1]}).then( () => {
+          this.downloadArticles({user_id:user_id, category_name:'conference',sortBy:['id'], sortDesc:[1]}).then( () => {
             this.$loadingClose();
           })
           break;
         case 5:
           this.$loading();
-          this.$store.dispatch('article/downloadArticles',{user_id:user_id, category_name:'patent', sortBy:['id'], sortDesc:[1]}).then( () => {
+          this.downloadArticles({user_id:user_id, category_name:'patent', sortBy:['id'], sortDesc:[1]}).then( () => {
             this.$loadingClose();
           })
           break;
       }
-    }
+    },
+    ...mapActions(useUserStore,['downloadUser']),
+    ...mapActions(useArticleStore,['downloadArticles'])
   },
 }
 </script>

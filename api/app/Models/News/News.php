@@ -22,7 +22,7 @@ class News extends Model
     ];
 
     protected $casts = [
-        'main_photo' => 'file',
+//        'main_photo' => 'file',
         'created_at' => 'datetime:d M Y H:i'
     ];
 

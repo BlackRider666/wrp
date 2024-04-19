@@ -15,18 +15,20 @@
 </template>
 
 <script>
-import {mapState} from "vuex";
+import {mapActions, mapState} from "pinia";
+import {usePartnerStore} from "@/stores/partner";
 
 export default {
   name: "Show",
   computed: {
-    ...mapState({
-      partner: (state) => state.partner.partner,
-    })
+    ...mapState(usePartnerStore,['partner'])
   },
   mounted() {
-    this.$store.dispatch('partner/getPartner', this.$route.params.partner_id);
+    this.getPartner(this.$route.params.partner_id);
   },
+  methods: {
+    ...mapActions(usePartnerStore,['getPartner'])
+  }
 }
 </script>
 

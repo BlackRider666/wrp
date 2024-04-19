@@ -1,7 +1,6 @@
 <template>
     <v-card
         class="mx-auto organization__card"
-        :to="{name:'organization', params: { organization_id: org.id}}"
     >
       <v-row dense>
         <v-col :cols="detailed?6:12" :class="detailed?'pa-0':'pb-0'">
@@ -11,6 +10,7 @@
             class="organization__img"
             :class="detailed?'detailed':''"
             height="100%"
+            cover
         >
         </v-img>
         </v-col>
@@ -66,13 +66,14 @@
             <v-btn
                 block
                 class="organization__btn"
+                :to="{name:'organization', params: { organization_id: org.id}}"
             >
               {{$t('btn.read-more','Read more')}}
             </v-btn>
           </v-card-actions>
           <v-menu offset-y v-if="!detailed">
-            <template v-slot:activator="{on}">
-              <v-btn v-on="on" block class="organization__btn-more text-center" color="primary" height="16"><v-icon>mdi-chevron-down</v-icon></v-btn>
+            <template v-slot:activator="{props}">
+              <v-btn v-bind="props" block class="organization__btn-more text-center" color="primary" height="16"><v-icon>mdi-chevron-down</v-icon></v-btn>
             </template>
             <v-list class="organization__list" dense>
               <v-list-item>
@@ -113,7 +114,8 @@
 </template>
 
 <script>
-import {mapState} from "vuex";
+import {mapState} from "pinia";
+import {useLocalesStore} from "@/stores/l10s";
 
 export default {
   name: "OrganizationItem",
@@ -122,9 +124,7 @@ export default {
       'detailed'
   ],
   computed: {
-    ...mapState({
-      locale: (state) => state.l10s.locale,
-    }),
+    ...mapState(useLocalesStore,['locale']),
   },
 }
 </script>

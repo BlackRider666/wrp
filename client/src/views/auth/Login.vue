@@ -9,7 +9,7 @@
         <router-link class="d-flex align-center auth__logo mt-4" :to="{name: 'dashboard'}">
           <v-img :aspect-ratio="16/9" :src="require('@/assets/logo.png')" width="90" contain="contain"/>
         </router-link>
-        <v-btn large color="primary" icon class="auth__btn-close" @click="$router.push({name:'dashboard'})"><v-icon>mdi-close</v-icon></v-btn>
+        <v-btn size="x-large" density="comfortable" color="primary" icon="mdi-close" variant="text" class="auth__btn-close" @click="$router.push({name:'dashboard'})" ></v-btn>
       </v-card-title>
       <v-card-text>
             <v-row justify="center">
@@ -25,7 +25,7 @@
             >
               <v-text-field
                   v-model="user.email"
-                  outlined
+                  variant="outlined"
                   prepend-inner-icon="mdi-email-outline"
                   :label="$t('placeholder.email', 'Email')"
                   :rules="[rules.required, rules.email]"
@@ -35,13 +35,13 @@
               <v-text-field
                   v-model="user.password"
                   :rules="[rules.required]"
-                  outlined
+                  variant="outlined"
                   prepend-inner-icon="mdi-lock"
                   color="primary"
                   :type="passwordType"
                   :label="$t('placeholder.password', 'Password')"
               >
-                <template v-slot:append>
+                <template v-slot:append-inner>
                   <v-icon color="secondary" v-if="passwordType === 'password'" @click="passwordType = 'text'">mdi-eye</v-icon>
                   <v-icon color="primary" v-if="passwordType === 'text'" @click="passwordType = 'password'">mdi-eye</v-icon>
                 </template>
@@ -49,18 +49,22 @@
               <v-btn type="submit" class="my-3 auth__btn" block tile>
                 {{$t('btn.login', 'Login')}}
               </v-btn>
-              <v-btn @click="$router.push({name: 'register'})" class="my-3" color="primary" text block tile>
+              <v-btn @click="$router.push({name: 'register'})" class="my-3" color="primary" variant="text" block tile>
                 {{$t('btn.register', 'Register')}}
               </v-btn>
             </v-form>
             <v-divider/>
-            <v-btn color="primary" text block tile class="mt-3">{{$t('btn.forgot-password', 'Forgot Password')}}</v-btn>
+            <v-btn color="primary" variant="text" block tile class="mt-3">{{$t('btn.forgot-password', 'Forgot Password')}}</v-btn>
       </v-card-text>
     </v-card>
   </v-col>
 </template>
 
 <script>
+import {mapActions} from "pinia";
+import {useAuthStore} from "@/stores/auth";
+import {useAccountStore} from "@/stores/account";
+
 export default {
   name: "Login",
   data: function () {
@@ -80,19 +84,23 @@ export default {
     }
   },
   methods: {
-    login(e) {
+    ...mapActions(useAuthStore,{
+      storeLogin:'login'}),
+    ...mapActions(useAccountStore,['downloadAccount']),
+    async login(e) {
       e.preventDefault();
       e.stopPropagation();
-      if (!this.$refs.form.validate()) return;
+      if (!await this.$refs.form.validate()) return;
       this.$loading();
-      this.$store.dispatch('auth/login',this.user)
+      await this.storeLogin(this.user)
           .then(() => {
             this.$loadingClose();
-            this.$store.dispatch('account/downloadAccount');
+            this.downloadAccount();
             this.$router.push({name:'dashboard'});
           })
           .catch(error => {
             this.$loadingClose();
+            console.log(error);
             this.$notify('','error', error.response.data.message);
           })
 
@@ -110,6 +118,7 @@ export default {
     font-weight: 500;
     box-shadow: none;
     transition: all 0.2s ease-in-out;
+    background: #f5f5f5;
   &:hover {
     color: #fff;
     background: #1976D2;
@@ -120,7 +129,7 @@ export default {
   }
   &__btn-close {
     position: absolute;
-    top: 32px;
+    top: 26px;
     right: 16px;
   }
 }

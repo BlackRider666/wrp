@@ -13,73 +13,82 @@
 <!--            </template>-->
           </v-card-title>
           <v-card-text>
-  <!--            <v-toolbar-->
-  <!--                dense-->
-  <!--                color="primary"-->
-  <!--            >-->
-  <!--              {{$t('search.articles.filters','Filters')}}-->
-  <!--              <v-spacer/>-->
-  <!--              <v-btn icon @click="showArticleFiltersSheet">-->
-  <!--                <v-icon v-if="articleFiltersSheet">mdi-chevron-up</v-icon>-->
-  <!--                <v-icon v-else>mdi-chevron-down</v-icon>-->
-  <!--              </v-btn>-->
-  <!--            </v-toolbar>-->
-  <!--            <v-sheet-->
-  <!--                v-if="articleFiltersSheet && $route.params.type === 'articles'"-->
-  <!--                outlined-->
-  <!--            >-->
-  <!--              <v-container>-->
-  <!--                <v-row>-->
-  <!--                  <v-col cols="12">-->
-  <!--                    <v-text-field-->
-  <!--                        v-model="articleFilters.title"-->
-  <!--                        :label="$t('articles.placeholder.title','Title')"-->
-  <!--                        outlined-->
-  <!--                        prepend-inner-icon="mdi-card-text-outline"-->
-  <!--                    />-->
-  <!--                  </v-col>-->
-  <!--                  <v-col cols="12">-->
-  <!--                    <v-select-->
-  <!--                        v-model="articleFilters.country_id"-->
-  <!--                        :items="countries"-->
-  <!--                        item-text="name"-->
-  <!--                        item-value="id"-->
-  <!--                        :label="$t('search.placeholder.country','Country')"-->
-  <!--                        :placeholder="$t('search.placeholder.country','Country')"-->
-  <!--                        prepend-inner-icon="mdi-database-search"-->
-  <!--                        outlined-->
-  <!--                    ></v-select>-->
-  <!--                  </v-col>-->
-  <!--                  <v-col cols="12">-->
-  <!--                    <v-select-->
-  <!--                        v-model="articleFilters.city_id"-->
-  <!--                        :items="cities"-->
-  <!--                        item-text="name"-->
-  <!--                        item-value="id"-->
-  <!--                        :label="$t('search.placeholder.city','City')"-->
-  <!--                        :placeholder="$t('search.placeholder.city','City')"-->
-  <!--                        prepend-inner-icon="mdi-database-search"-->
-  <!--                        outlined-->
-  <!--                    ></v-select>-->
-  <!--                  </v-col>-->
-  <!--                  <v-col cols="12">-->
-  <!--                    <v-btn color="primary" block @click="getData">{{$t('search.title','Search')}}</v-btn>-->
-  <!--                  </v-col>-->
-  <!--                </v-row>-->
-  <!--              </v-container>-->
-  <!--            </v-sheet>-->
+              <v-toolbar
+                  dense
+                  color="primary"
+                  v-if="articleFiltersSheet && $route.params.type === 'articles'"
+              >
+                <span class="pl-1">{{$t('search.articles.filters','Filters')}}</span>
+                <v-spacer/>
+                <v-btn icon @click="showArticleFiltersSheet">
+                  <v-icon v-if="articleFiltersSheet">mdi-chevron-up</v-icon>
+                  <v-icon v-else>mdi-chevron-down</v-icon>
+                </v-btn>
+              </v-toolbar>
+              <v-sheet
+                  v-if="articleFiltersSheet && $route.params.type === 'articles'"
+                  outlined
+              >
+                <v-container>
+                  <v-row>
+                    <v-col cols="12">
+                      <v-text-field
+                          v-model="articleFilters.title"
+                          :label="$t('articles.placeholder.title','Title')"
+                          variant="outlined"
+                          prepend-inner-icon="mdi-card-text-outline"
+                      />
+                    </v-col>
+                    <v-col cols="12">
+                      <v-select
+                          v-model="articleFilters.country_id"
+                          :items="countries"
+                          item-title="name"
+                          item-value="id"
+                          :label="$t('search.placeholder.country','Country')"
+                          :placeholder="$t('search.placeholder.country','Country')"
+                          prepend-inner-icon="mdi-database-search"
+                          variant="outlined"
+                      ></v-select>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-select
+                          v-model="articleFilters.city_id"
+                          :items="cities"
+                          item-title="name"
+                          item-value="id"
+                          :label="$t('search.placeholder.city','City')"
+                          :placeholder="$t('search.placeholder.city','City')"
+                          prepend-inner-icon="mdi-database-search"
+                          variant="outlined"
+                      ></v-select>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-btn color="primary" block @click="getData">{{$t('search.title','Search')}}</v-btn>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-sheet>
             <template v-if="searchType[type].showArticlesTable">
               <div class="text-h5 font-weight-medium mb-4">Articles</div>
-              <v-data-table
+              <v-data-table-server
                   :headers="articleHeaders"
                   :items="articles"
-                  :options.sync="options"
-                  :server-items-length="totalArticles"
-                  :footer-props="{
-                      itemsPerPageOptions:[5,10,15,20]
-                  }"
+                  :items-length="totalArticles"
+                  v-model:items-per-page="options.perPage"
+                  v-model:page="options.page"
+                  :items-per-page-options="[
+                      {value:5,title:'5'},
+                      {value:10,title:'10'},
+                      {value:15,title:'15'},
+                      {value:20,title:'20'}
+                      ]"
                   class="elevation-1 mb-5"
+                  @update:options="getData"
               >
+                <template v-slot:item.full_title="{ item }">
+                  {{item.full_title[locale.iso_code]}}
+                </template>
                 <template v-slot:item.actions="{ item }">
                   <v-icon
                       small
@@ -89,19 +98,24 @@
                     mdi-eye
                   </v-icon>
                 </template>
-              </v-data-table>
+              </v-data-table-server>
             </template>
             <template v-if="searchType[type].showUsersTable">
               <div class="text-h5 font-weight-medium mb-4">Authors</div>
-              <v-data-table
+              <v-data-table-server
                   :headers="userHeaders"
                   :items="users"
-                  :options.sync="options"
-                  :server-items-length="totalUsers"
-                  :footer-props="{
-                      itemsPerPageOptions:[5,10,15,20]
-                  }"
+                  :items-length="totalUsers"
+                  v-model:items-per-page="options.perPage"
+                  v-model:page="options.page"
+                  :items-per-page-options="[
+                      {value:5,title:'5'},
+                      {value:10,title:'10'},
+                      {value:15,title:'15'},
+                      {value:20,title:'20'}
+                      ]"
                   class="elevation-1"
+                  @update:options="getData"
               >
                 <template v-slot:item.actions="{ item }">
                   <v-icon
@@ -112,7 +126,7 @@
                     mdi-eye
                   </v-icon>
                 </template>
-              </v-data-table>
+              </v-data-table-server>
             </template>
           </v-card-text>
         </v-card>
@@ -122,23 +136,31 @@
 </template>
 
 <script>
-import {mapState} from "vuex";
+import {mapActions, mapState} from "pinia";
+import {useArticleStore} from "@/stores/article";
+import {useUserStore} from "@/stores/user";
+import {useCountryStore} from "@/stores/country";
+import {useCityStore} from "@/stores/city";
+import {useLocalesStore} from "@/stores/l10s";
 
 export default {
   name: "Search",
   data() {
     return {
       articleHeaders: [
-        { text: this.$t('articles.placeholder.title','Title'), value: 'full_title' },
-        { text: this.$t('articles.placeholder.category','Category'), value: 'category.title' },
-        { text: this.$t('articles.placeholder.year','Year'), value: 'year' },
-        { text: this.$t('articles.placeholder.actions','Actions'), value: 'actions', sortable: false },
+        { title: this.$t('articles.placeholder.title','Title'), value: 'full_title' },
+        { title: this.$t('articles.placeholder.category','Category'), value: 'category.title' },
+        { title: this.$t('articles.placeholder.year','Year'), value: 'year' },
+        { title: this.$t('articles.placeholder.actions','Actions'), value: 'actions', sortable: false },
       ],
       userHeaders: [
-        { text: this.$t('placeholder.name','Name'), value: 'full_name' },
-        { text: this.$t('placeholder.actions','Actions'), value: 'actions', sortable: false },
+        { title: this.$t('placeholder.name','Name'), value: 'full_name' },
+        { title: this.$t('placeholder.actions','Actions'), value: 'actions', sortable: false },
       ],
-      options: {},
+      options: {
+        page:1,
+        perPage:10,
+      },
       articleFiltersSheet: true,
       articleFilters: {
         country_id:null,
@@ -162,20 +184,23 @@ export default {
     };
   },
   computed: {
-    ...mapState({
-      articles: (state) => state.article.articles,
-      totalArticles: (state) => state.article.total,
-      users: (state) => state.user.users,
-      totalUsers: (state) => state.user.total,
-      countries: (state) => state.country.countries,
-      cities: (state) => state.city.cities,
+    ...mapState(useArticleStore,{
+      articles:'articles',
+      totalArticles: 'total',
     }),
-    isPremium() {
-      if (this.$store.getters['auth/getAuthToken'].length > 0) {
-        return this.$store.getters['account/getAccount'].is_premium;
-      }
-      return false;
-    },
+    ...mapState(useUserStore,{
+      users:'users',
+      totalUsers:'total',
+    }),
+    ...mapState(useCountryStore,['countries']),
+    ...mapState(useCityStore,['cities']),
+    ...mapState(useLocalesStore,['locale']),
+    // isPremium() {
+    //   if (this.$store.getters['auth/getAuthToken'].length > 0) {
+    //     return this.$store.getters['account/getAccount'].is_premium;
+    //   }
+    //   return false;
+    // },
     type() {
       if (this.$route.params.type) {
         if (this.searchType[this.$route.params.type]) {
@@ -186,7 +211,7 @@ export default {
     }
   },
   mounted() {
-    this.$store.dispatch('country/downloadCountries');
+    this.downloadCountries();
     this.articleFilters.title = this.$route.query.title;
   },
   methods: {
@@ -199,7 +224,7 @@ export default {
     getData() {
       this.$loading()
       if (this.searchType[this.$route.params.type].showArticlesTable) {
-        this.$store.dispatch('article/downloadArticles', {
+        this.downloadArticles({
           user_id:null,
           title: this.$route.query.title,
           ...this.options,
@@ -209,7 +234,7 @@ export default {
         });
       }
       if (this.searchType[this.$route.params.type].showUsersTable) {
-        this.$store.dispatch('user/downloadUsers', {
+        this.downloadUsers({
           title: this.$route.query.title,
           ...this.options,
         }).then( () => {
@@ -220,17 +245,15 @@ export default {
     showArticleFiltersSheet() {
       this.articleFiltersSheet = !this.articleFiltersSheet;
     },
+    ...mapActions(useArticleStore,['downloadArticles']),
+    ...mapActions(useUserStore,['downloadUsers']),
+    ...mapActions(useCountryStore,['downloadCountries']),
+    ...mapActions(useCityStore,['downloadCities'])
   },
   watch: {
-    options: {
-      handler () {
-        this.getData();
-      },
-      deep: true,
-    },
     'articleFilters.country_id': {
       handler () {
-        this.$store.dispatch('city/downloadCities');
+        this.downloadCities();
       },
       deep: true,
     },

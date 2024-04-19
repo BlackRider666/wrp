@@ -3,13 +3,12 @@
     <v-card
         class="mx-auto pb-6"
         raised
-        outlined
     >
       <v-card-title class="d-flex align-center justify-center auth__top__wrapper">
         <router-link class="d-flex align-center auth__logo mt-4" :to="{name: 'dashboard'}">
           <v-img :aspect-ratio="16/9" :src="require('@/assets/logo.png')" width="90" contain="contain"/>
         </router-link>
-        <v-btn large color="primary" icon class="auth__btn-close" @click="$router.push({name:'dashboard'})"><v-icon>mdi-close</v-icon></v-btn>
+        <v-btn size="large" variant="text" color="primary" icon="mdi-close" class="auth__btn-close" @click="$router.push({name:'dashboard'})"></v-btn>
       </v-card-title>
       <v-card-text v-if="registerStepper < 4">
         <v-row justify="center">
@@ -18,181 +17,180 @@
           </v-col>
         </v-row>
         <v-stepper v-model="registerStepper" flat>
-          <v-stepper-header class="auth__stepper__header">
-            <v-stepper-step
-                :complete="registerStepper > 1"
-                step="1"
-            >
-              Name of step 1
-            </v-stepper-step>
-            <v-stepper-step
-                :complete="registerStepper > 2"
-                step="2"
-            >
-              Name of step 2
-            </v-stepper-step>
-
-            <v-stepper-step
-                :complete="registerStepper > 3"
-                step="3"
-            >
-              Name of step 3
-            </v-stepper-step>
-          </v-stepper-header>
-
-          <v-stepper-items>
-            <v-stepper-content step="1">
-              <v-card
-                  flat
-                  class="mt-1"
+          <template v-slot:default>
+            <v-stepper-header class="auth__stepper__header">
+              <v-stepper-item
+                  :complete="registerStepper > 1"
+                  :value="1"
               >
-                <v-form
-                    ref="formRegStep1"
-                    lazy-validation
-                    align="center"
-                    @submit="nextStep"
-                    aria-autocomplete="none"
+              </v-stepper-item>
+              <v-stepper-item
+                  :complete="registerStepper > 2"
+                  :value="2"
+              >
+              </v-stepper-item>
+
+              <v-stepper-item
+                  :complete="registerStepper > 3"
+                  :value="3"
+              >
+              </v-stepper-item>
+            </v-stepper-header>
+
+            <v-stepper-window>
+              <v-stepper-window-item :value="1">
+                <v-card
+                    flat
+                    class="mt-1 pt-2"
                 >
-                  <v-text-field
-                      v-model="user.first_name"
-                      :label="$t('placeholder.first_name', 'First Name')"
-                      outlined
-                      prepend-inner-icon="mdi-account-outline"
-                      :rules="[rules.required]"
-                  />
-                  <v-text-field
-                      v-model="user.second_name"
-                      :label="$t('placeholder.second_name', 'Second Name')"
-                      outlined
-                      prepend-inner-icon="mdi-account-outline"
-                      :rules="[rules.required]"
+                  <v-form
+                      ref="formRegStep1"
+                      lazy-validation
+                      align="center"
+                      @submit="nextStep"
                       aria-autocomplete="none"
-                  />
-                  <v-text-field
-                      v-model="user.surname"
-                      :label="$t('placeholder.surname', 'Surname')"
-                      outlined
-                      prepend-inner-icon="mdi-account-outline"
-                      :rules="[rules.required]"
-                  />
-                  <v-btn
-                      color="primary"
-                      block
-                      tile
-                      type="submit"
-                      class="my-3"
-                      :disabled="!activeContinueStep1"
                   >
-                    Continue
-                  </v-btn>
+                    <v-text-field
+                        v-model="user.first_name"
+                        :label="$t('placeholder.first_name', 'First Name')"
+                        variant="outlined"
+                        prepend-inner-icon="mdi-account-outline"
+                        :rules="[rules.required]"
+                    />
+                    <v-text-field
+                        v-model="user.second_name"
+                        :label="$t('placeholder.second_name', 'Second Name')"
+                        variant="outlined"
+                        prepend-inner-icon="mdi-account-outline"
+                        :rules="[rules.required]"
+                        aria-autocomplete="none"
+                    />
+                    <v-text-field
+                        v-model="user.surname"
+                        :label="$t('placeholder.surname', 'Surname')"
+                        variant="outlined"
+                        prepend-inner-icon="mdi-account-outline"
+                        :rules="[rules.required]"
+                    />
+                    <v-btn
+                        color="primary"
+                        block
+                        tile
+                        type="submit"
+                        class="my-3"
+                        :disabled="!activeContinueStep1"
+                    >
+                      Continue
+                    </v-btn>
 
-                  <v-btn block text color="primary" class="my-3" :to="{name:'login'}">
-                    {{$t('btn.back-to-login', 'Back to Login')}}
-                  </v-btn>
-                </v-form>
-              </v-card>
-            </v-stepper-content>
+                    <v-btn block variant="text" color="primary" class="my-3" :to="{name:'login'}">
+                      {{$t('btn.back-to-login', 'Back to Login')}}
+                    </v-btn>
+                  </v-form>
+                </v-card>
+              </v-stepper-window-item>
 
-            <v-stepper-content step="2">
-              <v-card
-                  flat
-                  class="mt-1"
-              >
-                <v-form
-                    ref="formRegStep2"
-                    lazy-validation
-                    align="center"
-                    @submit="nextStep"
+              <v-stepper-window-item :value="2">
+                <v-card
+                    flat
+                    class="mt-1 pt-2"
                 >
-                  <v-text-field
-                      v-model="user.email"
-                      outlined
-                      prepend-inner-icon="mdi-email-outline"
-                      :label="$t('placeholder.email', 'Email')"
-                      :rules="[rules.required, rules.email]"
-                      :error="emailError.length > 0"
-                      :error-messages="emailError"
-                      @change="clearErrors"
-                      type="email"
-                  />
-                  <v-text-field
-                      v-model="user.phone"
-                      :label="$t('placeholder.phone', 'Phone')"
-                      outlined
-                      prepend-inner-icon="mdi-phone"
-                      :rules="[rules.required, rules.phone]"
-                  />
-
-                  <v-btn
-                      color="primary"
-                      block
-                      tile
-                      type="submit"
-                      class="my-3"
-                      :disabled="!activeContinueStep2"
+                  <v-form
+                      ref="formRegStep2"
+                      lazy-validation
+                      align="center"
+                      @submit="nextStep"
                   >
-                    Continue
-                  </v-btn>
+                    <v-text-field
+                        v-model="user.email"
+                        variant="outlined"
+                        prepend-inner-icon="mdi-email-outline"
+                        :label="$t('placeholder.email', 'Email')"
+                        :rules="[rules.required, rules.email]"
+                        :error="emailError.length > 0"
+                        :error-messages="emailError"
+                        @change="clearErrors"
+                        type="email"
+                    />
+                    <v-text-field
+                        v-model="user.phone"
+                        :label="$t('placeholder.phone', 'Phone')"
+                        variant="outlined"
+                        prepend-inner-icon="mdi-phone"
+                        :rules="[rules.required, rules.phone]"
+                    />
 
-                  <v-btn block text color="primary" class="my-3" :to="{name:'login'}">
-                    {{$t('btn.back-to-login', 'Back to Login')}}
-                  </v-btn>
-                </v-form>
-              </v-card>
-            </v-stepper-content>
+                    <v-btn
+                        color="primary"
+                        block
+                        tile
+                        type="submit"
+                        class="my-3"
+                        :disabled="!activeContinueStep2"
+                    >
+                      Continue
+                    </v-btn>
 
-            <v-stepper-content step="3">
-              <v-card
-                  flat
-                  class="mt-1"
-              >
-                <v-form
-                    ref="formRegStep3"
-                    lazy-validation
-                    align="center"
-                    @submit="nextStep"
+                    <v-btn block variant="text" color="primary" class="my-3" :to="{name:'login'}">
+                      {{$t('btn.back-to-login', 'Back to Login')}}
+                    </v-btn>
+                  </v-form>
+                </v-card>
+              </v-stepper-window-item>
+
+              <v-stepper-window-item :value="3">
+                <v-card
+                    flat
+                    class="mt-1 pt-2"
                 >
-                  <v-text-field
-                      v-model="user.password"
-                      :rules="[rules.required, rules.min]"
-                      outlined
-                      prepend-inner-icon="mdi-lock"
-                      color="primary"
-                      :type="passwordType"
-                      :label="$t('placeholder.password', 'Password')"
+                  <v-form
+                      ref="formRegStep3"
+                      lazy-validation
+                      align="center"
+                      @submit="nextStep"
                   >
-                    <template v-slot:append>
-                      <v-icon color="secondary" v-if="passwordType === 'password'" @click="passwordType = 'text'">mdi-eye</v-icon>
-                      <v-icon color="primary" v-if="passwordType === 'text'" @click="passwordType = 'password'">mdi-eye</v-icon>
-                    </template>
-                  </v-text-field>
-                  <v-text-field
-                      v-model="user.password_confirmation"
-                      :type="passwordType"
-                      :label="$t('placeholder.password_confirmation', 'Confirm Password')"
-                      color="primary"
-                      outlined
-                      prepend-inner-icon="mdi-lock"
-                      :rules="[rules.required, rules.min, rules.confirmation]"
-                  />
-                  <v-btn
-                      color="primary"
-                      block
-                      tile
-                      @click="nextStep"
-                      class="my-3"
-                      :disabled="!activeContinueStep3"
-                  >
-                    Continue
-                  </v-btn>
+                    <v-text-field
+                        v-model="user.password"
+                        :rules="[rules.required, rules.min]"
+                        variant="outlined"
+                        prepend-inner-icon="mdi-lock"
+                        color="primary"
+                        :type="passwordType"
+                        :label="$t('placeholder.password', 'Password')"
+                    >
+                      <template v-slot:append-inner>
+                        <v-icon color="secondary" v-if="passwordType === 'password'" @click="passwordType = 'text'">mdi-eye</v-icon>
+                        <v-icon color="primary" v-if="passwordType === 'text'" @click="passwordType = 'password'">mdi-eye</v-icon>
+                      </template>
+                    </v-text-field>
+                    <v-text-field
+                        v-model="user.password_confirmation"
+                        :type="passwordType"
+                        :label="$t('placeholder.password_confirmation', 'Confirm Password')"
+                        color="primary"
+                        variant="outlined"
+                        prepend-inner-icon="mdi-lock"
+                        :rules="[rules.required, rules.min, rules.confirmation]"
+                    />
+                    <v-btn
+                        color="primary"
+                        block
+                        tile
+                        @click="nextStep"
+                        class="my-3"
+                        :disabled="!activeContinueStep3"
+                    >
+                      Continue
+                    </v-btn>
 
-                  <v-btn block text color="primary" class="my-3" :to="{name:'login'}">
-                    {{$t('btn.back-to-login', 'Back to Login')}}
-                  </v-btn>
-                </v-form>
-              </v-card>
-            </v-stepper-content>
-          </v-stepper-items>
+                    <v-btn block variant="text" color="primary" class="my-3" :to="{name:'login'}">
+                      {{$t('btn.back-to-login', 'Back to Login')}}
+                    </v-btn>
+                  </v-form>
+                </v-card>
+              </v-stepper-window-item>
+            </v-stepper-window>
+          </template>
         </v-stepper>
       </v-card-text>
       <v-card-text v-else>
@@ -208,6 +206,10 @@
 </template>
 
 <script>
+import {mapActions} from "pinia";
+import {useAccountStore} from "@/stores/account";
+import {useAuthStore} from "@/stores/auth";
+
 export default {
   name: "Register",
   data: function () {
@@ -244,7 +246,7 @@ export default {
     async register() {
       let response;
       this.$loading();
-      await this.$store.dispatch('auth/register', this.user)
+      await this.registerStore(this.user)
           .then(() => {
             this.$loadingClose();
             response = true;
@@ -257,21 +259,21 @@ export default {
           })
       return response;
     },
-    verifyRegister(e) {
+    async verifyRegister(e) {
       e.preventDefault();
       e.stopPropagation();
       this.$loading();
-      this.$store.dispatch('auth/verifyRegister',this.user)
+      await this.verifyRegisterStore(this.user)
           .then(() => {
             this.$loadingClose();
-            this.$store.dispatch('account/downloadAccount')
+            this.downloadAccount();
             localStorage.removeItem('regUser')
             localStorage.removeItem('regStep')
             this.$router.push({name:'dashboard'})
           })
           .catch(error => {
             this.$loadingClose();
-            this.$notify('','error', error.response.data.message);
+            this.$notify('', 'error', error.response.data.message);
           })
     },
     async nextStep(e) {
@@ -283,7 +285,6 @@ export default {
           break;
         case 2:
           if (!this.$refs.formRegStep2.validate()) return;
-          // eslint-disable-next-line no-case-declarations
           let registered = await this.register();
           if (!registered) return;
           break;
@@ -299,7 +300,12 @@ export default {
     },
     clearErrors() {
       this.emailError = [];
-    }
+    },
+    ...mapActions(useAccountStore,['downloadAccount']),
+    ...mapActions(useAuthStore,{
+      registerStore:'register',
+      verifyRegisterStore:'verifyRegister',
+    })
   },
   created() {
     let regUser = localStorage.getItem('regUser');

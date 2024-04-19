@@ -8,19 +8,22 @@
 </template>
 
 <script>
-import {mapState} from "vuex";
+import {mapActions, mapState} from "pinia";
+import {useLocalesStore} from "@/stores/l10s";
+import {usePageStore} from "@/stores/pages";
 
 export default {
   name: "Contacts",
   mounted() {
-    this.$store.dispatch('pages/downloadContact');
+    this.downloadContact();
   },
   computed: {
-    ...mapState({
-      page: (state) => state.pages.page,
-      locale: (state) => state.l10s.locale,
-    }),
+    ...mapState(usePageStore,['page']),
+    ...mapState(useLocalesStore,['locale']),
   },
+  methods: {
+    ...mapActions(usePageStore,['downloadContact'])
+  }
 }
 </script>
 

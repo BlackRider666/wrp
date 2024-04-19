@@ -1,18 +1,14 @@
 <template>
   <v-col cols="12">
-    <v-toolbar dense dark :class="fillGrant?'blink':''" color="primary">
+    <v-toolbar dense dark :class="fillGrant?'blink':''" color="primary"  class="pl-2">
       {{$t('grants.title','Grants')}}
       <v-spacer/>
       <v-btn
-          icon
+          icon="mdi-plus"
           @click="openGrantCreate"
           :class="fillGrant?'blink':''"
-      ><v-icon>mdi-plus</v-icon>
-      </v-btn>
-      <v-btn icon @click="showGrantsSheet">
-        <v-icon v-if="grantsSheet">mdi-chevron-up</v-icon>
-        <v-icon v-else>mdi-chevron-down</v-icon>
-      </v-btn>
+      ></v-btn>
+      <v-btn :icon="grantsSheet?'mdi-chevron-up':'mdi-chevron-down'" @click="showGrantsSheet"></v-btn>
     </v-toolbar>
     <v-sheet v-if="grantsSheet" outlined>
       <v-data-table
@@ -40,8 +36,8 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="darken-1" text @click="closeGrantEdit">{{$t('btn.cancel','Cancel')}}</v-btn>
-                <v-btn color="darken-1" text @click="editGrant">{{$t('btn.update','Update')}}</v-btn>
+                <v-btn color="darken-1" variant="text" @click="closeGrantEdit">{{$t('btn.cancel','Cancel')}}</v-btn>
+                <v-btn color="darken-1" variant="text"  @click="editGrant">{{$t('btn.update','Update')}}</v-btn>
                 <v-spacer></v-spacer>
               </v-card-actions>
             </v-card>
@@ -52,8 +48,8 @@
               <v-card-text>{{$t('grants.delete.message','Are you sure you want to delete this grant?')}}</v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="darken-1" text @click="closeGrantDelete">{{$t('btn.cancel','Cancel')}}</v-btn>
-                <v-btn color="error" text @click="deleteGrant">{{$t('btn.delete','Delete')}}</v-btn>
+                <v-btn color="darken-1" variant="text"  @click="closeGrantDelete">{{$t('btn.cancel','Cancel')}}</v-btn>
+                <v-btn color="error" variant="text"  @click="deleteGrant">{{$t('btn.delete','Delete')}}</v-btn>
                 <v-spacer></v-spacer>
               </v-card-actions>
             </v-card>
@@ -88,9 +84,9 @@
           />
         </v-card-text>
         <v-card-actions>
-          <v-btn color="darken-1" text @click="closeGrantCreate">{{$t('btn.cancel','Cancel')}}</v-btn>
+          <v-btn color="darken-1" variant="text"  @click="closeGrantCreate">{{$t('btn.cancel','Cancel')}}</v-btn>
           <v-spacer></v-spacer>
-          <v-btn color="primary" text @click="createGrant">{{$t('btn.create','Create')}}</v-btn>
+          <v-btn color="primary" variant="text"  @click="createGrant">{{$t('btn.create','Create')}}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -98,7 +94,8 @@
 </template>
 
 <script>
-import {mapState} from "vuex";
+import {mapActions, mapState} from "pinia";
+import {useGrantStore} from "@/stores/grant";
 
 export default {
   name: "Grant",
@@ -114,8 +111,8 @@ export default {
       editGrantDialog: false,
       deleteGrantDialog: false,
       grantsHeaders: [
-        { text: this.$t('grants.placeholder.name','Name'), value: 'name' },
-        { text: 'Actions', value: 'actions', sortable: false },
+        { title: this.$t('grants.placeholder.name','Name'), value: 'name' },
+        { title: 'Actions', value: 'actions', sortable: false },
       ],
       newGrant: null,
       selectedGrant: null,
@@ -123,13 +120,10 @@ export default {
     };
   },
   computed: {
-    ...mapState({
-      grants: (state) => state.grant.grants,
-      total: (state) => state.grant.total,
-    }),
-    fillGrant() {
-      return this.$store.state.tutorial.step === 5 && this.$store.state.tutorial.tutorialCategory === 'account' && this.createGrantDialog === false;
-    },
+    ...mapState(useGrantStore,['grants','total']),
+    // fillGrant() {
+    //   return this.$store.state.tutorial.step === 5 && this.$store.state.tutorial.tutorialCategory === 'account' && this.createGrantDialog === false;
+    // },
   },
   methods: {
     showGrantsSheet() {
@@ -162,7 +156,7 @@ export default {
     },
     createGrant () {
       this.$loading();
-      this.$store.dispatch('grant/createGrant',this.newGrant)
+      this.create(this.newGrant)
           .then(() => {
             this.$loadingClose();
             this.closeGrantCreate();
@@ -175,7 +169,7 @@ export default {
     },
     editGrant() {
       this.$loading();
-      this.$store.dispatch('grant/updateGrant',this.selectedGrant)
+      this.update(this.selectedGrant)
           .then(() => {
             this.$loadingClose();
             this.closeGrantEdit();
@@ -188,7 +182,7 @@ export default {
     },
     deleteGrant() {
       this.$loading();
-      this.$store.dispatch('grant/deleteGrant',this.selectedGrant.id)
+      this.delete(this.selectedGrant.id)
           .then(() => {
             this.$loadingClose();
             this.closeGrantDelete();
@@ -201,13 +195,19 @@ export default {
     },
     getData() {
       this.$loading()
-      this.$store.dispatch('grant/downloadGrants',{
+      this.downloadGrants({
         user_id:this.user_id,
         ...this.options,
       }).then(() => {
         this.$loadingClose();
       });
-    }
+    },
+    ...mapActions(useGrantStore,{
+      downloadGrants:'downloadGrants',
+      create:'createGrant',
+      update: 'updateGrant',
+      delete: 'deleteGrant',
+    })
   },
   watch: {
     options: {

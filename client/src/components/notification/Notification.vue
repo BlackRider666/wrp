@@ -1,43 +1,37 @@
 <template>
   <div class="text-center">
-    <v-snackbar multi-line right bottom :timeout="timeout" v-model="show" :color="color">
-      <template v-if="messageTKey">
-        <div>{{$t(messageTKey)}}</div>
+    <v-snackbar multi-line location="bottom end" :timeout="timeout" :model-value="show" @update:model-value="updateShow" :color="color">
+      <template v-if="contentTKey">
+        <div>{{$t(contentTKey)}}</div>
       </template>
-      <template v-if="message">
-        <div>{{ message }}</div>
+      <template v-if="content">
+        <div>{{ content }}</div>
       </template>
-      <v-btn dark text @click="show = false">{{ $t('btn.close', 'Close') }}</v-btn>
+      <v-btn dark variant="text" @click="closeMessage">{{ $t('btn.close', 'Close') }}</v-btn>
     </v-snackbar>
   </div>
 </template>
 
 <script>
+import {useNotifierStore} from "@/stores/notifier";
+import {mapActions, mapState} from "pinia";
+
 export default {
   name: "Notification",
-  data: () => ({
-    show: false,
-    message: "",
-    messageTKey: "",
-    color: "",
-    options: {},
-  }),
   computed: {
+    ...mapState(useNotifierStore,['show','color','contentTKey','content','options']),
     timeout: function () {
       return "timeout" in this.options ? this.options.timeout : 10000;
     },
   },
-  created() {
-    this.$store.subscribe((mutation, state,) => {
-      if (mutation.type === "notifier/SHOW_MESSAGE") {
-        this.message = state.notifier.content;
-        this.messageTKey = state.notifier.contentTKey;
-        this.color = state.notifier.color;
-        this.options = state.notifier.options;
-        this.show = true;
+  methods: {
+    ...mapActions(useNotifierStore,['closeMessage']),
+    updateShow(val) {
+      if (!val) {
+        this.closeMessage();
       }
-    },);
-  },
+    }
+  }
 }
 </script>
 

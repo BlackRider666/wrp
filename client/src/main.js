@@ -1,22 +1,22 @@
-import Vue from 'vue';
+import { createApp } from 'vue';
+import { createPinia } from "pinia";
 import App from './App.vue';
 import router from './router';
-import store from './store';
 import vuetify from './plugins/vuetify';
 import './plugins/axios';
 import loading from './plugins/loading';
 import l10s from './plugins/l10s';
 import FlagIcon from 'vue-flag-icon';
+import Notifier from "@/plugins/notifier";
 
-Vue.use(l10s,store);
-Vue.use(loading);
-Vue.use(FlagIcon);
+const pinia = createPinia();
+const app = createApp(App)
 
-Vue.config.productionTip = false;
-
-new Vue({
-  router,
-  store,
-  vuetify,
-  render: (h) => h(App),
-}).$mount('#app');
+app.use(pinia);
+app.use(l10s);
+app.use(loading);
+app.use(FlagIcon);
+app.use(router)
+app.use(vuetify)
+app.use(Notifier)
+app.mount('#app');

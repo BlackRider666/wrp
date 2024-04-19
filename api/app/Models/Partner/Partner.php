@@ -20,7 +20,7 @@ class Partner extends Model
     ];
 
     protected $casts = [
-        'logo' => 'file',
+//        'logo' => 'file',
     ];
 
     public function getLogoUrlAttribute(): string

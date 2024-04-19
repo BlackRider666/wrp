@@ -12,7 +12,7 @@ import "quill/dist/quill.snow.css";
 export default {
   name: 'FullEditor',
   props: {
-    value: {
+    modelValue: {
       type:String,
       default:'',
     },
@@ -47,7 +47,7 @@ export default {
       formats: ["bold", "underline", "header", "italic", "link", 'align'],
       placeholder: this.placeholder,
     });
-    this.quill.root.innerHTML = this.value;
+    this.quill.root.innerHTML = this.modelValue;
     this.quill.on("text-change", function () {
       return _this.update();
     });
@@ -55,7 +55,7 @@ export default {
   methods: {
     update: function update() {
       this.$emit(
-          "input",
+          "update:modelValue",
           this.quill.getText() ? this.quill.root.innerHTML : ""
       );
     },

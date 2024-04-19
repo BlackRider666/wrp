@@ -5,20 +5,21 @@
       <v-card
           flat
       >
-        <v-card-title class="justify-space-between">
+        <v-card-title class="d-flex justify-space-between">
           <span class="text-h4 font-weight-medium">{{$t('organizations.all','All organizations')}}</span>
-          <div class="d-inline-flex align-center">
+          <div class="d-inline-flex align-center justify-center">
             <v-switch
                 class="mx-2"
                 v-model="detailed"
                 :label="$t('organizations.detailed','Detailed')"
+                hide-details
             />
             <v-select
                 class="mx-2"
                 :items="sortItems"
                 :label="$t('organizations.sortBy','Sort By')"
-                outlined
-                dense
+                variant="outlined"
+                density="compact"
                 solo
                 hide-details
             />
@@ -43,8 +44,9 @@
 </template>
 
 <script>
-import {mapState} from "vuex";
-import OrganizationItem from "@/components/organizations/OrganizationItem";
+import {mapActions, mapState} from "pinia";
+import OrganizationItem from "@/components/organizations/OrganizationItem.vue";
+import {useOrganizationStore} from "@/stores/organization";
 export default {
   name: "Index",
   data() {
@@ -52,11 +54,11 @@ export default {
       detailed: false,
       sortItems: [
         {
-          text:'test',
+          title:'test',
           value: 'test',
         },
         {
-          text:'test2',
+          title:'test2',
           value: 'test2',
         }
       ],
@@ -66,13 +68,14 @@ export default {
     OrganizationItem,
   },
   mounted() {
-    this.$store.dispatch('organization/downloadOrganizations');
+    this.downloadOrganizations();
   },
   computed: {
-    ...mapState({
-      organizations: (state) => state.organization.organizations,
-    }),
+    ...mapState(useOrganizationStore,['organizations']),
   },
+  methods: {
+    ...mapActions(useOrganizationStore,['downloadOrganizations'])
+  }
 }
 </script>
 

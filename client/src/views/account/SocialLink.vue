@@ -1,16 +1,13 @@
 <template>
   <v-col cols="12">
-    <v-toolbar dense dark color="primary">
+    <v-toolbar dense dark color="primary" class="pl-2">
       {{$t('social-links.title','Social links')}}
       <v-spacer/>
       <v-btn
-          icon
+          icon="mdi-plus"
           @click="openLinkCreate"
-      ><v-icon>mdi-plus</v-icon>
-      </v-btn>
-      <v-btn icon @click="showLinksSheet">
-        <v-icon v-if="linksSheet">mdi-chevron-up</v-icon>
-        <v-icon v-else>mdi-chevron-down</v-icon>
+      ></v-btn>
+      <v-btn :icon="linksSheet?'mdi-chevron-up':'mdi-chevron-down'" @click="showLinksSheet">
       </v-btn>
     </v-toolbar>
     <v-sheet v-if="linksSheet" outlined>
@@ -37,8 +34,8 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="darken-1" text @click="closeLinkEdit">{{$t('btn.cancel','Cancel')}}</v-btn>
-                <v-btn color="darken-1" text @click="editLink">{{$t('btn.update','Update')}}</v-btn>
+                <v-btn color="darken-1" variant="text" @click="closeLinkEdit">{{$t('btn.cancel','Cancel')}}</v-btn>
+                <v-btn color="darken-1" variant="text" @click="editLink">{{$t('btn.update','Update')}}</v-btn>
                 <v-spacer></v-spacer>
               </v-card-actions>
             </v-card>
@@ -49,8 +46,8 @@
               <v-card-text>{{$t('social-links.delete.message','Are you sure you want to delete this link?')}}</v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="darken-1" text @click="closeLinkDelete">{{$t('btn.cancel','Cancel')}}</v-btn>
-                <v-btn color="error" text @click="deleteLink">{{$t('btn.delete','Delete')}}</v-btn>
+                <v-btn color="darken-1" variant="text" @click="closeLinkDelete">{{$t('btn.cancel','Cancel')}}</v-btn>
+                <v-btn color="error" variant="text" @click="deleteLink">{{$t('btn.delete','Delete')}}</v-btn>
                 <v-spacer></v-spacer>
               </v-card-actions>
             </v-card>
@@ -92,9 +89,9 @@
           ></v-select>
         </v-card-text>
         <v-card-actions>
-          <v-btn color="darken-1" text @click="closeLinkCreate">{{$t('btn.cancel','Cancel')}}</v-btn>
+          <v-btn color="darken-1" variant="text" @click="closeLinkCreate">{{$t('btn.cancel','Cancel')}}</v-btn>
           <v-spacer></v-spacer>
-          <v-btn color="primary" text @click="createLink">{{$t('btn.create','Create')}}</v-btn>
+          <v-btn color="primary" variant="text" @click="createLink">{{$t('btn.create','Create')}}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -102,7 +99,8 @@
 </template>
 
 <script>
-import {mapState} from "vuex";
+import {mapActions, mapState} from "pinia";
+import {useSocialLinkStore} from "@/stores/socialLink";
 
 export default {
   name: `SocialLink`,
@@ -113,52 +111,50 @@ export default {
       editLinkDialog: false,
       deleteLinkDialog: false,
       linksHeaders: [
-        { text: this.$t('social-link.placeholder.url','URL'), value: 'url' },
-        { text: this.$t('social-link.placeholder.type', 'Type'), value: 'type' },
-        { text: 'Actions', value: 'actions', sortable: false },
+        { title: this.$t('social-link.placeholder.url','URL'), value: 'url' },
+        { title: this.$t('social-link.placeholder.type', 'Type'), value: 'type' },
+        { title: 'Actions', value: 'actions', sortable: false },
       ],
       newLink: null,
       selectedLink: null,
       socialLinkTypes:[
         {
           text:this.$t('social-link.title.academia','Academia'),
-          value:'academia',
+          title:'academia',
         },
         {
           text:this.$t('social-link.title.orcid','ORCID'),
-          value:'orcid',
+          title:'orcid',
         },
         {
           text:this.$t('social-link.title.scopus','Scopus'),
-          value:'scopus',
+          title:'scopus',
         },
         {
           text:this.$t('social-link.title.science','Science'),
-          value:'science',
+          title:'science',
         },
         {
           text:this.$t('social-link.title.linkedin','LinkedIn'),
-          value:'linkedin',
+          title:'linkedin',
         },
         {
           text:this.$t('social-link.title.facebook','Facebook'),
-          value:'facebook',
+          title:'facebook',
         },
         {
           text:this.$t('social-link.title.google','Google'),
-          value:'google',
+          title:'google',
         },
         {
           text:this.$t('social-link.title.instagram','Instagram'),
-          value:'instagram',
+          title:'instagram',
         },
       ],
     };
   },
   computed: {
-    ...mapState({
-      links: (state) => state.socialLink.links,
-    }),
+    ...mapState(useSocialLinkStore,['links']),
     availableSocialLinkTypes() {
       return this.socialLinkTypes.filter( (item) => {
         return !this.links.find((link) => link.type === item.value);
@@ -172,7 +168,7 @@ export default {
     },
     openLinkCreate() {
       this.$loading()
-      this.$store.dispatch('socialLink/downloadLinks',{
+      this.downloadLinks({
         ...this.options,
       }).then(() => {
         this.$loadingClose();
@@ -204,7 +200,7 @@ export default {
     },
     createLink () {
       this.$loading();
-      this.$store.dispatch('socialLink/create',this.newLink)
+      this.create(this.newLink)
           .then(() => {
             this.$loadingClose();
             this.closeLinkCreate();
@@ -217,7 +213,7 @@ export default {
     },
     editLink() {
       this.$loading();
-      this.$store.dispatch('socialLink/update',this.selectedLink)
+      this.update(this.selectedLink)
           .then(() => {
             this.$loadingClose();
             this.closeLinkEdit();
@@ -230,7 +226,7 @@ export default {
     },
     deleteLink() {
       this.$loading();
-      this.$store.dispatch('socialLink/delete',this.selectedLink.id)
+      this.delete(this.selectedLink.id)
           .then(() => {
             this.$loadingClose();
             this.closeLinkDelete();
@@ -243,12 +239,13 @@ export default {
     },
     getData() {
       this.$loading()
-      this.$store.dispatch('socialLink/downloadLinks',{
+      this.downloadLinks({
         ...this.options,
       }).then(() => {
         this.$loadingClose();
       });
-    }
+    },
+    ...mapActions(useSocialLinkStore,['downloadLinks','create','update','delete'])
   },
 }
 </script>

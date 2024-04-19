@@ -1,18 +1,14 @@
 <template>
   <v-col cols="12">
-    <v-toolbar dense dark :class="fillWork?'blink':''" color="primary">
+    <v-toolbar dense dark :class="fillWork?'blink':''" color="primary"  class="pl-2">
       {{$t('works.title','Works')}}
       <v-spacer/>
       <v-btn
-          icon
+          icon="mdi-plus"
           @click="openCreateWorkDialog"
           :class="fillWork?'blink':''"
-      ><v-icon>mdi-plus</v-icon>
-      </v-btn>
-      <v-btn icon @click="showWorksSheet">
-        <v-icon v-if="worksSheet">mdi-chevron-up</v-icon>
-        <v-icon v-else>mdi-chevron-down</v-icon>
-      </v-btn>
+      ></v-btn>
+      <v-btn :icon="worksSheet?'mdi-chevron-up':'mdi-chevron-down'" @click="showWorksSheet"></v-btn>
     </v-toolbar>
     <v-sheet v-if="worksSheet" outlined>
       <v-data-table
@@ -72,13 +68,13 @@
                         offset-y
                         min-width="290px"
                 >
-                  <template v-slot:activator="{ on }">
+                  <template v-slot:activator="{ props }">
                     <v-text-field
                         :value="selectedWork.start"
                         :label="$t('works.placeholder.start', 'Worked from')"
                         prepend-inner-icon="mdi-calendar"
                         readonly
-                        v-on="on"
+                        v-bind="props"
                         outlined
                     />
                   </template>
@@ -91,13 +87,13 @@
                         offset-y
                         min-width="290px"
                 >
-                  <template v-slot:activator="{ on }">
+                  <template v-slot:activator="{ props }">
                     <v-text-field
                         :value="selectedWork.finish"
                         :label="$t('works.placeholder.finish','Worked Until')"
                         prepend-inner-icon="mdi-calendar"
                         readonly
-                        v-on="on"
+                        v-bind="props"
                         outlined
                     />
                   </template>
@@ -106,8 +102,8 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="darken-1" text @click="closeWorkEdit">{{$t('btn.cancel','Cancel')}}</v-btn>
-                <v-btn color="darken-1" text @click="editWork">{{$t('btn.update','Update')}}</v-btn>
+                <v-btn color="darken-1" variant="text" @click="closeWorkEdit">{{$t('btn.cancel','Cancel')}}</v-btn>
+                <v-btn color="darken-1" variant="text" @click="editWork">{{$t('btn.update','Update')}}</v-btn>
                 <v-spacer></v-spacer>
               </v-card-actions>
             </v-card>
@@ -118,8 +114,8 @@
               <v-card-text>{{$t('works.delete.message','Are you sure you want to delete this work?')}}</v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="darken-1" text @click="closeWorkDelete">{{$t('btn.cancel','Cancel')}}</v-btn>
-                <v-btn color="error" text @click="deleteWork">{{$t('btn.delete','Delete')}}</v-btn>
+                <v-btn color="darken-1" variant="text" @click="closeWorkDelete">{{$t('btn.cancel','Cancel')}}</v-btn>
+                <v-btn color="error" variant="text" @click="deleteWork">{{$t('btn.delete','Delete')}}</v-btn>
                 <v-spacer></v-spacer>
               </v-card-actions>
             </v-card>
@@ -153,7 +149,7 @@
               v-model="newWork.organization"
               :items="organizations"
               hide-no-data
-              item-text="name"
+              :item-title="`name.${locale.iso_code}`"
               item-value="id"
               :label="$t('works.placeholder.organization','Organization')"
               :placeholder="$t('works.placeholder.organization','Organization')"
@@ -167,7 +163,7 @@
               v-model="newWork.structure_unit"
               :items="structureUnits"
               hide-no-data
-              item-text="name"
+              item-title="name"
               item-value="id"
               :label="$t('works.placeholder.structure-unit','Structure Unit')"
               :placeholder="$t('works.placeholder.structure-unit','Structure Unit')"
@@ -190,13 +186,13 @@
                   offset-y
                   min-width="290px"
           >
-            <template v-slot:activator="{ on }">
+            <template v-slot:activator="{ props }">
               <v-text-field
                   :value="newWork.start"
                   :label="$t('works.placeholder.start', 'Worked from')"
                   prepend-inner-icon="mdi-calendar"
                   readonly
-                  v-on="on"
+                  v-bind="props"
                   outlined
               />
             </template>
@@ -210,13 +206,13 @@
                   offset-y
                   min-width="290px"
           >
-            <template v-slot:activator="{ on }">
+            <template v-slot:activator="{ props }">
               <v-text-field
                   :value="newWork.finish"
                   :label="$t('works.placeholder.finish','Worked Until')"
                   prepend-inner-icon="mdi-calendar"
                   readonly
-                  v-on="on"
+                  v-bind="props"
                   outlined
               />
             </template>
@@ -228,9 +224,9 @@
           ></v-checkbox>
         </v-card-text>
         <v-card-actions>
-          <v-btn color="darken-1" text @click="closeCreateWorkDialog">{{$t('btn.cancel','Cancel')}}</v-btn>
+          <v-btn color="darken-1" variant="text" @click="closeCreateWorkDialog">{{$t('btn.cancel','Cancel')}}</v-btn>
           <v-spacer></v-spacer>
-          <v-btn color="primary" text @click="createWork">{{$t('btn.create','Create')}}</v-btn>
+          <v-btn color="primary" variant="text" @click="createWork">{{$t('btn.create','Create')}}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -238,7 +234,10 @@
 </template>
 
 <script>
-import {mapState} from "vuex";
+import {mapActions, mapState} from "pinia";
+import {useAccountStore} from "@/stores/account";
+import {useOrganizationStore} from "@/stores/organization";
+import {useLocalesStore} from "@/stores/l10s";
 
 export default {
   name: "Work",
@@ -249,10 +248,10 @@ export default {
       editWorkDialog: false,
       deleteWorkDialog: false,
       worksHeaders: [
-        { text: this.$t('works.placeholder.title','Title'), value: 'title' },
-        { text: this.$t('works.placeholder.start', 'Worked from'), value: 'start' },
-        { text: this.$t('works.placeholder.finish','Worked Until'), value: 'finish' },
-        { text: 'Actions', value: 'actions', sortable: false },
+        { title: this.$t('works.placeholder.title','Title'), value: 'title' },
+        { title: this.$t('works.placeholder.start', 'Worked from'), value: 'start' },
+        { title: this.$t('works.placeholder.finish','Worked Until'), value: 'finish' },
+        { title: 'Actions', value: 'actions', sortable: false },
       ],
       newWork: null,
       selectedWork: null,
@@ -265,15 +264,12 @@ export default {
     };
   },
   computed: {
-    ...mapState({
-      works: (state) => state.account.works,
-      total: (state) => state.account.total,
-      organizations: (state) => state.organization.organizations,
-      structureUnits: (state) => state.organization.structureUnits,
-    }),
-    fillWork() {
-      return this.$store.state.tutorial.step === 4 && this.$store.state.tutorial.tutorialCategory === 'account' && this.createWorkDialog === false;
-    },
+    ...mapState(useAccountStore,['works','total']),
+    ...mapState(useOrganizationStore,['organizations','structureUnits']),
+    ...mapState(useLocalesStore,['locale']),
+    // fillWork() {
+    //   return this.$store.state.tutorial.step === 4 && this.$store.state.tutorial.tutorialCategory === 'account' && this.createWorkDialog === false;
+    // },
   },
   methods: {
     showWorksSheet() {
@@ -288,7 +284,7 @@ export default {
         start: new Date().toISOString().substr(0, 10),
         finish: null,
       };
-      this.$store.dispatch('organization/downloadOrganizations');
+      this.downloadOrganizations();
     },
     closeCreateWorkDialog() {
       this.createWorkDialog = false;
@@ -300,7 +296,7 @@ export default {
         organization: item.unit.organization,
         structure_unit:item.unit
       };
-      this.$store.dispatch('organization/downloadOrganizations');
+      this.downloadOrganizations();
     },
     closeWorkEdit() {
       this.editWorkDialog = false;
@@ -316,7 +312,7 @@ export default {
     },
     createWork () {
       this.$loading();
-      this.$store.dispatch('account/createWork',this.newWork)
+      this.create(this.newWork)
           .then(() => {
             this.$loadingClose();
             this.closeCreateWorkDialog();
@@ -329,7 +325,7 @@ export default {
     },
     editWork() {
       this.$loading();
-      this.$store.dispatch('account/updateWork',this.selectedWork)
+      this.update(this.selectedWork)
           .then(() => {
             this.$loadingClose();
             this.closeWorkEdit();
@@ -342,7 +338,7 @@ export default {
     },
     deleteWork() {
       this.$loading();
-      this.$store.dispatch('account/deleteWork',this.selectedWork.id)
+      this.delete(this.selectedWork.id)
           .then(() => {
             this.$loadingClose();
             this.closeWorkDelete();
@@ -379,30 +375,37 @@ export default {
     },
     getData() {
       this.$loading()
-      this.$store.dispatch('account/downloadWorks',{
+      this.downloadWorks({
         user_id:this.user_id,
         ...this.options,
       }).then(() => {
         this.$loadingClose();
       });
-    }
+    },
+    ...mapActions(useOrganizationStore,['downloadOrganizations','downloadStructureUnits','clearStructureUnits']),
+    ...mapActions(useAccountStore,{
+      downloadWorks:'downloadWorks',
+      create:'createWork',
+      delete:'deleteWork'
+    }),
+
   },
   watch: {
     'newWork.organization'(item) {
       if (item) {
         if (item.id !== 'new') {
-          this.$store.dispatch('organization/downloadStructureUnits',item.id)
+          this.downloadStructureUnits(item.id)
         } else {
-          this.$store.dispatch('organization/clearStructureUnits');
+          this.clearStructureUnits();
         }
       }
     },
     'selectedWork.organization'(item) {
       if (item) {
         if (item.id !== 'new') {
-          this.$store.dispatch('organization/downloadStructureUnits',item.id)
+          this.downloadStructureUnits(item.id)
         } else {
-          this.$store.dispatch('organization/clearStructureUnits');
+          this.clearStructureUnits();
         }
       }
     },

@@ -3,14 +3,14 @@
     <v-row>
       <v-col cols="12">
         <template v-if="organization">
-          <v-img :src="organization.img_url" :aspect-ratio="16/5" class="rounded">
-            <div class="white organization__rating text-center pa-3 rounded">
-              <div class="success--text text-h3 align-center d-flex">{{organization.rate}} <v-icon color="success" size="40">mdi-finance</v-icon></div>
+          <v-img :src="organization.img_url" :aspect-ratio="16/5" class="rounded" cover>
+            <div class="bg-white organization__rating text-center pa-3 rounded">
+              <div class="text-success text-h3 align-center d-flex">{{organization.rate}} <v-icon color="success" size="40">mdi-finance</v-icon></div>
               <div class="text-h6">{{$t('organization.placeholder.rating', 'Rating')}}</div>
             </div>
           </v-img>
           <v-container>
-            <v-row>
+            <v-row align-content="center">
               <v-col cols="12">
                 <div class="text-h4 font-weight-medium" v-if="organization.name">{{organization.name[locale.iso_code]}}</div>
               </v-col>
@@ -55,33 +55,33 @@
                 </div>
               </v-col>
               <v-col cols="4">
-                <v-list class="organization__list" dense>
-                  <v-list-item class="px-0">
-                    <v-list-item-title class="justify-space-between text-caption d-inline-flex">
+                <v-list class="organization__list pa-0" density="compact">
+                  <v-list-item class="pa-0">
+                    <v-list-item-title class="justify-space-between text-caption d-flex">
                       <div class="text-caption">Показник</div>
                       <div class="text-caption">К-ть</div>
                     </v-list-item-title>
                   </v-list-item>
-                  <v-list-item class="px-0">
-                    <v-list-item-title class="justify-space-between text-body-1 d-inline-flex">
+                  <v-list-item class="pa-0">
+                    <v-list-item-title class="justify-space-between text-body-1 d-flex">
                       <span class="text-body-1">Faculty</span>
                       <span class="text-body-1">24</span>
                     </v-list-item-title>
                   </v-list-item>
-                  <v-list-item class="px-0">
-                    <v-list-item-title class="justify-space-between text-body-1 d-inline-flex">
+                  <v-list-item class="pa-0">
+                    <v-list-item-title class="justify-space-between text-body-1 d-flex">
                       <span class="text-body-1">Faculty</span>
                       <span class="text-body-1">24</span>
                     </v-list-item-title>
                   </v-list-item>
-                  <v-list-item class="px-0">
-                    <v-list-item-title class="justify-space-between text-body-1 d-inline-flex">
+                  <v-list-item class="pa-0">
+                    <v-list-item-title class="justify-space-between text-body-1 d-flex">
                       <span class="text-body-1">Faculty</span>
                       <span class="text-body-1">24</span>
                     </v-list-item-title>
                   </v-list-item>
-                  <v-list-item class="px-0">
-                    <v-list-item-title class="justify-space-between text-body-1 d-inline-flex">
+                  <v-list-item class="pa-0">
+                    <v-list-item-title class="justify-space-between text-body-1 d-flex">
                       <span class="text-body-1">Faculty</span>
                       <span class="text-body-1">24</span>
                     </v-list-item-title>
@@ -120,7 +120,7 @@
       </v-col>
       <v-col cols="12"><v-divider/></v-col>
       <v-col cols="12">
-        <v-tabs grow>
+        <v-tabs grow v-model="tab">
           <v-tab>{{$t('placeholder.desc', 'Desc')}}</v-tab>
           <v-tab>{{$t('placeholder.structure','Structure')}}</v-tab>
           <v-tab>{{$t('placeholder.contacts','Contacts')}}</v-tab>
@@ -128,10 +128,12 @@
           <v-tab>{{$t('articles.conferences.title','Conferences')}}</v-tab>
           <v-tab>{{$t('articles.patents.title','Patents')}}</v-tab>
           <v-tab>{{$t('grants.title','Grants')}}</v-tab>
-          <v-tab-item>
+        </v-tabs>
+        <v-window v-model="tab">
+          <v-window-item>
             <div class="text-body-1 mt-6" v-if="organization && organization.desc" v-html="organization.desc[locale.iso_code]"></div>
-          </v-tab-item>
-          <v-tab-item>
+          </v-window-item>
+          <v-window-item>
             <div class="text-body-1 warning--text py-5">Оберіть структурну одиницю, щоб побачити тільки ті одиниці які їй належать</div>
             <v-row justify="space-between" v-if="organization">
               <v-col cols="4">
@@ -144,14 +146,14 @@
                 <template v-for="key in unitTitles(organization.units)">
                   <v-btn
                     class="font-weight-bold"
-                    text
+                    variant="text"
                     color="secondary"
                     :value="key"
                   >{{$t('organization.type.' + key,key.toUpperCase())}}</v-btn>
                 </template>
                 <v-btn
                   class="font-weight-bold"
-                  text
+                  variant="text"
                   value="all"
                   color="primary"
                 >{{$t('organization.type.all','All')}}</v-btn>
@@ -165,58 +167,47 @@
                 </div>
               </v-col>
             </v-row>
-            <v-row v-if="selectedItem" class="my-4">
-              <template v-if="selectedItem.child.length > 0">
-                <v-treeview :items="selectedItem.child" item-children="child" open-on-click expand-icon="">
-                  <template v-slot:label="{item}">
-                    <div class="d-flex flex-column align-center cursor-pointer">
-                      <v-avatar justify-self="center" size="64" class="mb-2" color="primary">U</v-avatar>
-                      <span class="text-caption">{{item.name}}</span>
-                    </div>
-                  </template>
-                </v-treeview>
-              </template>
-            </v-row>
-          </v-tab-item>
-          <v-tab-item>
+          </v-window-item>
+          <v-window-item>
             Contacts
-          </v-tab-item>
-          <v-tab-item>
+          </v-window-item>
+          <v-window-item>
             Gallery
-          </v-tab-item>
-          <v-tab-item>
+          </v-window-item>
+          <v-window-item>
             Conferences
-          </v-tab-item>
-          <v-tab-item>
+          </v-window-item>
+          <v-window-item>
             Patents
-          </v-tab-item>
-          <v-tab-item>
+          </v-window-item>
+          <v-window-item>
             Grants
-          </v-tab-item>
-        </v-tabs>
+          </v-window-item>
+        </v-window>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
-import {mapState} from "vuex";
+import {mapActions, mapState} from "pinia";
+import {useOrganizationStore} from "@/stores/organization";
+import {useLocalesStore} from "@/stores/l10s";
 
 export default {
   name: "Show",
   data() {
     return {
         selectedItem: null,
+        tab:0,
     };
   },
   computed: {
-    ...mapState({
-      organization: (state) => state.organization.organization,
-      locale: (state) => state.l10s.locale,
-    }),
+    ...mapState(useOrganizationStore,['organization']),
+    ...mapState(useLocalesStore,['locale'])
   },
   mounted() {
-    this.$store.dispatch('organization/getOrganization', this.$route.params.organization_id);
+    this.getOrganization(this.$route.params.organization_id);
   },
   methods: {
     unitTitles(units) {
@@ -228,7 +219,8 @@ export default {
     },
     selectUnit(unit) {
       this.selectedItem = unit;
-    }
+    },
+    ...mapActions(useOrganizationStore,['getOrganization']),
   },
 }
 </script>

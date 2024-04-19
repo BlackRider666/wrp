@@ -43,7 +43,7 @@ class Article extends Model
 
     protected $casts = [
         'year'  =>  'date:Y',
-        'file'  =>  'file',
+//        'file'  =>  'file',
     ];
 
     protected $appends = [
@@ -105,12 +105,17 @@ class Article extends Model
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getFullTitleAttribute(): string
+    public function getFullTitleAttribute(): array
     {
         $authors = implode('', $this->authors()->get(['first_name','second_name','surname'])->pluck('full_name')->toArray());
-        return $this->title.' - ('.$authors.')';
+        $titles = $this->getTranslations('title');
+        $fullTitles = [];
+        foreach ($titles as $tKey => $tValue) {
+            $fullTitles[$tKey] = $tValue.' - ('.$authors.')';
+        }
+        return $fullTitles;
     }
 
     /**

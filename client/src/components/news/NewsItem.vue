@@ -5,6 +5,7 @@
     <v-img
         :src="n.main_photo_url"
         class="rounded-0 news__img"
+        cover
     >
     </v-img>
     <v-card-title :title="n.title" class="text-body-1">{{n.title.length > 106 ? n.title.substring(0,103)+'...':n.title }}</v-card-title>

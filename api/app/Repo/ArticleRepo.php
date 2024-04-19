@@ -82,7 +82,9 @@ class ArticleRepo extends CoreRepo
             $query->where('title','like','%'.$data['title'].'%');
         }
         if (array_key_exists('country_id',$data)) {
-            $query->where('country_id', $data['country_id']);
+            $query->whereHas('city.country', function (Builder $q) use ($data){
+                $q->where('id',$data['country_id']);
+            });
         }
         if (array_key_exists('city_id',$data)) {
             $query->where('city_id', $data['city_id']);

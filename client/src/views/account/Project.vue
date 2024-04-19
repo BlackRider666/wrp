@@ -1,18 +1,14 @@
 <template>
   <v-col cols="12">
-    <v-toolbar dense dark :class="fillProject?'blink':''" color="primary">
+    <v-toolbar dense dark :class="fillProject?'blink':''" color="primary"  class="pl-2">
       {{$t('projects.title','Projects')}}
       <v-spacer/>
       <v-btn
-          icon
+          icon="mdi-plus"
           @click="openProjectCreate"
           :class="fillProject?'blink':''"
-      ><v-icon>mdi-plus</v-icon>
-      </v-btn>
-      <v-btn icon @click="showProjectsSheet">
-        <v-icon v-if="projectsSheet">mdi-chevron-up</v-icon>
-        <v-icon v-else>mdi-chevron-down</v-icon>
-      </v-btn>
+      ></v-btn>
+      <v-btn :icon="projectsSheet?'mdi-chevron-up':'mdi-chevron-down'" @click="showProjectsSheet"></v-btn>
     </v-toolbar>
     <v-sheet v-if="projectsSheet" outlined>
       <v-data-table
@@ -40,8 +36,8 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="darken-1" text @click="closeProjectEdit">{{$t('btn.cancel','Cancel')}}</v-btn>
-                <v-btn color="darken-1" text @click="editProject">{{$t('btn.update','Update')}}</v-btn>
+                <v-btn color="darken-1" variant="text" @click="closeProjectEdit">{{$t('btn.cancel','Cancel')}}</v-btn>
+                <v-btn color="darken-1" variant="text" @click="editProject">{{$t('btn.update','Update')}}</v-btn>
                 <v-spacer></v-spacer>
               </v-card-actions>
             </v-card>
@@ -52,8 +48,8 @@
               <v-card-text>{{$t('projects.delete.message','Are you sure you want to delete this project?')}}</v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="darken-1" text @click="closeProjectDelete">{{$t('btn.cancel','Cancel')}}</v-btn>
-                <v-btn color="error" text @click="deleteProject">{{$t('btn.delete','Delete')}}</v-btn>
+                <v-btn color="darken-1" variant="text" @click="closeProjectDelete">{{$t('btn.cancel','Cancel')}}</v-btn>
+                <v-btn color="error" variant="text" @click="deleteProject">{{$t('btn.delete','Delete')}}</v-btn>
                 <v-spacer></v-spacer>
               </v-card-actions>
             </v-card>
@@ -88,9 +84,9 @@
           />
         </v-card-text>
         <v-card-actions>
-          <v-btn color="darken-1" text @click="closeProjectCreate">{{$t('btn.cancel','Cancel')}}</v-btn>
+          <v-btn color="darken-1" variant="text" @click="closeProjectCreate">{{$t('btn.cancel','Cancel')}}</v-btn>
           <v-spacer></v-spacer>
-          <v-btn color="primary" text @click="createProject">{{$t('btn.create','Create')}}</v-btn>
+          <v-btn color="primary" variant="text" @click="createProject">{{$t('btn.create','Create')}}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -98,7 +94,8 @@
 </template>
 
 <script>
-import {mapState} from "vuex";
+import {mapActions, mapState} from "pinia";
+import {useProjectStore} from "@/stores/project";
 
 export default {
   name: "Project",
@@ -114,8 +111,8 @@ export default {
       editProjectDialog: false,
       deleteProjectDialog: false,
       projectsHeaders: [
-        { text: this.$t('projects.placeholder.name','Name'), value: 'name' },
-        { text: 'Actions', value: 'actions', sortable: false },
+        { title: this.$t('projects.placeholder.name','Name'), value: 'name' },
+        { title: 'Actions', value: 'actions', sortable: false },
       ],
       newProject: null,
       selectedProject: null,
@@ -123,13 +120,10 @@ export default {
     };
   },
   computed: {
-    ...mapState({
-      projects: (state) => state.project.projects,
-      total: (state) => state.project.total,
-    }),
-    fillProject() {
-      return this.$store.state.tutorial.step === 6 && this.$store.state.tutorial.tutorialCategory === 'account' && this.createProjectDialog === false;
-    },
+    ...mapState(useProjectStore,['projects','total']),
+    // fillProject() {
+    //   return this.$store.state.tutorial.step === 6 && this.$store.state.tutorial.tutorialCategory === 'account' && this.createProjectDialog === false;
+    // },
   },
   methods: {
     showProjectsSheet() {
@@ -162,7 +156,7 @@ export default {
     },
     createProject () {
       this.$loading();
-      this.$store.dispatch('project/createProject',this.newProject)
+      this.create(this.newProject)
           .then(() => {
             this.$loadingClose();
             this.closeProjectCreate();
@@ -175,7 +169,7 @@ export default {
     },
     editProject() {
       this.$loading();
-      this.$store.dispatch('project/updateProject',this.selectedProject)
+      this.update(this.selectedProject)
           .then(() => {
             this.$loadingClose();
             this.closeProjectEdit();
@@ -188,7 +182,7 @@ export default {
     },
     deleteProject() {
       this.$loading();
-      this.$store.dispatch('project/deleteProject',this.selectedProject.id)
+      this.delete(this.selectedProject.id)
           .then(() => {
             this.$loadingClose();
             this.closeProjectDelete();
@@ -201,13 +195,19 @@ export default {
     },
     getData() {
       this.$loading()
-      this.$store.dispatch('project/downloadProjects',{
+      this.downloadProjects({
         user_id:this.user_id,
         ...this.options,
       }).then(() => {
         this.$loadingClose();
       });
-    }
+    },
+    ...mapActions(useProjectStore,{
+      downloadProjects:'downloadProjects',
+      delete:'deleteProject',
+      update:'updateProject',
+      create:'createProject'
+    }),
   },
   watch: {
     options: {

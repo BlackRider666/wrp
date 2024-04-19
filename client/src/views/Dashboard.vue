@@ -8,11 +8,11 @@
             <div class="text-h6 dashboard__title">World Research Platform</div>
           </v-col>
         </v-row>
-        <v-form action="/search/articles">
+        <v-form action="/search/all">
           <v-row>
             <v-col cols="10" offset="1">
               <v-text-field
-                  outlined
+                  variant="outlined"
                   :label="$t('home.search.label', 'Search by name or title of project')"
                   hide-details
                   name="title"
@@ -20,7 +20,7 @@
               <p class="text-center text-caption text--secondary my-1">{{ $t('home.search.hint', 'A quick search on all materials of the platform') }}</p>
             </v-col>
             <v-col cols="1">
-              <v-btn fab color="primary" type="submit"><v-icon>mdi-magnify</v-icon></v-btn>
+              <v-btn color="primary" type="submit" icon="mdi-magnify" size="large"></v-btn>
             </v-col>
           </v-row>
         </v-form>
@@ -37,9 +37,9 @@
         <v-card
             flat
         >
-          <v-card-title class="pb-5 justify-space-between">
+          <v-card-title class="pb-5 d-flex justify-space-between">
             <span class="text-h4 font-weight-medium">{{$t('home.news.title','News')}}</span>
-            <v-btn text color="primary" :to="{name:'news'}" small>{{$t('home.news.all','All news')}}</v-btn>
+            <v-btn variant="text" color="primary" :to="{name:'news'}" size="small">{{$t('home.news.all','All news')}}</v-btn>
           </v-card-title>
           <v-card-text>
             <v-row>
@@ -56,9 +56,9 @@
         <v-card
             flat
         >
-          <v-card-title class="pb-5 justify-space-between">
+          <v-card-title class="pb-5 d-flex  justify-space-between">
             <span class="text-h4 font-weight-medium">{{$t('home.organization.title','Organization')}}</span>
-            <v-btn text color="primary" :to="{name:'organizations'}" small>{{$t('home.organization.all','All organization')}}</v-btn>
+            <v-btn variant="text" color="primary" :to="{name:'organizations'}" size="small">{{$t('home.organization.all','All organization')}}</v-btn>
           </v-card-title>
           <v-card-text>
             <v-row>
@@ -104,9 +104,9 @@
         <v-card
             flat
         >
-          <v-card-title class="pb-5 justify-space-between">
+          <v-card-title class="pb-5 d-flex  justify-space-between">
             <span class="text-h4 font-weight-medium">{{$t('home.partners.title','Partners')}}</span>
-            <v-btn text color="primary" small>{{$t('home.partners.all','All partners')}}</v-btn>
+            <v-btn variant="text" color="primary" size="small">{{$t('home.partners.all','All partners')}}</v-btn>
           </v-card-title>
           <v-card-text>
             <v-row>
@@ -118,6 +118,7 @@
                   <v-img
                       :src="partner.logo_url"
                       class="rounded-0 partners__img"
+                      cover
                   >
                   </v-img>
                   <v-card-title class="justify-center"><span class="text-body-1" :title="partner.title">{{partner.title.length > 106 ? partner.title.substring(0,103)+'...':partner.title }}</span></v-card-title>
@@ -133,9 +134,9 @@
         <v-card
             flat
         >
-          <v-card-title class="pb-5 justify-space-between">
+          <v-card-title class="pb-5 d-flex  justify-space-between">
             <span class="text-h4 font-weight-medium">{{$t('home.organizers.title','Organizers')}}</span>
-            <v-btn text color="primary" small>{{$t('home.organizers.all','All organizers')}}</v-btn>
+            <v-btn variant="text" color="primary" size="small">{{$t('home.organizers.all','All organizers')}}</v-btn>
           </v-card-title>
           <v-card-text>
             <v-row>
@@ -147,6 +148,7 @@
                   <v-img
                       :src="organizer.logo_url"
                       class="rounded-0 partners__img"
+                      cover
                   >
                   </v-img>
                   <v-card-title class="justify-center"><span class="text-body-1">{{organizer.title.length > 106 ? organizer.title.substring(0,103)+'...':organizer.title }}</span></v-card-title>
@@ -161,9 +163,13 @@
 </template>
 
 <script>
-import {mapState} from "vuex";
-import OrganizationItem from '@/components/organizations/OrganizationItem';
-import NewsItem from '@/components/news/NewsItem';
+import {mapActions, mapState} from "pinia";
+import OrganizationItem from '@/components/organizations/OrganizationItem.vue';
+import NewsItem from '@/components/news/NewsItem.vue';
+import {useNewsStore} from "@/stores/news";
+import {useOrganizationStore} from "@/stores/organization";
+import {useOrganizerStore} from "@/stores/organizer";
+import {usePartnerStore} from "@/stores/partner";
 
 export default {
   name: "Dashboard",
@@ -176,19 +182,23 @@ export default {
     };
   },
   mounted() {
-    this.$store.dispatch('news/downloadNews', {perPage:4});
-    this.$store.dispatch('organization/downloadOrganizations',{perPage:4});
-    this.$store.dispatch('organizer/downloadOrganizers',{perPage:4});
-    this.$store.dispatch('partner/downloadPartners',{perPage:4});
+    this.downloadNews({perPage:4});
+    this.downloadOrganizations({perPage:4});
+    this.downloadOrganizers({perPage:4});
+    this.downloadPartners({perPage:4});
   },
   computed: {
-    ...mapState({
-      news: (state) => state.news.news,
-      partners: (state) => state.partner.partners,
-      organizations: (state) => state.organization.organizations,
-      organizers: (state) => state.organizer.organizers,
-    }),
-  }
+    ...mapState(useNewsStore,['news']),
+    ...mapState(useOrganizationStore,['organizations']),
+    ...mapState(useOrganizerStore,['organizers']),
+    ...mapState(usePartnerStore,['partners'])
+  },
+  methods: {
+    ...mapActions(useNewsStore,['downloadNews']),
+    ...mapActions(useOrganizationStore,['downloadOrganizations']),
+    ...mapActions(useOrganizerStore,['downloadOrganizers']),
+    ...mapActions(usePartnerStore,['downloadPartners']),
+  },
 }
 </script>
 

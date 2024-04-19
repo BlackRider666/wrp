@@ -1,19 +1,15 @@
-let Plugin = {};
-import store from '../store/index'
+import {useMainStore} from "@/stores";
 
-Plugin.install = function install (Vue) {
-    Vue.$loading = Vue.prototype.$loading = function () {
-        // document.querySelector('#app .loading-show').classList.add('con-vs-loading');
-        store.commit('SET_SHOW_LOADING', true);
+const LoadingPlugin = {
+    install(app) {
+        const store = useMainStore();
+        app.config.globalProperties.$loading = function () {
+            store.setShowLoading(true);
+        };
+
+        app.config.globalProperties.$loadingClose = function () {
+            store.setShowLoading(false);
+        };
     }
-    Vue.$loadingClose = Vue.prototype.$loadingClose = function () {
-        // document.querySelector('#app .loading-show').classList.remove('con-vs-loading');
-        store.commit('SET_SHOW_LOADING', false);
-    }
-}
-
-export default Plugin
-
-if (typeof window !== 'undefined' && window.Vue) {
-    window.Vue.use(Plugin)
-}
+};
+ export default LoadingPlugin;

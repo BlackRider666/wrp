@@ -39,7 +39,7 @@
 
 <script>
 import {mapState} from "vuex";
-import TutorialStepper from "./TutorialStepper";
+import TutorialStepper from "./TutorialStepper.vue";
 
 export default {
   name: "TutorialModal",

@@ -18,16 +18,16 @@ export default {
   name: "Index",
   methods: {
     getFreePremium() {
-      this.$loading();
-      this.$store.dispatch('premium/getFree')
-          .then(() => {
-            this.$loadingClose();
-            this.$notify('','success', 'Success');
-          })
-          .catch(error => {
-            this.$loadingClose();
-            this.$notify('','error', error.response.data.message);
-          })
+      // this.$loading();
+      // this.$store.dispatch('premium/getFree')
+      //     .then(() => {
+      //       this.$loadingClose();
+      //       this.$notify('','success', 'Success');
+      //     })
+      //     .catch(error => {
+      //       this.$loadingClose();
+      //       this.$notify('','error', error.response.data.message);
+      //     })
     }
   },
 }

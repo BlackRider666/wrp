@@ -15,18 +15,20 @@
 </template>
 
 <script>
-import {mapState} from "vuex";
+import {mapActions, mapState} from "pinia";
+import {useOrganizerStore} from "@/stores/organizer";
 
 export default {
   name: "Show",
   computed: {
-    ...mapState({
-      organizer: (state) => state.organizer.organizer,
-    })
+    ...mapState(useOrganizerStore,['organizer'])
   },
   mounted() {
-    this.$store.dispatch('organizer/getOrganizer', this.$route.params.organizer_id);
+    this.getOrganizer(this.$route.params.organizer_id);
   },
+  methods: {
+    ...mapActions(useOrganizerStore,['getOrganizer'])
+  }
 }
 </script>
 

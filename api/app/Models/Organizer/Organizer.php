@@ -20,7 +20,7 @@ class Organizer extends Model
     ];
 
     protected $casts = [
-        'logo' => 'image',
+//        'logo' => 'image',
     ];
 
     public function getLogoUrlAttribute(): string

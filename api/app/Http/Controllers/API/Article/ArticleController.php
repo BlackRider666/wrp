@@ -6,11 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Article\CreateArticleRequest;
 use App\Http\Requests\Article\SearchArticleRequest;
 use App\Http\Requests\Article\UpdateArticleRequest;
+use App\Http\Resources\Article\ArticleResource;
+use App\Http\Resources\Article\SimpleArticleResource;
 use App\Models\Article\Article;
 use App\Repo\ArticleRepo;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Log;
 
 class ArticleController extends Controller
@@ -27,21 +30,21 @@ class ArticleController extends Controller
 
     /**
      * @param SearchArticleRequest $request
-     * @return JsonResponse
+     * @return AnonymousResourceCollection
      */
-    public function index(SearchArticleRequest $request): JsonResponse
+    public function index(SearchArticleRequest $request): AnonymousResourceCollection
     {
         $data = $request->validated();
-
-        return new JsonResponse($this->repo->search($data));
+        $articles = $this->repo->search($data);
+        return SimpleArticleResource::collection($articles);
     }
 
     /**
      * @param CreateArticleRequest $request
-     * @return JsonResponse
+     * @return SimpleArticleResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function store(CreateArticleRequest $request): JsonResponse
+    public function store(CreateArticleRequest $request): JsonResponse|SimpleArticleResource
     {
         $data = $request->validated();
         $this->authorize('create', Article::class);
@@ -59,16 +62,14 @@ class ArticleController extends Controller
             ], 500);
         }
 
-        return new JsonResponse([
-            'article'  =>  $article,
-        ]);
+        return new SimpleArticleResource($article);
     }
 
     /**
      * @param int $id
-     * @return JsonResponse
+     * @return ArticleResource|JsonResponse
      */
-    public function show(int $id): JsonResponse
+    public function show(int $id): ArticleResource|JsonResponse
     {
         try {
             $article = $this->repo->findWithCategory($id);
@@ -78,18 +79,16 @@ class ArticleController extends Controller
             ], $e->getCode());
         }
 
-        return new JsonResponse([
-            'article'  =>  $article,
-        ]);
+        return new ArticleResource($article);
     }
 
     /**
      * @param int $id
      * @param UpdateArticleRequest $request
-     * @return JsonResponse
+     * @return SimpleArticleResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function update(int $id, UpdateArticleRequest $request): JsonResponse
+    public function update(int $id, UpdateArticleRequest $request): JsonResponse|SimpleArticleResource
     {
         $data = $request->validated();
         $article = $this->repo->find($id);
@@ -103,9 +102,7 @@ class ArticleController extends Controller
             ], $e->getCode());
         }
 
-        return new JsonResponse([
-            'article'  =>  $article,
-        ]);
+        return new SimpleArticleResource($article);
     }
 
     /**

@@ -16,9 +16,9 @@
 </template>
 
 <script>
-import AppHeader from "@/components/partials/AppHeader";
+import AppHeader from "@/components/partials/AppHeader.vue";
 // import Breadcrumbs from "@/components/partials/Breadcrumbs";
-import Footer from "@/components/partials/Footer";
+import Footer from "@/components/partials/Footer.vue";
 
 export default {
   name: "Main",

@@ -35,7 +35,7 @@ class Organization extends Model
     ];
 
     protected $casts = [
-        'img' => 'file',
+//        'img' => 'file',
     ];
 
     protected $appends = [

@@ -3,17 +3,18 @@
 </template>
 
 <script>
+import {mapActions} from "pinia";
+import {useAuthStore} from "@/stores/auth";
+
 export default {
   name: "Logout",
   mounted() {
-    this.logout();
+    this.logout().then( () => {
+      this.$router.push({name:'login'})
+    })
   },
   methods: {
-    logout() {
-      this.$store.dispatch('auth/logout').then(() => {
-        this.$router.push({name:'login'})
-      });
-    }
+    ...mapActions(useAuthStore,['logout'])
   }
 }
 </script>

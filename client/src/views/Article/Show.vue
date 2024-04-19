@@ -5,8 +5,8 @@
         <v-card v-if="article" flat>
           <v-card-title>
             <v-row justify="end">
-              <v-btn class="font-weight-bold" tile @click="editArticles">Edit article</v-btn>
-              <v-btn class="font-weight-bold ml-3" color="#f5f5f5" tile @click="copyLink">Copy link</v-btn>
+              <v-btn class="font-weight-bold" variant="tonal" tile :to="{ name: 'Article Edit', params: { article_id: article.id } }">Edit article</v-btn>
+              <v-btn class="font-weight-bold ml-3" variant="tonal" tile @click="copyLink">Copy link</v-btn>
             </v-row>
           </v-card-title>
           <v-card-text>
@@ -104,18 +104,18 @@
   </v-container>
 </template>
 <script>
-import {mapState} from "vuex";
+import {mapActions, mapState} from "pinia";
+import {useArticleStore} from "@/stores/article";
+import {useLocalesStore} from "@/stores/l10s";
 
 export default {
   name: "Show",
   computed: {
-    ...mapState({
-      article: (state) => state.article.article,
-      locale: (state) => state.l10s.locale,
-    })
+    ...mapState(useArticleStore,['article']),
+    ...mapState(useLocalesStore,['locale']),
   },
   mounted() {
-    this.$store.dispatch('article/getArticle', this.$route.params.article_id);
+    this.getArticle(this.$route.params.article_id);
   },
   methods: {
     checkCategoryTitleLabelTranslate() {
@@ -134,9 +134,7 @@ export default {
     copyLink() {
       console.log('Copy');
     },
-    editArticles() {
-
-    }
+    ...mapActions(useArticleStore,['getArticle'])
   },
 }
 </script>

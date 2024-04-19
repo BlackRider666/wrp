@@ -27,7 +27,6 @@ class CreateArticleRequest extends FormRequest
             'number'      => 'nullable|string|max:255',
             'pages'       => 'nullable|string|max:255',
             'publisher'   => 'nullable|string|max:255',
-            'country'     => 'nullable|string|max:255',
             'patent_number' => 'nullable|string|max:255',
             'app_number'    => 'nullable|string|max:255',
             'desc'          => 'required|array',
@@ -37,6 +36,7 @@ class CreateArticleRequest extends FormRequest
             'file'          => 'required|file|mimes:pdf',
             'tags'          => 'array',
             'tags.*.id'     => 'required',
+            'tags.*.name'   => 'required',
             'citations'          => 'array',
             'citations.*'        => 'int',
         ];
