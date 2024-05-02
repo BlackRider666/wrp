@@ -3,7 +3,9 @@
 
 namespace App\Repo;
 
+use App\Models\Article\Category\Category;
 use App\Models\Conference\Conference;
+use App\Models\Organizer\Organizer;
 use App\Models\User\User;
 use BlackParadise\LaravelAdmin\Core\CoreRepo;
 use BlackParadise\LaravelAdmin\Core\StorageManager;
@@ -30,7 +32,7 @@ class ConferenceRepo extends CoreRepo
     public function search(array $data): LengthAwarePaginator
     {
         $perPage = array_key_exists('perPage',$data)?$data['perPage']:10;
-        $sortBy = $data['sortBy'] ?: 'title';
+        $sortBy = array_key_exists('sortBy',$data)?$data['sortBy'] : 'title';
         $sortDesc = array_key_exists('sortDesc',$data)?$data['sortDesc']:true;
         $query = $this->query();
 
@@ -135,20 +137,22 @@ class ConferenceRepo extends CoreRepo
     }
 
     /**
-     * @param int $id
+     * @param Conference $conference
      * @param array $articleData
      * @return Model|null
      */
-    public function addArticle(int $id, array $articleData) : ?Model
+    public function addArticle(Conference $conference, array $articleData) : ?Model
     {
-        if (!$conference = $this->query()->find($id)) {
-            throw new RuntimeException('Conference not found!',404);
-        }
-        $article = (new ArticleRepo())->create($articleData);
+        $articleData['category_id'] = Category::where('tech_name','conference')->first(['id'])->id;
+        $articleData['city_id'] = $conference->city_id;
+        $articleData['year'] = $conference->date->format('Y');
+        $articleData['file'] = $conference->file;
+
+        $article = (new ArticleRepo())->storeConference($articleData);
         if (!$conference->articles()->sync($article,false)) {
             throw new RuntimeException('Error on attach article to conference!',500);
         }
-        $conference = $this->findWithAll($id);
+        $conference->refresh();
 
         return $conference;
     }

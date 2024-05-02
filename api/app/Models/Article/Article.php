@@ -5,6 +5,8 @@ namespace App\Models\Article;
 use App\Models\Article\ArticleAuthor\ArticleAuthor;
 use App\Models\Article\Category\Category;
 use App\Models\Article\Citation\Citation;
+use App\Models\Conference\Conference;
+use App\Models\Conference\ConferenceArticle\ConferenceArticle;
 use App\Models\Country\City\City;
 use App\Models\Country\Country;
 use App\Models\Tag\Tag;
@@ -148,5 +150,14 @@ class Article extends Model
     public function getFilePathAttribute(): string
     {
         return (new PathManager())->getFile($this->file,'articles_file');
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+    public function conferences(): BelongsToMany
+    {
+        return $this->belongsToMany(Conference::class,'conference_articles')
+            ->using(ConferenceArticle::class);
     }
 }

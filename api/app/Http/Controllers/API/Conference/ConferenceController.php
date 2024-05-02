@@ -10,6 +10,7 @@ use App\Http\Requests\Conference\CreateConferenceRequest;
 use App\Http\Requests\Conference\RemoveEditorsRequest;
 use App\Http\Requests\Conference\RemoveOrgCommitteeRequest;
 use App\Http\Requests\Conference\UpdateConferenceRequest;
+use App\Http\Resources\Conference\ConferenceResource;
 use App\Models\Conference\Conference;
 use App\Repo\ConferenceRepo;
 use Exception;
@@ -58,7 +59,7 @@ class ConferenceController extends Controller
         } catch (Exception $e) {
             return new JsonResponse([
                 'message' => $e->getMessage(),
-            ], $e->getCode());
+            ], !is_int($e->getCode()) || $e->getCode() === 0 ?500:$e->getCode());
         }
 
         return new JsonResponse([
@@ -68,9 +69,9 @@ class ConferenceController extends Controller
 
     /**
      * @param int $id
-     * @return JsonResponse
+     * @return ConferenceResource|JsonResponse
      */
-    public function show(int $id): JsonResponse
+    public function show(int $id): JsonResponse|ConferenceResource
     {
         try {
             $conference = $this->repo->findWithAll($id);
@@ -80,9 +81,7 @@ class ConferenceController extends Controller
             ], $e->getCode());
         }
 
-        return new JsonResponse([
-            'conference'  =>  $conference,
-        ]);
+        return new ConferenceResource($conference);
     }
 
     /**
@@ -102,7 +101,7 @@ class ConferenceController extends Controller
         } catch (Exception $e) {
             return new JsonResponse([
                 'message' => $e->getMessage(),
-            ], $e->getCode());
+            ], !is_int($e->getCode()) || $e->getCode() === 0 ?500:$e->getCode());
         }
 
         return new JsonResponse([
@@ -135,29 +134,26 @@ class ConferenceController extends Controller
     }
 
     /**
-     * @param int $id
+     * @param Conference $conference
      * @param AddArticleRequest $request
-     * @return JsonResponse
+     * @return ConferenceResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function addArticle(int $id, AddArticleRequest $request): JsonResponse
+    public function addArticle(Conference $conference, AddArticleRequest $request): JsonResponse|ConferenceResource
     {
         $data = $request->validated();
 
-        $conference = $this->repo->find($id);
         $this->authorize('addArticle', $conference);
 
         try {
-            $conference = $this->repo->addArticle($id,$data);
+            $conference = $this->repo->addArticle($conference,$data);
         } catch (Exception $e) {
             return new JsonResponse([
                 'message' => $e->getMessage(),
-            ], $e->getCode());
+            ], !is_int($e->getCode()) || $e->getCode() === 0 ?500:$e->getCode());
         }
 
-        return new JsonResponse([
-            'conference'  =>  $conference,
-        ]);
+        return new ConferenceResource($conference);
     }
 
     /**

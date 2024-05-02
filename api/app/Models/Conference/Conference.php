@@ -40,6 +40,7 @@ class Conference extends Model
 
     protected $casts = [
         'city_id' => 'integer',
+        'date'    => 'date:d-m-Y',
     ];
 
     /**

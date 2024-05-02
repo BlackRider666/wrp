@@ -105,6 +105,11 @@ class ArticleRepo extends CoreRepo
                 $sub->where('tech_name',$data['category_name']);
             });
         }
+        if (array_key_exists('conference_id', $data) && $data['conference_id']) {
+            $query->whereHas('conferences', static function ($sub) use ($data) {
+               $sub->where('conference_id',$data['conference_id']);
+            });
+        }
         if (array_key_exists('forSelect',$data) && $data['forSelect']) {
             return $query->select(['title', 'id'])->paginate(20);
         }
@@ -167,5 +172,19 @@ class ArticleRepo extends CoreRepo
         if (!$article->authors()->where('user_id', $user_id)->update(['approved' => true])) {
             throw new RuntimeException('Error on approve author on article!',500);
         }
+    }
+
+    public function storeConference(array $data)
+    {
+        $data['year'] = Carbon::create($data['year']);
+
+        if (!$article = $this->query()->create($data)) {
+            throw new RuntimeException('Error on creating article!',500);
+        }
+        if (!$article->authors()->sync($data['authors'])) {
+            throw new RuntimeException('Error on assign authors to article!',500);
+        }
+
+        return $article;
     }
 }

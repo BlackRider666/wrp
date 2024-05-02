@@ -34,7 +34,8 @@ export const useArticleStore = defineStore('article',{
                 let search = `perPage=${perPage}${page}${sortBy}${sortDesc}`;
                 let NonApproved = payload.nonApproved ? '&nonApproved=1' : '';
                 let byCategoryName = payload.category_name ? '&category_name=' + payload.category_name : '';
-                axios.get('article?' + search + byUser + byTitle + country + city + NonApproved + byCategoryName)
+                let byConference = payload.conference_id ? '&conference_id='+payload.conference_id : '';
+                axios.get('article?' + search + byUser + byTitle + country + city + NonApproved + byCategoryName + byConference)
                     .then(res => {
                         this.UPDATE_ARTICLES(res.data.data);
                         this.UPDATE_TOTAL(res.data.meta.total);

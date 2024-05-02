@@ -116,12 +116,12 @@ class UserRepo extends CoreRepo
 
     /**
      * @param array $data
-     * @return LengthAwarePaginator
+     * @return Builder[]|Collection|Model[]
      */
-    public function searchAuthors(array $data): LengthAwarePaginator
+    public function searchAuthors(array $data)
     {
-        $perPage = array_key_exists('perPage',$data)?$data['perPage']:10;
-        return $this->query()->paginate($perPage);
+//        $perPage = array_key_exists('perPage',$data)?$data['perPage']:10;
+        return $this->query()->get(['id','first_name','second_name','surname']);
     }
 
     /**

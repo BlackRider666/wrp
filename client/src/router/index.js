@@ -102,16 +102,31 @@ const router = createRouter({
                     name: 'Premium',
                     component: () => import('../views/premium/Index.vue'),
                 },
-                // {
-                //     path: '/conferences',
-                //     name: 'Conferences',
-                //     component: () => import('../views/Conference/Index.vue'),
-                // },
-                // {
-                //     path: '/conferences/:conference_id',
-                //     name: 'Conference',
-                //     component: () => import('../views/Conference/Show.vue'),
-                // },
+                {
+                    path: '/conferences',
+                    name: 'Conferences',
+                    component: () => import('../views/Conference/Index.vue'),
+                },
+                {
+                    path: '/conferences/create',
+                    name: 'Conferences Create',
+                    component: () => import('../views/Conference/Create.vue'),
+                },
+                {
+                    path: '/conferences/:conference_id',
+                    name: 'Conference Show',
+                    component: () => import('../views/Conference/Show.vue'),
+                },
+                {
+                    path: '/conferences/:conference_id/edit',
+                    name: 'Conference Edit',
+                    component: () => import('../views/Conference/Edit.vue'),
+                },
+                {
+                    path: '/conferences/:conference_id/add_article',
+                    name: 'Conference Add Article',
+                    component: () => import('../views/Conference/Article/Add.vue'),
+                },
                 {
                     path: '/partners/:partner_id',
                     name: 'Partner',

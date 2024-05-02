@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Conference;
 
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateConferenceRequest extends FormRequest
@@ -31,5 +32,10 @@ class CreateConferenceRequest extends FormRequest
             'organizers' => 'required|array',
             'organizers.*' => 'required|int|exists:organizers,id',
         ];
+    }
+
+    protected function prepareForValidation()
+    {
+        $this->merge(['date' => Carbon::parse($this->date)]);
     }
 }

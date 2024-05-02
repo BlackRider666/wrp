@@ -18,7 +18,7 @@
     </router-link>
     <v-spacer/>
     <LanguageSwitcher/>
-    <v-btn icon :to="{name:'contacts'}" color="#000" class="ml-0 mr-4" width="20" height="20"><v-icon>mdi-information</v-icon></v-btn>
+    <v-btn icon="mdi-information" :to="{name:'contacts'}" color="#000" class="ml-0 mr-4" width="20" height="20"></v-btn>
     <v-divider vertical inset></v-divider>
     <v-btn :to="{name:'Create Article'}" color="primary" variant="text" class="mx-2"><v-icon>mdi-plus</v-icon> Add new article</v-btn>
     <v-divider vertical inset></v-divider>
@@ -74,9 +74,9 @@ export default {
       let items = [];
       let account = this.account;
       if (
-          (account.length > 0 && account.roles.filter((item) => item.name === 'superadmin').length > 0)
+          (account && account.roles.filter((item) => item.name === 'superadmin').length > 0)
           ||
-          (account.length > 0 && account.roles.filter((item) => item.name === 'conference creator').length > 0)
+          (account && account.roles.filter((item) => item.name === 'conference creator').length > 0)
       ) {
          items = [
           {
@@ -104,15 +104,15 @@ export default {
             divider: true,
             blinkAccount: true,
           },
-          // {
-          //   titleTKey: "header.menu.conferences",
-          //   titleTDefault: "Conferences",
-          //   icon: "mdi-book-open-variant",
-          //   to: {
-          //     name:'Conferences',
-          //   },
-          //   divider: true,
-          // },
+          {
+            titleTKey: "header.menu.conferences",
+            titleTDefault: "Conferences",
+            icon: "mdi-book-open-variant",
+            to: {
+              name:'Conferences',
+            },
+            divider: true,
+          },
           {
             titleTKey: "header.menu.articles",
             titleTDefault: "Articles",
@@ -179,6 +179,7 @@ export default {
           },
         ]
       }
+      
       return {
         items: items,
         titleClass: "v-avatar _max-h-46 _w-auto",

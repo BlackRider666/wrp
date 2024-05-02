@@ -69,6 +69,7 @@ Route::get('partners',[PartnerController::class, 'index']);
 Route::get('partners/{partner_id}',[PartnerController::class, 'show']);
 Route::get('article-categories',[CategoryController::class, 'index'])->middleware('auth:sanctum');
 Route::get('users',[UserController::class, 'index']);
+Route::post('users',[UserController::class, 'store']);
 Route::get('users/{user_id}',[UserController::class, 'show']);
 Route::get('users/{user_id}/statistics',[UserController::class,'statistics']);
 Route::get('authors',[UserController::class, 'authors'])->middleware('auth:sanctum');
@@ -106,7 +107,7 @@ Route::group(['prefix' => 'conference'], function() {
     Route::get('/{conference_id}',[ConferenceController::class,'show']);
     Route::post('/{conference_id}', [ConferenceController::class,'update']);
     Route::delete('/{conference_id}', [ConferenceController::class,'destroy']);
-    Route::post('/add-article/{conference_id}', [ConferenceController::class,'addArticle']);
+    Route::post('/add-article/{conference}', [ConferenceController::class,'addArticle']);
     Route::post('/add-org-committee/{conference_id}', [ConferenceController::class,'addOrgCommittee']);
     Route::post('/remove-org-committee/{conference_id}', [ConferenceController::class,'removeOrgCommittee']);
     Route::post('/add-editors/{conference_id}', [ConferenceController::class,'addEditors']);

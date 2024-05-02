@@ -11,6 +11,7 @@
         "php": "^8.3.6",
         "ext-openssl": "^8.3",
         "black-paradise/laravel-admin": "^2.0",
+        "doctrine/dbal": "^4.0",
         "guzzlehttp/guzzle": "^7.4",
         "intervention/image": "^2.6",
         "laravel/framework": "^11.0",

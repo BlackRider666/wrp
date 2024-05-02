@@ -26,6 +26,7 @@ class SearchArticleRequest extends FormRequest
             'city_id'       =>  'int',
             'nonApproved'   =>  'boolean',
             'category_name' => 'nullable|string',
+            'conference_id' => 'nullable|int',
         ];
     }
 }

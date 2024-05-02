@@ -3,12 +3,16 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\User\StoreAuthorRequest;
 use App\Models\User\User;
 use App\Repo\UserRepo;
 use BlackParadise\LaravelAdmin\Core\AbstractRepo;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -44,6 +48,23 @@ class UserController extends Controller
         return new JsonResponse($this->repo->searchAuthors($request->all()));
     }
 
+    public function store(StoreAuthorRequest $request): JsonResponse
+    {
+        $data = $request->validated();
+        $role = env('APP_DEFAULT_ROLE');
+        $data['password'] = Hash::make(Str::password());
+        try {
+            $user = $this->repo->create($data,$role);
+        } catch (Exception $e) {
+            return new JsonResponse([
+                'message' => $e->getMessage(),
+            ], !is_int($e->getCode()) || $e->getCode() === 0 ?500:$e->getCode());
+        }
+
+        return new JsonResponse([
+            'user' => $user,
+        ]);
+    }
     /**
      * @param int $id
      * @return JsonResponse

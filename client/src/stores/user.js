@@ -15,8 +15,8 @@ export const useUserStore = defineStore('user',{
             return new Promise(((resolve, reject) => {
                 axios.get('authors')
                     .then(res => {
-                        this.users = res.data.data;
-                        resolve(res.data.data)
+                        this.users = res.data;
+                        resolve(res.data)
                     })
                     .catch(errors => {
                         reject(errors.response.data)
@@ -67,5 +67,17 @@ export const useUserStore = defineStore('user',{
                     })
             }))
         },
+        createUser(payload) {
+            return new Promise(((resolve, reject) => {
+                axios.post('users',payload)
+                    .then(res => {
+                        this.users.push(res.data.user);
+                        resolve(res.data.user)
+                    })
+                    .catch(errors => {
+                        reject(errors.response.data)
+                    })
+            }))
+        }
     }
 })
