@@ -22,7 +22,8 @@
             },
             "require": {
                 "intervention/image": "^2.6",
-                "laravel/framework": "^11.0"
+                "laravel/framework": "^11.0",
+                "doctrine/dbal": "^4.0"
             },
             "type": "project",
             "autoload": {

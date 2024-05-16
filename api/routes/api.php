@@ -125,3 +125,8 @@ Route::get('tags', [TagController::class, 'index']);
 Route::get('/get-free-premium', [PremiumController::class, 'getFreePremium'])->middleware('auth:sanctum');
 
 Route::get('/contact-info',[PageController::class,'contacts']);
+
+Route::get('test', function () {
+    $users = new \App\BPAdmin\Users();
+    dd($users->getCreatePage());
+});
