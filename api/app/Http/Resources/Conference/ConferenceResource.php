@@ -2,14 +2,14 @@
 
 namespace App\Http\Resources\Conference;
 
-use App\Http\Resources\Article\SimpleArticleResource;
 use App\Http\Resources\City\CityResource;
 use App\Http\Resources\Country\CountryResource;
+use App\Http\Resources\Organization\BaseOrganizationResource;
 use App\Http\Resources\Organizer\BaseOrganizerResource;
+use App\Http\Resources\User\BaseUserResource;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
 
-class ConferenceResource extends JsonResource
+class ConferenceResource extends BaseConferenceResource
 {
     public static $wrap = 'conference';
     /**
@@ -19,10 +19,7 @@ class ConferenceResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [
-            'id' => $this->id,
-            'title' => $this->title,
-            'date'  => $this->date,
+        return array_merge(parent::toArray($request),[
             'city_id' => $this->city_id,
             'user_id' => $this->user_id,
             'file_url' => $this->file_url,
@@ -30,6 +27,9 @@ class ConferenceResource extends JsonResource
             'city'       => new CityResource($this->city),
             'country'    => new CountryResource($this->country),
             'organizers' => BaseOrganizerResource::collection($this->organizers),
-        ];
+            'organizations' => BaseOrganizationResource::collection($this->organizations),
+            'org_committee' => BaseUserResource::collection($this->orgCommittee),
+            'editors'       => BaseUserResource::collection($this->editors),
+        ]);
     }
 }

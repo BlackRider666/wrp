@@ -1,7 +1,7 @@
 <template>
   <v-dialog
-      :value="staffDialog"
-      @input="closeDialog"
+      :model-value="staffDialog"
+      @update:model-value="closeDialog"
       max-width="600"
       persistent
   >
@@ -15,10 +15,10 @@
           <v-autocomplete
               v-model="form.user_id"
               :label="$t('organization.placeholder.rector','Rector')"
-              outlined
+              variant="outlined"
               prepend-inner-icon="mdi-account"
               :items="items"
-              item-text="full_name"
+              item-title="full_name"
               item-value="id"
           ></v-autocomplete>
           <v-autocomplete
@@ -26,28 +26,28 @@
               multiple
               small-chips
               :label="$t('organization.placeholder.staff','Staff')"
-              outlined
+              variant="outlined"
               prepend-inner-icon="mdi-account-group"
               :items="items"
-              item-text="full_name"
+              item-title="full_name"
               item-value="id"
           ></v-autocomplete>
         </v-card-text>
         <v-card-actions>
           <v-btn
-              color="green darken-1"
-              text
-              type="submit"
-          >
-            Update
-          </v-btn>
-          <v-spacer/>
-          <v-btn
               color="darken-1"
-              text
+              variant="text"
               @click="closeDialog"
           >
             Cancel
+          </v-btn>
+          <v-spacer/>
+          <v-btn
+              color="success"
+              variant="text"
+              type="submit"
+          >
+            Update
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -56,6 +56,9 @@
 </template>
 
 <script>
+import {mapActions} from "pinia";
+import {useOrganizationStore} from "../../../stores/organization";
+
 export default {
   name: "StaffDialog",
   props: {
@@ -91,12 +94,13 @@ export default {
   },
   methods: {
     createItem() {
-      this.$store.dispatch('organization/updateOrganization', {...this.form, organization_id:this.organization_id});
+      this.updateOrganization({...this.form, organization_id:this.organization_id});
       this.$emit('closeDialog');
     },
     closeDialog() {
       this.$emit('closeDialog');
-    }
+    },
+    ...mapActions(useOrganizationStore,['updateOrganization']),
   },
   watch: {
     staffDialog(val) {

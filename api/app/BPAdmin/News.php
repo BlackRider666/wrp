@@ -10,17 +10,19 @@ class News extends BPModel
 
     public string $name = 'news';
 
+    public string $filePath = 'news';
+
     public array $fieldTypes = [
         'title' => [
-            'type' => 'string',
+            'type' => 'translatable',
             'required' => true,
         ],
         'sub_title' => [
-            'type' => 'string',
+            'type' => 'translatable',
             'required' => true,
         ],
         'text' => [
-            'type' => 'string',
+            'type' => 'translatableEditor',
             'required' => true,
         ],
         'main_photo' => [

@@ -139,7 +139,9 @@ export const useOrganizationStore = defineStore('organization',{
             if (unit.parent_id) {
                 units = updateUnitItem(units, unit);
             } else {
-                units = [...units.filter((i) => i.id !== unit.id), unit];
+                const index = units.findIndex(i => i.id === unit.id);
+                if (index !== -1) units.splice(index, 1);
+                units.push(unit);
             }
             this.organization.units = units;
         },
@@ -167,13 +169,20 @@ function addUnitItem(arr,item) {
 }
 
 function updateUnitItem(arr,item) {
-    arr.forEach(i => {
-        if(i.id === item.parent_id) {
-            i.child = [...i.child.filter((i) => i.id !== item.id), item]
-        } else {
-            updateUnitItem(i.child,item)
+    arr.forEach((i, index) => {
+        if (i.id === item.id) {
+            arr.splice(index, 1);
+        }
+        if (i.child) {
+            updateUnitItem(i.child, item);
         }
     });
+
+    const parent = arr.find(i => i.id === item.parent_id);
+    if (parent) {
+        if (!parent.child) parent.child = [];
+        parent.child.push(item);
+    }
     return arr;
 }
 

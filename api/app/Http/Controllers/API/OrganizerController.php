@@ -3,16 +3,33 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Organizer\BaseOrganizerResource;
 use App\Models\Organizer\Organizer;
-use BlackParadise\LaravelAdmin\Http\Controllers\SimpleApiController;
+use App\Repo\OrganizerRepo;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
-class OrganizerController extends SimpleApiController
+class OrganizerController extends Controller
 {
-    protected function getModelClass(): string
+    private OrganizerRepo $repo;
+
+    public function __construct(OrganizerRepo $repo)
     {
-        return Organizer::class;
+        $this->repo = $repo;
+    }
+
+    /**
+     * @param Request $request
+     * @return AnonymousResourceCollection
+     */
+    public function index(Request $request): AnonymousResourceCollection
+    {
+        $data = $request->only(['perPage', 'page']);
+        $organizers = $this->repo->search($data);
+
+        return BaseOrganizerResource::collection($organizers);
+
     }
 
     /**

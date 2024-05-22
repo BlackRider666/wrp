@@ -37,7 +37,7 @@
               </v-list-item>
               <v-divider/>
             </template>
-            <template v-if="conference.file">
+            <template v-if="conference.file_url">
               <v-list-item prepend-icon="mdi-account" variant="flat">
                   <v-list-item-subtitle>{{$t('conference.placeholder.file', 'PDF File')}}</v-list-item-subtitle>
                   <v-list-item-title>
@@ -46,7 +46,7 @@
               </v-list-item>
               <v-divider/>
             </template>
-            <template v-if="conference.organizers">
+            <template v-if="conference.organizers.length > 0">
               <v-toolbar dense tile class="pl-2">
                 {{$t('home.organizers.title','Organizers')}}
               </v-toolbar>
@@ -71,6 +71,31 @@
                 </v-slide-group-item>
               </v-slide-group>
             </template>
+            <template v-if="conference.organizations.length > 0">
+              <v-toolbar dense tile class="pl-2">
+                {{$t('home.organizations.title','Organizations')}}
+              </v-toolbar>
+              <v-slide-group
+                  show-arrows
+              >
+                <v-slide-group-item
+                    v-for="organization in conference.organizations"
+                    :key="organization.id"
+                >
+                  <v-card
+                      class="ma-4"
+                      flat
+                  >
+                    <v-card-title>
+                      <v-img :src="organization.img_url" :alt="organization.name[locale.iso_code]" width="100%" height="100%"/>
+                    </v-card-title>
+                    <v-card-text>
+                      {{ organization.name[locale.iso_code] }}
+                    </v-card-text>
+                  </v-card>
+                </v-slide-group-item>
+              </v-slide-group>
+            </template>
           </v-list>
           <v-data-table-server
               :headers="headers"
@@ -85,16 +110,16 @@
                       {value:20,title:'20'}
                       ]"
               @update:options="getArticles"
-              class="elevation-1"
+              class="elevation-1 my-2"
           >
-            <template v-slot:top v-if="canEdit">
+            <template v-slot:top>
               <v-toolbar dense flat class="pl-2">
                 <span>{{$t('articles.index.title','Articles')}}</span>
                 <v-spacer></v-spacer>
-                <v-btn :to="{name:'Conference Add Article', params:{conference_id:$route.conference_id}}" color="primary">{{$t('articles.create.btn.add','Add Article')}}</v-btn>
+                <v-btn v-if="canEdit" :to="{name:'Conference Add Article', params:{conference_id:$route.conference_id}}" color="primary">{{$t('articles.create.btn.add','Add Article')}}</v-btn>
               </v-toolbar>
 
-              <v-dialog v-model="dialogDelete" max-width="500px">
+              <v-dialog v-if="canEdit" v-model="dialogDelete" max-width="500px">
                 <v-card>
                   <v-card-title>{{$t('articles.delete.title','Delete')}}</v-card-title>
                   <v-card-text>{{$t('articles.delete.message','Are you sure you want to delete this item?')}}</v-card-text>
@@ -128,198 +153,194 @@
               {{item.full_title[locale.iso_code]}}
             </template>
           </v-data-table-server>
-<!--          <template v-if="canEdit">-->
-<!--            <v-data-table-->
-<!--                :headers="headersOrgCommittee"-->
-<!--                :items="conference.org_committee"-->
-<!--                :footer-props="{-->
-<!--                  itemsPerPageOptions:[5,10,15,20]-->
-<!--              }"-->
-<!--                class="elevation-1"-->
-<!--            >-->
-<!--              <template v-slot:top>-->
-<!--                <v-toolbar dense flat>-->
-<!--                  <span class="text-h5">{{$t('conference.index.org-committee','Org Committee')}}</span>-->
-<!--                  <v-spacer></v-spacer>-->
-<!--                  <v-btn @click="addOrgCommitteeDialog" color="primary">{{$t('conference.org-committee.add','Add User')}}</v-btn>-->
-<!--                </v-toolbar>-->
-<!--                <v-dialog v-model="dialogAddOrgCommittee">-->
-<!--                  <v-form-->
-<!--                      v-if="newOrgCommittee"-->
-<!--                      ref="addOrgCommitteeForm"-->
-<!--                      lazy-validation-->
-<!--                      align="center"-->
-<!--                      @submit.prevent="addOrgCommitteeConfirm"-->
-<!--                  >-->
-<!--                    <v-card>-->
-<!--                      <v-card-title>{{$t('conference.org-committee.create.title','Create')}}</v-card-title>-->
-<!--                      <v-card-text>-->
-<!--                        <v-autocomplete-->
-<!--                            v-model="newOrgCommittee.users"-->
-<!--                            :label="$t('conference.org-committee.users','Users')"-->
-<!--                            outlined-->
-<!--                            prepend-inner-icon="mdi-shape-outline"-->
-<!--                            :rules="[rules.required]"-->
-<!--                            :items="authors"-->
-<!--                            item-text="full_name"-->
-<!--                            item-value="id"-->
-<!--                            multiple-->
-<!--                        ></v-autocomplete>-->
-<!--                      </v-card-text>-->
-<!--                      <v-card-actions>-->
-<!--                        <v-btn color="darken-1" text @click="closeAddOrgCommittee">{{$t('btn.cancel','Cancel')}}</v-btn>-->
-<!--                        <v-spacer></v-spacer>-->
-<!--                        <v-btn color="darken-1" text type="submit">{{$t('btn.create','Create')}}</v-btn>-->
-<!--                      </v-card-actions>-->
-<!--                    </v-card>-->
-<!--                  </v-form>-->
-<!--                </v-dialog>-->
-<!--                <v-dialog v-model="dialogDeleteOrgCommittee" max-width="500px">-->
-<!--                  <v-card>-->
-<!--                    <v-card-title>{{$t('conference.org-committee.delete.title','Delete')}}</v-card-title>-->
-<!--                    <v-card-text>{{$t('conference.org-committee.delete.message','Are you sure you want to delete this item?')}}</v-card-text>-->
-<!--                    <v-card-actions>-->
-<!--                      <v-btn color="darken-1" text @click="closeDeleteOrgCommittee">{{$t('btn.cancel','Cancel')}}</v-btn>-->
-<!--                      <v-spacer></v-spacer>-->
-<!--                      <v-btn color="error" text @click="deleteOrgCommitteeConfirm">{{$t('btn.delete','Delete')}}</v-btn>-->
-<!--                    </v-card-actions>-->
-<!--                  </v-card>-->
-<!--                </v-dialog>-->
-<!--              </template>-->
-<!--              <template v-slot:item.actions="{ item }">-->
-<!--                <v-icon-->
-<!--                    small-->
-<!--                    @click="deleteOrgCommittee(item)"-->
-<!--                >-->
-<!--                  mdi-delete-->
-<!--                </v-icon>-->
-<!--              </template>-->
-<!--            </v-data-table>-->
-<!--          </template>-->
-<!--          <template v-else>-->
-<!--            <template v-if="conference.org_committee && conference.org_committee.length > 0">-->
-<!--              <v-toolbar dense tile>-->
-<!--                {{$t('conference.index.org-committee','Org Committee')}}-->
-<!--              </v-toolbar>-->
-<!--              <v-slide-group-->
-<!--                  show-arrows-->
-<!--              >-->
-<!--                <v-slide-item-->
-<!--                    v-for="org in conference.org_committee"-->
-<!--                    :key="org.id"-->
-<!--                >-->
-<!--                  <v-card-->
-<!--                      class="ma-4"-->
-<!--                      flat-->
-<!--                      max-width="200px"-->
-<!--                  >-->
-<!--                    <v-card-title>-->
-<!--                      <v-img :src="org.avatar_url" :alt="org.full_name" width="100%" height="100%"/>-->
-<!--                    </v-card-title>-->
-<!--                    <v-card-text>-->
-<!--                      {{ org.full_name }}-->
-<!--                    </v-card-text>-->
-<!--                  </v-card>-->
-<!--                </v-slide-item>-->
-<!--              </v-slide-group>-->
-<!--            </template>-->
-<!--          </template>-->
-<!--          <template v-if="canEdit">-->
-<!--            <v-data-table-->
-<!--                :headers="headersEditors"-->
-<!--                :items="conference.editors"-->
-<!--                :footer-props="{-->
-<!--                  itemsPerPageOptions:[5,10,15,20]-->
-<!--              }"-->
-<!--                class="elevation-1"-->
-<!--            >-->
-<!--              <template v-slot:top>-->
-<!--                <v-toolbar dense flat>-->
-<!--                  <span class="text-h5">{{$t('conference.editors.index.title','Editorial Boards')}}</span>-->
-<!--                  <v-spacer></v-spacer>-->
-<!--                  <v-btn @click="addEditorsDialog" color="primary">{{$t('conference.editors.add','Add User')}}</v-btn>-->
-<!--                </v-toolbar>-->
-<!--                <v-dialog v-model="dialogAddEditors">-->
-<!--                  <v-form-->
-<!--                      v-if="newEditor"-->
-<!--                      ref="addEditorsForm"-->
-<!--                      lazy-validation-->
-<!--                      align="center"-->
-<!--                      @submit.prevent="addEditorConfirm"-->
-<!--                  >-->
-<!--                    <v-card>-->
-<!--                      <v-card-title>{{$t('conference.editors.create.title','Create')}}</v-card-title>-->
-<!--                      <v-card-text>-->
-<!--                        <v-autocomplete-->
-<!--                            v-model="newEditor.users"-->
-<!--                            :label="$t('conference.editors.users','Users')"-->
-<!--                            outlined-->
-<!--                            prepend-inner-icon="mdi-shape-outline"-->
-<!--                            :rules="[rules.required]"-->
-<!--                            :items="authors"-->
-<!--                            item-text="full_name"-->
-<!--                            item-value="id"-->
-<!--                            multiple-->
-<!--                        ></v-autocomplete>-->
-<!--                      </v-card-text>-->
-<!--                      <v-card-actions>-->
-<!--                        <v-btn color="darken-1" text @click="closeAddEditor">{{$t('btn.cancel','Cancel')}}</v-btn>-->
-<!--                        <v-spacer></v-spacer>-->
-<!--                        <v-btn color="darken-1" text type="submit">{{$t('btn.create','Create')}}</v-btn>-->
-<!--                      </v-card-actions>-->
-<!--                    </v-card>-->
-<!--                  </v-form>-->
-<!--                </v-dialog>-->
-<!--                <v-dialog v-model="dialogDeleteEditors" max-width="500px">-->
-<!--                  <v-card>-->
-<!--                    <v-card-title>{{$t('conference.editors.delete.title','Delete')}}</v-card-title>-->
-<!--                    <v-card-text>{{$t('conference.editors.delete.message','Are you sure you want to delete this item?')}}</v-card-text>-->
-<!--                    <v-card-actions>-->
-<!--                      <v-btn color="darken-1" text @click="closeDeleteEditor">{{$t('btn.cancel','Cancel')}}</v-btn>-->
-<!--                      <v-spacer></v-spacer>-->
-<!--                      <v-btn color="error" text @click="deleteEditorConfirm">{{$t('btn.delete','Delete')}}</v-btn>-->
-<!--                    </v-card-actions>-->
-<!--                  </v-card>-->
-<!--                </v-dialog>-->
-<!--              </template>-->
-<!--              <template v-slot:item.actions="{ item }">-->
-<!--                <v-icon-->
-<!--                    small-->
-<!--                    @click="deleteEditor(item)"-->
-<!--                >-->
-<!--                  mdi-delete-->
-<!--                </v-icon>-->
-<!--              </template>-->
-<!--            </v-data-table>-->
-<!--          </template>-->
-<!--          <template v-else>-->
-<!--            <template v-if="conference.editors && conference.editors.length > 0">-->
-<!--              <v-toolbar dense tile>-->
-<!--                {{$t('conference.editors.index.title','Editorial Boards')}}-->
-<!--              </v-toolbar>-->
-<!--              <v-slide-group-->
-<!--                  show-arrows-->
-<!--              >-->
-<!--                <v-slide-item-->
-<!--                    v-for="editor in conference.editors"-->
-<!--                    :key="editor.id"-->
-<!--                >-->
-<!--                  <v-card-->
-<!--                      class="ma-4"-->
-<!--                      flat-->
-<!--                      max-width="200px"-->
-<!--                  >-->
-<!--                    <v-card-title>-->
-<!--                      <v-img :src="editor.avatar_url" :alt="editor.full_name" width="100%" height="100%"/>-->
-<!--                    </v-card-title>-->
-<!--                    <v-card-text>-->
-<!--                      {{ editor.full_name }}-->
-<!--                    </v-card-text>-->
-<!--                  </v-card>-->
-<!--                </v-slide-item>-->
-<!--              </v-slide-group>-->
-<!--            </template>-->
-<!--          </template>-->
+          <template v-if="canEdit">
+            <v-data-table
+                :headers="headersOrgCommittee"
+                :items="conference.org_committee"
+                class="elevation-1 my-2"
+            >
+              <template v-slot:top>
+                <v-toolbar dense flat class="pl-2">
+                  <span>{{$t('conference.index.org-committee','Org Committee')}}</span>
+                  <v-spacer></v-spacer>
+                  <v-btn @click="addOrgCommitteeDialog" color="primary">{{$t('conference.org-committee.add','Add User')}}</v-btn>
+                </v-toolbar>
+                <v-dialog v-model="dialogAddOrgCommittee" max-width="500px">
+                  <v-form
+                      v-if="newOrgCommittee"
+                      ref="addOrgCommitteeForm"
+                      lazy-validation
+                      align="center"
+                      @submit.prevent="addOrgCommitteeConfirm"
+                  >
+                    <v-card>
+                      <v-card-title>{{$t('conference.org-committee.create.title','Create')}}</v-card-title>
+                      <v-card-text>
+                        <v-autocomplete
+                            v-model="newOrgCommittee.users"
+                            :label="$t('conference.org-committee.users','Users')"
+                            variant="outlined"
+                            prepend-inner-icon="mdi-shape-outline"
+                            :rules="[rules.required]"
+                            :items="authors"
+                            item-title="full_name"
+                            item-value="id"
+                            multiple
+                        ></v-autocomplete>
+                      </v-card-text>
+                      <v-card-actions>
+                        <v-btn color="darken-1" variant="text" @click="closeAddOrgCommittee">{{$t('btn.cancel','Cancel')}}</v-btn>
+                        <v-spacer></v-spacer>
+                        <v-btn color="primary" variant="text" type="submit">{{$t('btn.create','Create')}}</v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </v-form>
+                </v-dialog>
+                <v-dialog v-model="dialogDeleteOrgCommittee" max-width="500px">
+                  <v-card>
+                    <v-card-title>{{$t('conference.org-committee.delete.title','Delete')}}</v-card-title>
+                    <v-card-text>{{$t('conference.org-committee.delete.message','Are you sure you want to delete this item?')}}</v-card-text>
+                    <v-card-actions>
+                      <v-btn color="darken-1" variant="text" @click="closeDeleteOrgCommittee">{{$t('btn.cancel','Cancel')}}</v-btn>
+                      <v-spacer></v-spacer>
+                      <v-btn color="error" variant="text" @click="deleteOrgCommitteeConfirm">{{$t('btn.delete','Delete')}}</v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
+              </template>
+              <template v-slot:item.actions="{ item }">
+                <v-icon
+                    small
+                    @click="deleteOrgCommitteeDialog(item)"
+                >
+                  mdi-delete
+                </v-icon>
+              </template>
+              <template #bottom></template>
+            </v-data-table>
+          </template>
+          <template v-else>
+            <template v-if="conference.org_committee && conference.org_committee.length > 0">
+              <v-toolbar dense tile class="pl-2">
+                {{$t('conference.index.org-committee','Org Committee')}}
+              </v-toolbar>
+              <v-slide-group
+                  show-arrows
+              >
+                <v-slide-group-item
+                    v-for="org in conference.org_committee"
+                    :key="org.id"
+                >
+                  <v-card
+                      class="ma-4"
+                      flat
+                      max-width="110px"
+                  >
+                    <v-card-title>
+                      <v-img :src="org.avatar_url" :alt="org.full_name" width="100%" height="100%" class="rounded-circle"/>
+                    </v-card-title>
+                    <v-card-text class="d-flex justify-center">
+                      <span class="text-center">{{ org.full_name }}</span>
+                    </v-card-text>
+                  </v-card>
+                </v-slide-group-item>
+              </v-slide-group>
+            </template>
+          </template>
+          <template v-if="canEdit">
+            <v-data-table
+                :headers="headersEditors"
+                :items="conference.editors"
+                class="elevation-1 my-2"
+            >
+              <template v-slot:top>
+                <v-toolbar dense flat class="pl-2">
+                  <span>{{$t('conference.editors.index.title','Editorial Boards')}}</span>
+                  <v-spacer></v-spacer>
+                  <v-btn @click="addEditorsDialog" color="primary">{{$t('conference.editors.add','Add User')}}</v-btn>
+                </v-toolbar>
+                <v-dialog v-model="dialogAddEditors" max-width="500px">
+                  <v-form
+                      v-if="newEditor"
+                      ref="addEditorsForm"
+                      lazy-validation
+                      align="center"
+                      @submit.prevent="addEditorConfirm"
+                  >
+                    <v-card>
+                      <v-card-title>{{$t('conference.editors.create.title','Create')}}</v-card-title>
+                      <v-card-text>
+                        <v-autocomplete
+                            v-model="newEditor.users"
+                            :label="$t('conference.editors.users','Users')"
+                            variant="outlined"
+                            prepend-inner-icon="mdi-shape-outline"
+                            :rules="[rules.required]"
+                            :items="authors"
+                            item-title="full_name"
+                            item-value="id"
+                            multiple
+                        ></v-autocomplete>
+                      </v-card-text>
+                      <v-card-actions>
+                        <v-btn color="darken-1" variant="text" @click="closeAddEditor">{{$t('btn.cancel','Cancel')}}</v-btn>
+                        <v-spacer></v-spacer>
+                        <v-btn color="primary" variant="text" type="submit">{{$t('btn.create','Create')}}</v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </v-form>
+                </v-dialog>
+                <v-dialog v-model="dialogDeleteEditors" max-width="500px">
+                  <v-card>
+                    <v-card-title>{{$t('conference.editors.delete.title','Delete')}}</v-card-title>
+                    <v-card-text>{{$t('conference.editors.delete.message','Are you sure you want to delete this item?')}}</v-card-text>
+                    <v-card-actions>
+                      <v-btn color="darken-1" variant="text" @click="closeDeleteEditor">{{$t('btn.cancel','Cancel')}}</v-btn>
+                      <v-spacer></v-spacer>
+                      <v-btn color="error" variant="text" @click="deleteEditorConfirm">{{$t('btn.delete','Delete')}}</v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
+              </template>
+              <template v-slot:item.actions="{ item }">
+                <v-icon
+                    small
+                    @click="deleteEditor(item)"
+                >
+                  mdi-delete
+                </v-icon>
+              </template>
+              <template #bottom></template>
+            </v-data-table>
+          </template>
+          <template v-else>
+            <template v-if="conference.editors && conference.editors.length > 0">
+              <v-toolbar dense tile class="pl-2">
+                {{$t('conference.editors.index.title','Editorial Boards')}}
+              </v-toolbar>
+              <v-slide-group
+                  show-arrows
+              >
+                <v-slide-group-item
+                    v-for="editor in conference.editors"
+                    :key="editor.id"
+                >
+                  <v-card
+                      class="ma-4"
+                      flat
+                      max-width="110px"
+                  >
+                    <v-card-title>
+                      <v-img :src="editor.avatar_url" :alt="editor.full_name" width="100%" height="100%" class="rounded-circle"/>
+                    </v-card-title>
+                    <v-card-text class="d-flex justify-center">
+                      <span class="text-center">{{ editor.full_name }}</span>
+                    </v-card-text>
+                  </v-card>
+                </v-slide-group-item>
+              </v-slide-group>
+            </template>
+          </template>
         </v-card-text>
       </v-card>
     </v-col>
@@ -345,11 +366,11 @@ export default {
         { title: this.$t('articles.placeholder.actions','Actions'), value: 'actions', sortable: false },
       ],
       headersOrgCommittee: [
-        { title: this.$t('articles.placeholder.title','Name'), value: 'full_name' },
+        { title: this.$t('articles.placeholder.name','Name'), value: 'full_name' },
         { title: this.$t('articles.placeholder.actions','Actions'), value: 'actions', sortable: false },
       ],
       headersEditors: [
-        { title: this.$t('articles.placeholder.title','Name'), value: 'full_name' },
+        { title: this.$t('articles.placeholder.name','Name'), value: 'full_name' },
         { title: this.$t('articles.placeholder.actions','Actions'), value: 'actions', sortable: false },
       ],
       dialogAdd: false,
@@ -365,9 +386,10 @@ export default {
       newOrgCommittee: null,
       newEditor: null,
       rules: {
-        required: value => !!value || 'Required.',
+        required: value => (value !== null && value.length > 0) || 'Required.',
       },
       options: {},
+      allItems: -1,
     };
   },
   computed: {
@@ -388,43 +410,9 @@ export default {
     this.downloadAuthors();
   },
   methods: {
-    addArticleDialog() {
-      this.dialogAdd = true;
-      this.newItem = {
-        country_id: this.conference.country_id,
-        city_id: this.conference.city_id,
-        title: '',
-        category_id: '',
-        year: this.conference.date.slice(0,4),
-        authors: [],
-        journal: null,
-        part: null,
-        number: null,
-        pages: null,
-        publisher: this.conference.title,
-        patent_number: null,
-        app_number: null,
-      };
-    },
     deleteItem (item) {
       this.selectedItem = item;
       this.dialogDelete = true
-    },
-    addArticleConfirm (e) {
-      e.preventDefault();
-      e.stopPropagation();
-      if (!this.$refs.addArticleForm.validate()) return;
-      this.$loading();
-      // this.$store.dispatch('conference/addArticle',{id:this.conference.id, ...this.newItem})
-      //     .then( () => {
-      //       this.$loadingClose();
-      //       this.$notify('','success', this.$t('messages.success','Success'));
-      //       this.closeAdd()
-      //     })
-      //     .catch( () => {
-      //       this.$loadingClose();
-      //       this.$notify('','error', this.$t('messages.error','Error'));
-      //     });
     },
     deleteItemConfirm () {
       this.$loading();
@@ -448,41 +436,45 @@ export default {
         users: [],
       };
     },
-    deleteOrgCommittee (item) {
+    deleteOrgCommitteeDialog (item) {
       this.selectedOrgCommittee = item;
       this.dialogDeleteOrgCommittee = true
     },
     addOrgCommitteeConfirm (e) {
       e.preventDefault();
       e.stopPropagation();
-      if (!this.$refs.addOrgCommitteeForm.validate()) return;
       this.$loading();
-      // this.$store.dispatch('conference/addOrgCommittee',{id:this.conference.id, ...this.newOrgCommittee})
-      //     .then( () => {
-      //       this.$loadingClose();
-      //       this.$notify('','success', this.$t('messages.success','Success'));
-      //       this.closeAddOrgCommittee()
-      //     })
-      //     .catch( () => {
-      //       this.$loadingClose();
-      //       this.$notify('','error', this.$t('messages.error','Error'));
-      //     });
+      this.$refs.addOrgCommitteeForm.validate().then((valid) => {
+        if (!valid.valid) {
+          this.$loadingClose();
+          return;
+        }
+        this.addOrgCommittee({id: this.conference.id, ...this.newOrgCommittee})
+            .then(() => {
+              this.$loadingClose();
+              this.$notify('', 'success', this.$t('messages.success', 'Success'));
+              this.closeAddOrgCommittee()
+            })
+            .catch(() => {
+              this.$loadingClose();
+              this.$notify('', 'error', this.$t('messages.error', 'Error'));
+            });
+      })
     },
     deleteOrgCommitteeConfirm () {
       this.$loading();
-      // this.$store.dispatch('conference/deleteOrgCommittee', {id:this.conference.id, users:[
-      //       this.selectedOrgCommittee.id,
-      //   ]})
-      //     .then( () => {
-      //       this.$loadingClose();
-      //       this.$notify('','success', this.$t('messages.success','Success'));
-      //       this.closeDeleteOrgCommittee();
-      //       this.$store.dispatch('conference/getConference', this.$route.params.conference_id);
-      //     })
-      //     .catch( () => {
-      //       this.$loadingClose();
-      //       this.$notify('','error', this.$t('messages.error','Error'));
-      //     });
+      this.deleteOrgCommittee({id:this.conference.id, users:[
+            this.selectedOrgCommittee.id,
+        ]})
+          .then( () => {
+            this.$loadingClose();
+            this.$notify('','success', this.$t('messages.success','Success'));
+            this.closeDeleteOrgCommittee();
+          })
+          .catch( () => {
+            this.$loadingClose();
+            this.$notify('','error', this.$t('messages.error','Error'));
+          });
     },
     closeAddOrgCommittee() {
       this.dialogAddOrgCommittee = false;
@@ -504,34 +496,38 @@ export default {
     addEditorConfirm (e) {
       e.preventDefault();
       e.stopPropagation();
-      if (!this.$refs.addEditorsForm.validate()) return;
       this.$loading();
-      // this.$store.dispatch('conference/addEditors',{id:this.conference.id, ...this.newEditor})
-      //     .then( () => {
-      //       this.$loadingClose();
-      //       this.$notify('','success', this.$t('messages.success','Success'));
-      //       this.closeAddEditor()
-      //     })
-      //     .catch( () => {
-      //       this.$loadingClose();
-      //       this.$notify('','error', this.$t('messages.error','Error'));
-      //     });
+      this.$refs.addEditorsForm.validate().then((valid) => {
+        if (!valid.valid) {
+          this.$loadingClose();
+          return;
+        }
+        this.addEditors({id: this.conference.id, ...this.newEditor})
+            .then(() => {
+              this.$loadingClose();
+              this.$notify('', 'success', this.$t('messages.success', 'Success'));
+              this.closeAddEditor()
+            })
+            .catch(() => {
+              this.$loadingClose();
+              this.$notify('', 'error', this.$t('messages.error', 'Error'));
+            });
+      })
     },
     deleteEditorConfirm () {
       this.$loading();
-      // this.$store.dispatch('conference/deleteEditors', {id:this.conference.id, users:[
-      //       this.selectedEditor.id,
-      //   ]})
-      //     .then( () => {
-      //       this.$loadingClose();
-      //       this.$notify('','success', this.$t('messages.success','Success'));
-      //       this.closeDeleteEditor();
-      //       this.$store.dispatch('conference/getConference', this.$route.params.conference_id);
-      //     })
-      //     .catch( () => {
-      //       this.$loadingClose();
-      //       this.$notify('','error', this.$t('messages.error','Error'));
-      //     });
+      this.deleteEditors({id:this.conference.id, users:[
+            this.selectedEditor.id,
+        ]})
+          .then( () => {
+            this.$loadingClose();
+            this.$notify('','success', this.$t('messages.success','Success'));
+            this.closeDeleteEditor();
+          })
+          .catch( () => {
+            this.$loadingClose();
+            this.$notify('','error', this.$t('messages.error','Error'));
+          });
     },
     closeAddEditor() {
       this.dialogAddEditors = false;
@@ -551,7 +547,7 @@ export default {
         this.$loadingClose();
       });
     },
-    ...mapActions(useConferenceStore,['getConference']),
+    ...mapActions(useConferenceStore,['getConference','addOrgCommittee','deleteOrgCommittee','addEditors','deleteEditors']),
     ...mapActions(useUserStore,['downloadAuthors']),
     ...mapActions(useArticleStore,['downloadArticles','deleteArticle'])
   },

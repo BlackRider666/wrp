@@ -16,20 +16,22 @@
               <v-select
                   v-model="selectedItem.country_id"
                   :items="countries"
-                  item-title="name"
+                  :item-title="`name[${locale.iso_code}]`"
                   item-value="id"
                   :label="$t('conference.placeholder.country','Country')"
                   prepend-inner-icon="mdi-database-search"
                   variant="outlined"
+                  :rules="[rules.required]"
               ></v-select>
               <v-select
                   v-model="selectedItem.city_id"
                   :items="cities"
-                  item-title="name"
+                  :item-title="`name[${locale.iso_code}]`"
                   item-value="id"
                   :label="$t('conference.placeholder.city','City')"
                   prepend-inner-icon="mdi-database-search"
                   variant="outlined"
+                  :rules="[rules.required]"
               ></v-select>
               <v-text-field
                   v-model="selectedItem.title"
@@ -54,6 +56,7 @@
                     readonly
                     v-bind="props"
                     variant="outlined"
+                    :rules="[rules.required]"
                 />
               </template>
               <v-date-picker
@@ -75,6 +78,18 @@
                   :label="$t('conference.placeholder.organizers','Organizers')"
                   prepend-inner-icon="mdi-database-search"
                   variant="outlined"
+                  :rules="[rules.requiredOneOf]"
+              ></v-select>
+              <v-select
+                  multiple
+                  v-model="selectedItem.organizations"
+                  :items="organizations"
+                  :item-title="`name[${locale.iso_code}]`"
+                  item-value="id"
+                  :label="$t('conference.placeholder.organizations','Organizations')"
+                  prepend-inner-icon="mdi-database-search"
+                  variant="outlined"
+                  :rules="[rules.requiredOneOf]"
               ></v-select>
             </v-card-text>
             <v-card-actions>
@@ -94,6 +109,8 @@ import {useConferenceStore} from "@/stores/conference";
 import {useCountryStore} from "@/stores/country";
 import {useCityStore} from "@/stores/city";
 import {useOrganizerStore} from "@/stores/organizer";
+import {useOrganizationStore} from "@/stores/organization";
+import {useLocalesStore} from "../../stores/l10s";
 
 export default {
   name: "Edit",
@@ -102,15 +119,19 @@ export default {
       selectedItem:null,
       rules: {
         required: value => !!value || 'Required.',
+        requiredOneOf: () => {
+          return (this.selectedItem.organizations.length > 0 || this.selectedItem.organizers.length > 0) || 'Organizations or Organizers required.';
+        },
       },
       menuDate: false,
-      pdf: null,
     };
   },
   computed: {
     ...mapState(useCountryStore,['countries']),
     ...mapState(useCityStore,['cities']),
     ...mapState(useOrganizerStore,['organizers']),
+    ...mapState(useLocalesStore,['locale']),
+    ...mapState(useOrganizationStore,['organizations']),
     formatedDate() {
       return this.selectedItem.date ? new Date(this.selectedItem.date).toLocaleDateString('uk') : '';
     }
@@ -122,14 +143,16 @@ export default {
         country_id: res.country_id,
         city_id : res.city_id,
         title : res.title,
-        date : new Date(res.date),
-        organizers : res.organizers.map( (item) => item.id)
+        date : new Date(res.date.replace(/(\d{2})-(\d{2})-(\d{4})/, '$2/$1/$3')),
+        organizers : res.organizers.map( (item) => item.id),
+        organizations: res.organizations.map( (item) => item.id),
       };
     }).catch( () => {
       this.$router.push({name:'error-404'})
     });
     this.downloadCountries();
-    this.downloadOrganizers();
+    this.downloadOrganizers({perPage:-1});
+    this.downloadOrganizations({perPage:-1});
   },
   methods: {
     editItemConfirm (e) {
@@ -154,6 +177,7 @@ export default {
     ...mapActions(useCountryStore,['downloadCountries']),
     ...mapActions(useCityStore,['downloadCities']),
     ...mapActions(useOrganizerStore,['downloadOrganizers']),
+    ...mapActions(useOrganizationStore,['downloadOrganizations']),
   },
   watch: {
     'selectedItem.country_id': {

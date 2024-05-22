@@ -18,7 +18,7 @@
                 <div>
                   <div class="text-subtitle-1">{{$t('placeholder.city','City')}}, {{$t('placeholder.country','Country')}}</div>
                   <div class="text-h6 font-weight-regular">
-                    {{organization.city_id? organization.city.name : ''}}, {{organization.country_id? organization.country.name: ''}}
+                    {{organization.city? organization.city.name[locale.iso_code] : ''}}, {{organization.country? organization.country.name[locale.iso_code]: ''}}
                   </div>
                 </div>
                 <div v-if="organization.address">

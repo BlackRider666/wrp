@@ -15,36 +15,40 @@
         </v-img>
         </v-col>
         <v-col :cols="detailed?6:12" class="pa-0">
-          <v-card-title v-if="org.name" :title="org.name[locale.iso_code]" class="text-h6 organization__title" >{{org.name[locale.iso_code].length > 106 ? org.name[locale.iso_code].substring(0,103)+'...':org.name[locale.iso_code] }}</v-card-title>
+          <v-card-title class="text-h6 organization__title" >
+            <template v-if="org.name[locale.iso_code]">
+              {{org.name[locale.iso_code].length > 106 ? org.name[locale.iso_code].substring(0,103)+'...':org.name[locale.iso_code] }}
+            </template>
+          </v-card-title>
 
           <v-card-text class="text-md-caption">
             <v-list class="organization__list" dense v-if="detailed">
               <v-list-item class="px-0">
-                <v-list-item-title class="justify-space-between text-caption d-inline-flex">
+                <v-list-item-title class="justify-space-between text-caption d-flex">
                   <div class="text-caption">Показник</div>
                   <div class="text-caption">К-ть</div>
                 </v-list-item-title>
               </v-list-item>
               <v-list-item class="px-0">
-                <v-list-item-title class="justify-space-between text-body-1 d-inline-flex">
+                <v-list-item-title class="justify-space-between text-body-1 d-flex">
                   <span class="text-body-1">Faculty</span>
                   <span class="text-body-1">24</span>
                 </v-list-item-title>
               </v-list-item>
               <v-list-item class="px-0">
-                <v-list-item-title class="justify-space-between text-body-1 d-inline-flex">
+                <v-list-item-title class="justify-space-between text-body-1 d-flex">
                   <span class="text-body-1">Faculty</span>
                   <span class="text-body-1">24</span>
                 </v-list-item-title>
               </v-list-item>
               <v-list-item class="px-0">
-                <v-list-item-title class="justify-space-between text-body-1 d-inline-flex">
+                <v-list-item-title class="justify-space-between text-body-1 d-flex">
                   <span class="text-body-1">Faculty</span>
                   <span class="text-body-1">24</span>
                 </v-list-item-title>
               </v-list-item>
               <v-list-item class="px-0">
-                <v-list-item-title class="justify-space-between text-body-1 d-inline-flex">
+                <v-list-item-title class="justify-space-between text-body-1 d-flex">
                   <span class="text-body-1">Faculty</span>
                   <span class="text-body-1">24</span>
                 </v-list-item-title>
@@ -52,9 +56,9 @@
             </v-list>
             <v-row>
               <v-col>
-                <span>{{org.city_id? org.city.name : ''}}</span>
+                <span>{{org.city? org.city.name[locale.iso_code] : ''}}</span>
                 <br>
-                <span>{{org.country_id? org.country.name: ''}}</span>
+                <span>{{org.country? org.country.name[locale.iso_code]: ''}}</span>
               </v-col>
               <v-col class="text-end" align-self="center">
                 {{$t('organization.placeholder.rating', 'Rating')}}: <span class="organization__rating">{{org.rate}} <v-icon color="success" class="text-md-caption">mdi-finance</v-icon></span>
@@ -77,31 +81,31 @@
             </template>
             <v-list class="organization__list" dense>
               <v-list-item>
-                <v-list-item-title class="justify-space-between text-caption d-inline-flex">
+                <v-list-item-title class="justify-space-between text-caption d-flex">
                   <div>Показник</div>
                   <div>К-ть</div>
                 </v-list-item-title>
               </v-list-item>
               <v-list-item>
-                <v-list-item-title class="justify-space-between text-body-1 d-inline-flex">
+                <v-list-item-title class="justify-space-between text-body-1 d-flex">
                   <span>Faculty</span>
                   <span>24</span>
                 </v-list-item-title>
               </v-list-item>
               <v-list-item>
-                <v-list-item-title class="justify-space-between text-body-1 d-inline-flex">
+                <v-list-item-title class="justify-space-between text-body-1 d-flex">
                   <span>Faculty</span>
                   <span>24</span>
                 </v-list-item-title>
               </v-list-item>
               <v-list-item>
-                <v-list-item-title class="justify-space-between text-body-1 d-inline-flex">
+                <v-list-item-title class="justify-space-between text-body-1 d-flex">
                   <span>Faculty</span>
                   <span>24</span>
                 </v-list-item-title>
               </v-list-item>
               <v-list-item>
-                <v-list-item-title class="justify-space-between text-body-1 d-inline-flex">
+                <v-list-item-title class="justify-space-between text-body-1 d-flex">
                   <span>Faculty</span>
                   <span>24</span>
                 </v-list-item-title>
@@ -142,6 +146,7 @@ export default {
   }
   &__title {
     hyphens: auto;
+    min-height: 48px;
   }
   &__img.detailed{
     border-top-left-radius: 4px;

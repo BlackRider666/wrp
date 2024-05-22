@@ -5,17 +5,13 @@ namespace App\Repo;
 
 use App\Models\Article\Category\Category;
 use App\Models\Conference\Conference;
-use App\Models\Organizer\Organizer;
-use App\Models\User\User;
 use BlackParadise\LaravelAdmin\Core\CoreRepo;
 use BlackParadise\LaravelAdmin\Core\StorageManager;
 use Exception;
-use Highlight\Mode;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
 use RuntimeException;
 
 class ConferenceRepo extends CoreRepo
@@ -64,10 +60,18 @@ class ConferenceRepo extends CoreRepo
         if (!$conference = $this->query()->create($data)) {
             throw new RuntimeException('Error on creating conference!',500);
         }
-        if (!$conference->organizers()->sync($data['organizers'])) {
-            throw new RuntimeException('Error on assign organizers to conference!',500);
+        if (array_key_exists('organizers',$data)) {
+            if (!$conference->organizers()->sync($data['organizers'])) {
+                throw new RuntimeException('Error on assign organizers to conference!',500);
+            }
         }
-        $conference = $this->findWith($conference->getKey(),['organizers']);
+        if (array_key_exists('organizations', $data)) {
+            if (!$conference->organizations()->sync($data['organizations'])) {
+                throw new RuntimeException('Error on assign organizations to conference!',500);
+            }
+        }
+
+        $conference = $this->findWith($conference->getKey(),['organizers','organizations']);
 
         return $conference;
     }
@@ -95,9 +99,14 @@ class ConferenceRepo extends CoreRepo
         if (!$conference->update($data)) {
             throw new RuntimeException('Error on updating conference!',500);
         }
-        Log::alert($data);
-        if (!$conference->organizers()->sync($data['organizers'])) {
+        $organizers = array_key_exists('organizers',$data)?$data['organizers']:[];
+        $organizations = array_key_exists('organizations',$data)?$data['organizations']:[];
+        if (!$conference->organizers()->sync($organizers)) {
             throw new RuntimeException('Error on assign organizers to conference!',500);
+        }
+
+        if (!$conference->organizations()->sync($organizations)) {
+            throw new RuntimeException('Error on assign organizations to conference!',500);
         }
 
         $conference = $this->findWithAll($id);
@@ -132,7 +141,7 @@ class ConferenceRepo extends CoreRepo
     public function findWithAll(int $id)
     {
         return $this->query()
-                    ->with(['city','country','organizers','articles','articles.category', 'orgCommittee', 'editors'])
+                    ->with(['city','country','organizers','articles','articles.category', 'orgCommittee', 'editors','organizations'])
                     ->find($id);
     }
 

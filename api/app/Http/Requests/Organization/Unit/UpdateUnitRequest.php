@@ -16,7 +16,7 @@ class UpdateUnitRequest extends FormRequest
     {
         return [
             'name'              =>  'required|string|max:255',
-            'parent_id'         =>  'nullable|int|exists:structural_units',
+            'parent_id'         =>  'nullable|int|exists:structural_units,id',
             'type'              =>  ['required',Rule::in(['esi','faculty','cathedra','sri','institute','unit','section','department'])],
         ];
     }

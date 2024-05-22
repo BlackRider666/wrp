@@ -6,30 +6,31 @@
       @submit.prevent="submitForm"
   ><v-card
       flat
-      v-if="article && article.category"
+      v-if="article"
   >
     <v-card-text>
       <v-select
           v-model="article.country_id"
           :items="countries"
-          item-title="name"
+          :item-title="`name[${locale.iso_code}]`"
           item-value="id"
           :label="$t('article.placeholder.country','Country')"
           prepend-inner-icon="mdi-database-search"
           variant="outlined"
-          :disabled="article.category.tech_name === 'conference'"
-      ></v-select>
+          :disabled="article.category && article.category.tech_name === 'conference'"
+      >
+      </v-select>
       <v-select
           v-model="article.city_id"
           :items="cities"
-          item-title="name"
+          :item-title="`name[${locale.iso_code}]`"
           item-value="id"
           :label="$t('article.placeholder.city','City')"
           prepend-inner-icon="mdi-database-search"
           variant="outlined"
-          :disabled="article.category.tech_name === 'conference'"
+          :disabled="article.category && article.category.tech_name === 'conference'"
       ></v-select>
-      <v-tabs v-model="activeTitleTab" align-tabs="end" class="pb-1" selected-class="text-primary" :disabled="article.category.tech_name === 'conference'">
+      <v-tabs v-model="activeTitleTab" align-tabs="end" class="pb-1" selected-class="text-primary" :disabled="article.category && article.category.tech_name === 'conference'">
         <v-tab key="en">English</v-tab>
         <v-tab key="uk">Українська</v-tab>
       </v-tabs>
@@ -41,7 +42,7 @@
               variant="outlined"
               prepend-inner-icon="mdi-card-text-outline"
               :rules="[rules.required]"
-              :disabled="article.category.tech_name === 'conference'"
+              :disabled="article.category && article.category.tech_name === 'conference'"
           />
         </v-window-item>
         <v-window-item key="uk">
@@ -51,7 +52,7 @@
               variant="outlined"
               prepend-inner-icon="mdi-card-text-outline"
               :rules="[rules.required]"
-              :disabled="article.category.tech_name === 'conference'"
+              :disabled="article.category && article.category.tech_name === 'conference'"
           />
         </v-window-item>
       </v-window>
@@ -65,7 +66,7 @@
           item-title="title"
           item-value="id"
           :item-props="disabledCategory"
-          :disabled="article.category.tech_name === 'conference'"
+          :disabled="article.category && article.category.tech_name === 'conference'"
 
       ></v-select>
       <v-text-field
@@ -74,7 +75,7 @@
           variant="outlined"
           prepend-inner-icon="mdi-calendar-range"
           :rules="[rules.required]"
-          :disabled="article.category.tech_name === 'conference'"
+          :disabled="article.category && article.category.tech_name === 'conference'"
       ></v-text-field>
       <v-select
           v-model="article.authors"
@@ -86,7 +87,7 @@
           item-title="full_name"
           item-value="id"
           multiple
-          :disabled="article.category.tech_name === 'conference'"
+          :disabled="article.category && article.category.tech_name === 'conference'"
       ></v-select>
       <v-text-field
           v-if="checkCategory(['article','conference','section'])"
@@ -228,7 +229,7 @@
           :label="$t('placeholder.file','File')"
           variant="outlined"
           v-model="file"
-          :disabled="article.category.tech_name === 'conference'"
+          :disabled="article.category && article.category.tech_name === 'conference'"
       ></v-file-input>
     </v-card-text>
     <v-card-actions>

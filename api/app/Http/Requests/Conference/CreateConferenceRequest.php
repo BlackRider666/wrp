@@ -8,16 +8,6 @@ use Illuminate\Foundation\Http\FormRequest;
 class CreateConferenceRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize(): bool
-    {
-        return true;
-    }
-
-    /**
      * Get the validation rules that apply to the request.
      *
      * @return array
@@ -29,8 +19,10 @@ class CreateConferenceRequest extends FormRequest
             'date'      =>  'required|date',
             'city_id'   =>  'required|int|exists:cities,id',
             'file'      =>  'nullable|sometimes|file|mimes:pdf',
-            'organizers' => 'required|array',
-            'organizers.*' => 'required|int|exists:organizers,id',
+            'organizers' => 'required_without:organizations|array',
+            'organizers.*' => 'required_without:organizations|int|exists:organizers,id',
+            'organizations' => 'required_without:organizers|array',
+            'organizations.*' => 'required_without:organizers|int|exists:organization,id',
         ];
     }
 

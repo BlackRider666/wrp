@@ -10,6 +10,7 @@ use App\Http\Requests\Conference\CreateConferenceRequest;
 use App\Http\Requests\Conference\RemoveEditorsRequest;
 use App\Http\Requests\Conference\RemoveOrgCommitteeRequest;
 use App\Http\Requests\Conference\UpdateConferenceRequest;
+use App\Http\Resources\Conference\BaseConferenceResource;
 use App\Http\Resources\Conference\ConferenceResource;
 use App\Models\Conference\Conference;
 use App\Repo\ConferenceRepo;
@@ -17,6 +18,7 @@ use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ConferenceController extends Controller
 {
@@ -32,28 +34,27 @@ class ConferenceController extends Controller
 
     /**
      * @param Request $request
-     * @return JsonResponse
+     * @return AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function index(Request $request): JsonResponse
+    public function index(Request $request)
     {
         $data = $request->all();
         $this->authorize('viewAny', Conference::class);
-
-        return new JsonResponse($this->repo->search($data));
+        $conferences = $this->repo->search($data);
+        return BaseConferenceResource::collection($conferences);
     }
 
     /**
      * @param CreateConferenceRequest $request
-     * @return JsonResponse
+     * @return BaseConferenceResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function store(CreateConferenceRequest $request): JsonResponse
+    public function store(CreateConferenceRequest $request): JsonResponse|BaseConferenceResource
     {
         $data = $request->validated();
         $data['user_id'] = $request->user()->getKey();
         $this->authorize('create', Conference::class);
-
         try {
             $conference = $this->repo->create($data,$request->file('file'));
         } catch (Exception $e) {
@@ -62,9 +63,7 @@ class ConferenceController extends Controller
             ], !is_int($e->getCode()) || $e->getCode() === 0 ?500:$e->getCode());
         }
 
-        return new JsonResponse([
-            'conference'  =>  $conference,
-        ]);
+        return new BaseConferenceResource($conference);
     }
 
     /**
@@ -87,10 +86,10 @@ class ConferenceController extends Controller
     /**
      * @param int $id
      * @param UpdateConferenceRequest $request
-     * @return JsonResponse
+     * @return BaseConferenceResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function update(int $id, UpdateConferenceRequest $request): JsonResponse
+    public function update(int $id, UpdateConferenceRequest $request): JsonResponse|BaseConferenceResource
     {
         $data = $request->validated();
         $conference = $this->repo->find($id);
@@ -104,9 +103,7 @@ class ConferenceController extends Controller
             ], !is_int($e->getCode()) || $e->getCode() === 0 ?500:$e->getCode());
         }
 
-        return new JsonResponse([
-            'conference'  =>  $conference,
-        ]);
+        return new BaseConferenceResource($conference);
     }
 
     /**
@@ -159,10 +156,10 @@ class ConferenceController extends Controller
     /**
      * @param int $id
      * @param AddOrgCommitteeRequest $request
-     * @return JsonResponse
+     * @return ConferenceResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function addOrgCommittee(int $id, AddOrgCommitteeRequest $request): JsonResponse
+    public function addOrgCommittee(int $id, AddOrgCommitteeRequest $request): JsonResponse|ConferenceResource
     {
         $data = $request->validated();
 
@@ -177,18 +174,16 @@ class ConferenceController extends Controller
             ], $e->getCode());
         }
 
-        return new JsonResponse([
-            'conference'  =>  $conference,
-        ]);
+        return new ConferenceResource($conference);
     }
 
     /**
      * @param int $id
      * @param RemoveOrgCommitteeRequest $request
-     * @return JsonResponse
+     * @return ConferenceResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function removeOrgCommittee(int $id, RemoveOrgCommitteeRequest $request): JsonResponse
+    public function removeOrgCommittee(int $id, RemoveOrgCommitteeRequest $request): JsonResponse|ConferenceResource
     {
         $data = $request->validated();
 
@@ -203,18 +198,16 @@ class ConferenceController extends Controller
             ], $e->getCode());
         }
 
-        return new JsonResponse([
-            'conference'  =>  $conference,
-        ]);
+        return new ConferenceResource($conference);
     }
 
     /**
      * @param int $id
      * @param AddEditorsRequest $request
-     * @return JsonResponse
+     * @return ConferenceResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function addEditors(int $id, AddEditorsRequest $request): JsonResponse
+    public function addEditors(int $id, AddEditorsRequest $request): JsonResponse|ConferenceResource
     {
         $data = $request->validated();
 
@@ -229,18 +222,16 @@ class ConferenceController extends Controller
             ], $e->getCode());
         }
 
-        return new JsonResponse([
-            'conference'  =>  $conference,
-        ]);
+        return new ConferenceResource($conference);
     }
 
     /**
      * @param int $id
      * @param RemoveEditorsRequest $request
-     * @return JsonResponse
+     * @return ConferenceResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function removeEditors(int $id, RemoveEditorsRequest $request): JsonResponse
+    public function removeEditors(int $id, RemoveEditorsRequest $request): JsonResponse|ConferenceResource
     {
         $data = $request->validated();
 
@@ -255,8 +246,6 @@ class ConferenceController extends Controller
             ], $e->getCode());
         }
 
-        return new JsonResponse([
-            'conference'  =>  $conference,
-        ]);
+        return new ConferenceResource($conference);
     }
 }

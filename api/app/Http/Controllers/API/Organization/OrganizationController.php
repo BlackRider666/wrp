@@ -4,11 +4,13 @@ namespace App\Http\Controllers\API\Organization;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Organization\UpdateOrganizationRequest;
+use App\Http\Resources\Organization\BaseOrganizationResource;
 use App\Models\Organization\Organization;
 use App\Repo\OrganizationRepo;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class OrganizationController extends Controller
 {
@@ -24,11 +26,14 @@ class OrganizationController extends Controller
 
     /**
      * @param Request $request
-     * @return JsonResponse
+     * @return AnonymousResourceCollection
      */
-    public function index(Request $request): JsonResponse
+    public function index(Request $request): AnonymousResourceCollection
     {
-        return new JsonResponse($this->repo->search($request->all()));
+        $data = $request->only('perPage');
+        $organizations = $this->repo->search($data);
+
+        return BaseOrganizationResource::collection($organizations);
     }
 
     /**

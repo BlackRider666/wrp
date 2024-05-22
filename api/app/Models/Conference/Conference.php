@@ -9,6 +9,7 @@ use App\Models\Conference\EditorialBoard\EditorialBoard;
 use App\Models\Conference\OrganizationalCommittee\OrganizationalCommittee;
 use App\Models\Country\City\City;
 use App\Models\Country\Country;
+use App\Models\Organization\Organization;
 use App\Models\Organizer\Organizer;
 use App\Models\User\User;
 use BlackParadise\LaravelAdmin\Core\PathManager;
@@ -22,6 +23,7 @@ class Conference extends Model
 {
     use BelongsToThrough;
     public const PDF_FILE_PATH = 'conference_files';
+
     protected $table = 'conferences';
 
     protected $fillable = [
@@ -67,6 +69,10 @@ class Conference extends Model
             ->using(ConferenceOrganizer::class);
     }
 
+    public function organizations(): BelongsToMany
+    {
+        return $this->belongsToMany(Organization::class,'organization_conference');
+    }
     /**
      * @return BelongsToMany
      */

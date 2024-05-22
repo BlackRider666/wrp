@@ -8,12 +8,19 @@ use App\Models\Organization\Organization;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Spatie\Translatable\HasTranslations;
 
 class Country extends Model
 {
+    use HasTranslations;
+
     protected $table = 'countries';
 
     protected $fillable = [
+        'name',
+    ];
+
+    public $translatable = [
         'name',
     ];
 

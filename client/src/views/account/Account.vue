@@ -91,7 +91,7 @@
                     <v-select
                         v-model="user.country_id"
                         :items="countries"
-                        item-title="name"
+                        :item-title="`name[${locale.iso_code}]`"
                         item-value="id"
                         :label="$t('placeholder.country','Country')"
                         prepend-inner-icon="mdi-database-search"
@@ -100,7 +100,7 @@
                     <v-select
                         v-model="user.city_id"
                         :items="cities"
-                        item-title="name"
+                        :item-title="`name[${locale.iso_code}]`"
                         item-value="id"
                         :label="$t('placeholder.city','City')"
                         prepend-inner-icon="mdi-database-search"

@@ -147,15 +147,20 @@ const router = createRouter({
                     name: 'organization',
                     component: () => import('../views/organizations/Show.vue'),
                 },
-                // {
-                //     path: '/organizations/:organization_id/edit',
-                //     name: 'organization-edit',
-                //     component: () => import('../views/organizations/Edit.vue'),
-                // },
+                {
+                    path: '/organizations/:organization_id/edit',
+                    name: 'organization-edit',
+                    component: () => import('../views/organizations/Edit.vue'),
+                },
                 {
                     path: '/news',
                     name: 'news',
                     component: () => import('../views/news/Index.vue'),
+                },
+                {
+                    path: '/rules-and-conditions',
+                    name: 'rules',
+                    component: () => import('../views/support/Rules.vue'),
                 },
             ],
         },

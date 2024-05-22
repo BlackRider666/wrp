@@ -18,5 +18,17 @@ export const usePageStore = defineStore('page',{
                     })
             }))
         },
+        downloadRulesAndCondition() {
+            return new Promise(((resolve, reject) => {
+                axios.get('rules-and-condition')
+                    .then(res => {
+                        this.page = res.data.page;
+                        resolve(res.data.page)
+                    })
+                    .catch(errors => {
+                        reject(errors.response.data)
+                    })
+            }))
+        },
     }
 })

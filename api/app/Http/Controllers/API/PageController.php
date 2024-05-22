@@ -15,4 +15,12 @@ class PageController extends Controller
             'page' => Page::where('key','contacts')->first(),
         ]);
     }
+
+    public function rules()
+    {
+        return new JsonResponse([
+            'page' => Page::where('key','rules')->first(),
+        ]);
+
+    }
 }

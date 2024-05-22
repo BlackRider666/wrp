@@ -2,6 +2,7 @@
 
 namespace App\Models\Organization;
 
+use App\Models\Conference\Conference;
 use App\Models\Country\City\City;
 use App\Models\Country\Country;
 use App\Models\Organization\StructuralUnit\StructuralUnit;
@@ -119,5 +120,13 @@ class Organization extends Model
     public function getCodePlatformAttribute(): string
     {
         return str_pad($this->id, 6, '0', STR_PAD_LEFT);
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+    public function conferences(): BelongsToMany
+    {
+        return $this->belongsToMany(Conference::class,'organization_conference');
     }
 }

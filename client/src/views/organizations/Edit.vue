@@ -4,37 +4,24 @@
       <v-card flat v-if="organization">
         <v-card-title>
           <v-toolbar dense color="primary" class="white--text">
-            <span class="flex-fill">Edit {{organization.name}}</span>
-            <v-btn icon color="white" @click="openStaffDialog()"><v-icon>mdi-account-group</v-icon></v-btn>
-            <v-btn icon color="white" @click="openAddItem(null)"><v-icon>mdi-plus</v-icon></v-btn>
+            <span class="flex-fill ml-2">Edit {{organization.name}}</span>
+            <v-btn icon="mdi-account-group" color="white" @click="openStaffDialog()" variant="text"></v-btn>
+            <v-btn icon="mdi-plus" variant="text" color="white" @click="openAddItem(null)"></v-btn>
           </v-toolbar>
         </v-card-title>
         <v-card-text>
           <v-row>
-            <v-col cols="3" v-for="unit in organization.units" :key="unit.id">
-              <v-card >
-                <v-card-text>
-                  <div class="d-flex justify-space-between align-center">
-                    <div class="text-body-1 flex-fill">{{ unit.name }}</div>
-                    <v-btn icon color="secondary" small v-if="unit.child.length > 0" @click="showUnit(unit.id)"><v-icon>mdi-chevron-down</v-icon></v-btn>
-                    <v-btn icon color="warning" small @click="openEditItem(unit)"><v-icon small>mdi-pencil</v-icon></v-btn>
-                    <v-btn icon color="primary" small @click="openAddItem(unit)"><v-icon>mdi-plus</v-icon></v-btn>
-                    <v-btn icon color="error" small @click="openDeleteItem(unit)"><v-icon>mdi-close</v-icon></v-btn>
-                  </div>
-                  <template v-if="unit.child.length > 0">
-                    <v-treeview :items="unit.child" item-children="child" v-if="checkShowUnit(unit)">
-                      <template v-slot:label="{item}">
-                        <div class="text-body-1 theme--light">{{ item.name }}</div>
-                      </template>
-                      <template v-slot:append="{item}">
-                        <v-btn icon color="warning" small @click="openEditItem(item)"><v-icon small>mdi-pencil</v-icon></v-btn>
-                        <v-btn icon color="primary" small @click="openAddItem(item)"><v-icon>mdi-plus</v-icon></v-btn>
-                        <v-btn icon color="error" small @click="openDeleteItem(item)"><v-icon>mdi-close</v-icon></v-btn>
-                      </template>
-                    </v-treeview>
-                  </template>
-                </v-card-text>
-              </v-card>
+            <v-col cols="12">
+              <v-list>
+                <template v-for="unit in organization.units" :key="unit.id">
+                  <units-row
+                      :unit="unit"
+                      :editItem="openEditItem"
+                      :add-item="openAddItem"
+                      :delete-item="openDeleteItem"
+                  ></units-row>
+                </template>
+              </v-list>
             </v-col>
           </v-row>
         </v-card-text>
@@ -66,15 +53,19 @@
 </template>
 
 <script>
-import {mapState} from "vuex";
-import DeleteDialog from "@/components/organizations/units/DeleteDialog";
-import CreateDialog from "@/components/organizations/units/CreateDialog";
-import EditDialog from "@/components/organizations/units/EditDialog";
-import StaffDialog from "@/components/organizations/staff/StaffDialog";
+import {mapActions, mapState} from "pinia";
+import DeleteDialog from "@/components/organizations/units/DeleteDialog.vue";
+import CreateDialog from "@/components/organizations/units/CreateDialog.vue";
+import EditDialog from "@/components/organizations/units/EditDialog.vue";
+import StaffDialog from "@/components/organizations/staff/StaffDialog.vue";
+import {useOrganizationStore} from "../../stores/organization";
+import {useUserStore} from "../../stores/user";
+import UnitsRow from "../../components/organizations/UnitsRow.vue";
 
 export default {
   name: "Edit",
   components: {
+    UnitsRow,
     CreateDialog,
     EditDialog,
     DeleteDialog,
@@ -90,51 +81,48 @@ export default {
       selectedItem: null,
       unitTypes: [
         {
-          text:'ESI',
+          title:'ESI',
           value:'esi',
         },
         {
-          text:'Faculty',
+          title:'Faculty',
           value:'faculty',
         },
         {
-          text:'Cathedra',
+          title:'Cathedra',
           value:'cathedra',
         },
         {
-          text:'SRI',
+          title:'SRI',
           value:'sri',
         },
         {
-          text:'Institute',
+          title:'Institute',
           value:'institute',
         },
         {
-          text:'Structure unit',
+          title:'Structure unit',
           value:'unit',
         },
         {
-          text:'Section',
+          title:'Section',
           value:'section',
         },
         {
-          text:'Department',
+          title:'Department',
           value:'department',
         },
       ],
     }
   },
   computed: {
-    ...mapState({
-      organization: (state) => state.organization.organization,
-      structureUnits: (state) => state.organization.structureUnits,
-      users: (state) => state.user.users,
-    })
+    ...mapState(useOrganizationStore,['organization','structureUnits']),
+    ...mapState(useUserStore,['users'])
   },
   mounted() {
-    this.$store.dispatch('organization/editOrganization', this.$route.params.organization_id);
-    this.$store.dispatch('organization/downloadStructureUnits', this.$route.params.organization_id);
-    this.$store.dispatch('user/downloadStaff', this.$route.params.organization_id);
+    this.editOrganization(this.$route.params.organization_id);
+    this.downloadStructureUnits(this.$route.params.organization_id);
+    this.downloadStaff(this.$route.params.organization_id);
   },
   methods: {
     checkShowUnit(unit) {
@@ -165,7 +153,7 @@ export default {
     },
     closeDeleteItem() {
       this.selectedItem = null;
-      this.$store.dispatch('organization/downloadStructureUnits', this.$route.params.organization_id);
+      this.downloadStructureUnits(this.$route.params.organization_id);
       this.deleteDialog = false;
     },
     openStaffDialog() {
@@ -173,7 +161,9 @@ export default {
     },
     closeStaffDialog() {
       this.staffDialog = false;
-    }
+    },
+    ...mapActions(useOrganizationStore,['editOrganization','downloadStructureUnits']),
+    ...mapActions(useUserStore,['downloadStaff'])
   }
 }
 </script>

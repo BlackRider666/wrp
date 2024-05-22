@@ -17,7 +17,7 @@ class Cities extends BPModel
             'required' => true,
         ],
         'name' => [
-            'type' => 'string',
+            'type' => 'translatable',
             'required' => true,
         ],
     ];

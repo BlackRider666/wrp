@@ -19,8 +19,10 @@ class UpdateConferenceRequest extends FormRequest
             'date'      =>  'required|date',
             'city_id'   =>  'required|int|exists:cities,id',
             'file'      =>  'nullable|sometimes|file|mimes:pdf',
-            'organizers' => 'required|array',
-            'organizers.*' => 'required|int|exists:organizers,id',
+            'organizers' => 'required_without:organizations|array',
+            'organizers.*' => 'required_without:organizations|int|exists:organizers,id',
+            'organizations' => 'required_without:organizers|array',
+            'organizations.*' => 'required_without:organizers|int|exists:organization,id',
         ];
     }
 

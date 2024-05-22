@@ -8,7 +8,11 @@
         cover
     >
     </v-img>
-    <v-card-title :title="n.title" class="text-body-1">{{n.title.length > 106 ? n.title.substring(0,103)+'...':n.title }}</v-card-title>
+    <v-card-title class="text-body-1">
+      <template v-if="n.title[locale.iso_code]">
+        {{n.title[locale.iso_code].length > 106 ? n.title[locale.iso_code].substring(0,103)+'...':n.title[locale.iso_code] }}
+      </template>
+    </v-card-title>
     <!--                      <v-card-subtitle class="pb-0">-->
     <!--                        {{ n.tag }}-->
     <!--                      </v-card-subtitle>-->
@@ -29,9 +33,15 @@
 </template>
 
 <script>
+import {mapState} from "pinia";
+import {useLocalesStore} from "../../stores/l10s";
+
 export default {
   name: "NewsItem",
   props:[ 'n'],
+  computed: {
+    ...mapState(useLocalesStore,['locale'])
+  },
 }
 </script>
 

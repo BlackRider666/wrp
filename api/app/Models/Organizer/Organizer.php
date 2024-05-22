@@ -26,7 +26,7 @@ class Organizer extends Model
     public function getLogoUrlAttribute(): string
     {
         return $this->logo ?
-            (new PathManager())->getFile($this->logo, 'organizers')
+            (new PathManager())->getFile($this->logo, 'organizers/logo')
             :
             (new PathManager())->getDefaultPicture();
     }

@@ -22,7 +22,7 @@ export const useConferenceStore = defineStore('conference',{
                 axios.get(`conference?${search}`)
                     .then(res => {
                         this.conferences = res.data.data;
-                        this.total = res.data.total;
+                        this.total = res.data.meta.total;
                         resolve(res.data)
                     })
                     .catch(errors => {
@@ -34,7 +34,7 @@ export const useConferenceStore = defineStore('conference',{
             return new Promise(((resolve, reject) => {
                 axios.post('conference', payload)
                     .then(res => {
-                        this.conferences.push(res.data.conference);
+                        this.conferences.push(res.data.data);
                         this.total += 1;
                         resolve(res.data.conference)
                     })
@@ -47,7 +47,7 @@ export const useConferenceStore = defineStore('conference',{
             return new Promise(((resolve, reject) => {
                 axios.post('conference/'+payload.id, payload)
                     .then(res => {
-                        this.UPDATE_CONFERENCE(res.data.conference);
+                        this.UPDATE_CONFERENCE(res.data.data);
                         resolve(res.data.conference)
                     })
                     .catch(errors => {

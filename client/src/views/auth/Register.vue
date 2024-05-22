@@ -196,7 +196,7 @@
       <v-card-text v-else>
         <v-checkbox v-model="registerContractSuccess">
           <template v-slot:label>
-          {{$t('btn.register-agree', 'By registering I agree to the')}} <router-link :to="{name:'dashboard'}" class="auth__contract-link">{{$t('link.register-contract', 'contract, rules, and conditions of use of the WRP platform')}}</router-link>
+          {{$t('btn.register-agree', 'By registering I agree to the')}} <router-link :to="{name:'rules'}" class="auth__contract-link" target="_blank">{{$t('link.register-contract', 'contract, rules, and conditions of use of the WRP platform')}}</router-link>
         </template>
         </v-checkbox>
         <v-btn color="primary" :disabled="!registerContractSuccess" block @click="verifyRegister">{{$t('btn.register', 'Register')}}</v-btn>

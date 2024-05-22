@@ -14,20 +14,22 @@
                 <v-select
                     v-model="newItem.country_id"
                     :items="countries"
-                    item-title="name"
+                    :item-title="`name[${locale.iso_code}]`"
                     item-value="id"
                     :label="$t('conference.placeholder.country','Country')"
                     prepend-inner-icon="mdi-database-search"
                     variant="outlined"
+                    :rules="[rules.required]"
                 ></v-select>
                 <v-select
                     v-model="newItem.city_id"
                     :items="cities"
-                    item-title="name"
+                    :item-title="`name[${locale.iso_code}]`"
                     item-value="id"
                     :label="$t('conference.placeholder.city','City')"
                     prepend-inner-icon="mdi-database-search"
                     variant="outlined"
+                    :rules="[rules.required]"
                 ></v-select>
                 <v-text-field
                     v-model="newItem.title"
@@ -52,6 +54,7 @@
                         readonly
                         v-bind="props"
                         variant="outlined"
+                        :rules="[rules.required]"
                     />
                   </template>
                   <v-date-picker
@@ -73,6 +76,18 @@
                     :label="$t('conference.placeholder.organizers','Organizers')"
                     prepend-inner-icon="mdi-database-search"
                     variant="outlined"
+                    :rules="[rules.requiredOneOf]"
+                ></v-select>
+                <v-select
+                    multiple
+                    v-model="newItem.organizations"
+                    :items="organizations"
+                    :item-title="`name[${locale.iso_code}]`"
+                    item-value="id"
+                    :label="$t('conference.placeholder.organizations','Organizations')"
+                    prepend-inner-icon="mdi-database-search"
+                    variant="outlined"
+                    :rules="[rules.requiredOneOf]"
                 ></v-select>
                 <v-file-input
                     accept="application/pdf"
@@ -81,6 +96,7 @@
                     prepend-icon=""
                     prepend-inner-icon="mdi-file"
                     variant="outlined"
+                    :rules="[rules.requiredFile]"
                 />
             </v-card-text>
             <v-card-actions>
@@ -101,6 +117,8 @@ import {useCountryStore} from "@/stores/country";
 import {useCityStore} from "@/stores/city";
 import {useOrganizerStore} from "@/stores/organizer";
 import {useConferenceStore} from "@/stores/conference";
+import {useLocalesStore} from "@/stores/l10s";
+import {useOrganizationStore} from "@/stores/organization";
 
 export default {
   name: "Create",
@@ -112,9 +130,14 @@ export default {
         title:'',
         date: null,
         organizers:[],
+        organizations:[],
       },
       rules: {
         required: value => !!value || 'Required.',
+        requiredOneOf: () => {
+          return (this.newItem.organizations.length > 0 || this.newItem.organizers.length > 0) || 'Organizations or Organizers required.';
+        },
+        requiredFile: value => (value !== null && value !== '' && value.length > 0) || 'You must select a file.'
       },
       menuDate: false,
       pdf: null,
@@ -124,44 +147,54 @@ export default {
     ...mapState(useCountryStore,['countries']),
     ...mapState(useCityStore,['cities']),
     ...mapState(useOrganizerStore,['organizers']),
+    ...mapState(useLocalesStore,['locale']),
+    ...mapState(useOrganizationStore,['organizations']),
     formatedDate() {
       return this.newItem.date ? new Date(this.newItem.date).toLocaleDateString('uk') : '';
     }
   },
   created() {
     this.downloadCountries();
-    this.downloadOrganizers();
+    this.downloadOrganizers({perPage:-1});
+    this.downloadOrganizations({perPage:-1});
   },
   methods: {
     createItemConfirm: function (e) {
       e.preventDefault();
       e.stopPropagation();
-      if (!this.$refs.createConferenceForm.validate()) return;
       this.$loading();
-      let form = new FormData();
-      if (this.pdf) {
-        form.append('file', this.pdf);
-      }
-      form.append('country_id', this.newItem.country_id);
-      form.append('city_id', this.newItem.city_id);
-      form.append('title', this.newItem.title);
-      form.append('date', this.formatedDate);
-      this.newItem.organizers.forEach((value,key) => form.append(`organizers[${key}]`, value));
-      this.createConference(form)
-          .then(() => {
-            this.$loadingClose();
-            this.$notify('', 'success', this.$t('messages.success', 'Success'));
-            this.$router.push({name:'Conferences'})
-          })
-          .catch(() => {
-            this.$loadingClose();
-            this.$notify('', 'error', this.$t('messages.error', 'Error'));
-          });
+      this.$refs.createConferenceForm.validate().then((valid) => {
+        if (!valid.valid) {
+          this.$loadingClose();
+          return;
+        }
+        let form = new FormData();
+        if (this.pdf) {
+          form.append('file', this.pdf);
+        }
+        form.append('country_id', this.newItem.country_id);
+        form.append('city_id', this.newItem.city_id);
+        form.append('title', this.newItem.title);
+        form.append('date', this.formatedDate);
+        this.newItem.organizers.forEach((value, key) => form.append(`organizers[${key}]`, value));
+        this.newItem.organizations.forEach((value, key) => form.append(`organizations[${key}]`, value));
+        this.createConference(form)
+            .then(() => {
+              this.$loadingClose();
+              this.$notify('', 'success', this.$t('messages.success', 'Success'));
+              this.$router.push({name: 'Conferences'})
+            })
+            .catch(() => {
+              this.$loadingClose();
+              this.$notify('', 'error', this.$t('messages.error', 'Error'));
+            });
+      })
     },
     ...mapActions(useConferenceStore,['createConference']),
     ...mapActions(useCountryStore,['downloadCountries']),
     ...mapActions(useCityStore,['downloadCities']),
     ...mapActions(useOrganizerStore,['downloadOrganizers']),
+    ...mapActions(useOrganizationStore,['downloadOrganizations']),
   },
   watch: {
     'newItem.country_id': {

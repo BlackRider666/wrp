@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
     <v-col cols="12">
-      <v-card>
+      <v-card flat>
         <v-card-text>
           <v-data-table-server
               :headers="headers"

@@ -8,6 +8,7 @@ use App\Models\Organization\Organization;
 use BlackParadise\LaravelAdmin\Core\CoreRepo;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use RuntimeException;
 
@@ -20,15 +21,18 @@ class OrganizationRepo extends CoreRepo
 
     /**
      * @param array $data
-     * @return LengthAwarePaginator
+     * @return LengthAwarePaginator|Builder[]|Collection|Model[]
      */
-    public function search(array $data): LengthAwarePaginator
+    public function search(array $data): array|Collection|LengthAwarePaginator
     {
         $perPage = array_key_exists('perPage',$data)?$data['perPage']:10;
         $query = $this->query();
         $query->with(['country','city']);
+        if ((int)$perPage !== -1 ) {
+            return $query->paginate($perPage);
+        }
 
-        return $query->paginate($perPage);
+        return $query->get();
     }
 
     /**

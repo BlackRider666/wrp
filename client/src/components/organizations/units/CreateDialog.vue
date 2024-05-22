@@ -1,11 +1,11 @@
 <template>
   <v-dialog
-      :value="createDialog"
-      @input="closeDialog"
+      :model-value="createDialog"
+      @update:model-value="closeDialog"
       max-width="600"
       persistent
   >
-    <v-form @submit.prevent="createItem">
+    <v-form ref="createDialogForm" @submit.prevent="createItem">
       <v-card>
         <v-card-title class="text-h5">
           Create unit
@@ -14,23 +14,23 @@
           <v-text-field
               v-model="form.name"
               :label="$t('units.placeholder.name','Name')"
-              outlined
+              variant="outlined"
               prepend-inner-icon="mdi-card-text-outline"
               :rules="[rules.required]"
           />
           <v-select
               v-model="form.parent_id"
               :label="$t('units.placeholder.parent_id','Parent')"
-              outlined
+              variant="outlined"
               prepend-inner-icon="mdi-shape-outline"
               :items="structureUnits"
-              item-text="name"
+              item-title="name"
               item-value="id"
           ></v-select>
           <v-select
               v-model="form.type"
               :label="$t('units.placeholder.type','Type')"
-              outlined
+              variant="outlined"
               prepend-inner-icon="mdi-shape-outline"
               :rules="[rules.required]"
               :items="unitTypes"
@@ -38,19 +38,19 @@
         </v-card-text>
         <v-card-actions>
           <v-btn
-              color="green darken-1"
-              text
-              type="submit"
-          >
-            Create
-          </v-btn>
-          <v-spacer/>
-          <v-btn
               color="darken-1"
-              text
+              variant="text"
               @click="closeDialog"
           >
             Cancel
+          </v-btn>
+          <v-spacer/>
+          <v-btn
+              color="success"
+              variant="text"
+              type="submit"
+          >
+            Create
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -59,6 +59,9 @@
 </template>
 
 <script>
+import {mapActions} from "pinia";
+import {useOrganizationStore} from "../../../stores/organization";
+
 export default {
   name: "CreateDialog",
   props: {
@@ -87,7 +90,7 @@ export default {
         organization_id: this.$props.organization_id,
         parent_id: this.$props.parent_id,
         name: '',
-        type:'',
+        type:null,
       },
       rules: {
         required: value => !!value || 'Required.',
@@ -95,13 +98,31 @@ export default {
     };
   },
   methods: {
-    createItem() {
-      this.$store.dispatch('organization/createStructureUnit',this.form);
-      this.$emit('closeDialog');
+    createItem(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      this.$loading();
+      this.$refs.createDialogForm.validate().then(valid => {
+        if (!valid.valid) {
+          this.$loadingClose();
+          return;
+        }
+        this.createStructureUnit(this.form)
+            .then(() => {
+              this.$loadingClose();
+              this.$notify('', 'success', this.$t('messages.success', 'Success'));
+              this.closeDialog();
+            })
+            .catch(() => {
+              this.$loadingClose();
+              this.$notify('', 'error', this.$t('messages.error', 'Error'));
+            });
+      })
     },
     closeDialog() {
       this.$emit('closeDialog');
-    }
+    },
+    ...mapActions(useOrganizationStore,['createStructureUnit']),
   },
   watch: {
     createDialog() {
