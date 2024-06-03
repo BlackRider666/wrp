@@ -38,4 +38,8 @@ class LocaleKeys extends BPModel
         'locale.name',
         'value'
     ];
+
+    public array $searchFields = [
+        'value'
+    ];
 }

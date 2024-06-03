@@ -11,20 +11,37 @@
           Create unit
         </v-card-title>
         <v-card-text>
-          <v-text-field
-              v-model="form.name"
-              :label="$t('units.placeholder.name','Name')"
-              variant="outlined"
-              prepend-inner-icon="mdi-card-text-outline"
-              :rules="[rules.required]"
-          />
+          <v-tabs v-model="activeTitleTab" align-tabs="end" class="pb-1" selected-class="text-primary">
+            <v-tab key="en">English</v-tab>
+            <v-tab key="uk">Українська</v-tab>
+          </v-tabs>
+          <v-window v-model="activeTitleTab" class="pt-2">
+            <v-window-item key="en">
+              <v-text-field
+                  v-model="form.name.en"
+                  :label="$t('units.placeholder.name','Name')"
+                  variant="outlined"
+                  prepend-inner-icon="mdi-card-text-outline"
+                  :rules="[rules.required]"
+              />
+            </v-window-item>
+            <v-window-item key="uk">
+              <v-text-field
+                  v-model="form.name.uk"
+                  :label="$t('units.placeholder.name','Name')"
+                  variant="outlined"
+                  prepend-inner-icon="mdi-card-text-outline"
+                  :rules="[rules.required]"
+              />
+            </v-window-item>
+          </v-window>
           <v-select
               v-model="form.parent_id"
               :label="$t('units.placeholder.parent_id','Parent')"
               variant="outlined"
               prepend-inner-icon="mdi-shape-outline"
               :items="structureUnits"
-              item-title="name"
+              :item-title="`name[${locale.iso_code}]`"
               item-value="id"
           ></v-select>
           <v-select
@@ -59,8 +76,9 @@
 </template>
 
 <script>
-import {mapActions} from "pinia";
+import {mapActions, mapState} from "pinia";
 import {useOrganizationStore} from "../../../stores/organization";
+import {useLocalesStore} from "../../../stores/l10s";
 
 export default {
   name: "CreateDialog",
@@ -89,13 +107,20 @@ export default {
       form: {
         organization_id: this.$props.organization_id,
         parent_id: this.$props.parent_id,
-        name: '',
+        name: {
+          en:'',
+          uk:'',
+        },
         type:null,
       },
       rules: {
         required: value => !!value || 'Required.',
       },
+      activeTitleTab: 'en',
     };
+  },
+  computed: {
+    ...mapState(useLocalesStore,['locale'])
   },
   methods: {
     createItem(e) {
@@ -113,9 +138,10 @@ export default {
               this.$notify('', 'success', this.$t('messages.success', 'Success'));
               this.closeDialog();
             })
-            .catch(() => {
+            .catch((error) => {
+              console.log(error)
               this.$loadingClose();
-              this.$notify('', 'error', this.$t('messages.error', 'Error'));
+              this.$notify('', 'error', error.response.data.message);
             });
       })
     },

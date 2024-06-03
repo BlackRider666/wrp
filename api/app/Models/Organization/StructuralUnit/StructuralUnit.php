@@ -7,9 +7,12 @@ use App\Models\User\Work\Work;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\Translatable\HasTranslations;
 
 class StructuralUnit extends Model
 {
+    use HasTranslations;
+
     protected $table = 'structural_units';
 
     protected $fillable = [
@@ -21,6 +24,10 @@ class StructuralUnit extends Model
 
     protected $appends = [
         'organization_title',
+    ];
+
+    public $translatable = [
+        'name'
     ];
     /**
      * @return BelongsTo
@@ -40,7 +47,7 @@ class StructuralUnit extends Model
 
     public function getOrganizationTitleAttribute()
     {
-        return $this->organization->name;
+        return $this->organization?$this->organization->name:'';
     }
 
     /**

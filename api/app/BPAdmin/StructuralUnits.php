@@ -12,7 +12,7 @@ class StructuralUnits extends BPModel
 
     public array $fieldTypes = [
         'name' => [
-            'type' => 'string',
+            'type' => 'translatable',
             'required' => true,
         ],
         'organization_id' => [

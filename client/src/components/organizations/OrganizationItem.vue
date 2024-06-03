@@ -29,28 +29,10 @@
                   <div class="text-caption">К-ть</div>
                 </v-list-item-title>
               </v-list-item>
-              <v-list-item class="px-0">
+              <v-list-item class="px-0" v-for="(item,key) in org.indexes" :key="key">
                 <v-list-item-title class="justify-space-between text-body-1 d-flex">
-                  <span class="text-body-1">Faculty</span>
-                  <span class="text-body-1">24</span>
-                </v-list-item-title>
-              </v-list-item>
-              <v-list-item class="px-0">
-                <v-list-item-title class="justify-space-between text-body-1 d-flex">
-                  <span class="text-body-1">Faculty</span>
-                  <span class="text-body-1">24</span>
-                </v-list-item-title>
-              </v-list-item>
-              <v-list-item class="px-0">
-                <v-list-item-title class="justify-space-between text-body-1 d-flex">
-                  <span class="text-body-1">Faculty</span>
-                  <span class="text-body-1">24</span>
-                </v-list-item-title>
-              </v-list-item>
-              <v-list-item class="px-0">
-                <v-list-item-title class="justify-space-between text-body-1 d-flex">
-                  <span class="text-body-1">Faculty</span>
-                  <span class="text-body-1">24</span>
+                  <span>{{$t('organization.type.' + key,key.toUpperCase())}}</span>
+                  <span>{{item}}</span>
                 </v-list-item-title>
               </v-list-item>
             </v-list>
@@ -86,28 +68,10 @@
                   <div>К-ть</div>
                 </v-list-item-title>
               </v-list-item>
-              <v-list-item>
+              <v-list-item v-for="(item,key) in org.indexes" :key="key">
                 <v-list-item-title class="justify-space-between text-body-1 d-flex">
-                  <span>Faculty</span>
-                  <span>24</span>
-                </v-list-item-title>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-title class="justify-space-between text-body-1 d-flex">
-                  <span>Faculty</span>
-                  <span>24</span>
-                </v-list-item-title>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-title class="justify-space-between text-body-1 d-flex">
-                  <span>Faculty</span>
-                  <span>24</span>
-                </v-list-item-title>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-title class="justify-space-between text-body-1 d-flex">
-                  <span>Faculty</span>
-                  <span>24</span>
+                  <span>{{$t('organization.type.' + key,key.toUpperCase())}}</span>
+                  <span>{{item}}</span>
                 </v-list-item-title>
               </v-list-item>
             </v-list>

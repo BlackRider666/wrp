@@ -4,7 +4,7 @@
       <v-card flat v-if="organization">
         <v-card-title>
           <v-toolbar dense color="primary" class="white--text">
-            <span class="flex-fill ml-2">Edit {{organization.name}}</span>
+            <span class="flex-fill ml-2">Edit {{organization.name[locale.iso_code]}}</span>
             <v-btn icon="mdi-account-group" color="white" @click="openStaffDialog()" variant="text"></v-btn>
             <v-btn icon="mdi-plus" variant="text" color="white" @click="openAddItem(null)"></v-btn>
           </v-toolbar>
@@ -61,6 +61,7 @@ import StaffDialog from "@/components/organizations/staff/StaffDialog.vue";
 import {useOrganizationStore} from "../../stores/organization";
 import {useUserStore} from "../../stores/user";
 import UnitsRow from "../../components/organizations/UnitsRow.vue";
+import {useLocalesStore} from "../../stores/l10s";
 
 export default {
   name: "Edit",
@@ -117,7 +118,8 @@ export default {
   },
   computed: {
     ...mapState(useOrganizationStore,['organization','structureUnits']),
-    ...mapState(useUserStore,['users'])
+    ...mapState(useUserStore,['users']),
+    ...mapState(useLocalesStore,['locale']),
   },
   mounted() {
     this.editOrganization(this.$route.params.organization_id);

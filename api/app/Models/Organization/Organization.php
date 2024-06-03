@@ -42,6 +42,7 @@ class Organization extends Model
     protected $appends = [
         'img_url',
         'code_platform',
+        'indexes'
     ];
 
     public $translatable = [
@@ -128,5 +129,10 @@ class Organization extends Model
     public function conferences(): BelongsToMany
     {
         return $this->belongsToMany(Conference::class,'organization_conference');
+    }
+
+    public function getIndexesAttribute(): array
+    {
+        return $this->unitsAll()->selectRaw('type, COUNT(*) as count')->groupBy('type')->pluck('count', 'type')->toArray();
     }
 }

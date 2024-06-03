@@ -1,7 +1,7 @@
 <template>
   <v-list-item :key="unit.id" variant="tonal" class="my-1">
       <div class="d-flex align-center">
-        <v-list-item-title class="flex-1-0">{{ unit.name }}</v-list-item-title>
+        <v-list-item-title class="flex-1-0">{{ unit.name[locale.iso_code] }}</v-list-item-title>
         <v-btn
             v-if="unit.child && unit.child.length"
             :icon="isOpen ? 'mdi-chevron-down' : 'mdi-chevron-right'"
@@ -30,6 +30,9 @@
 </template>
 
 <script>
+import {mapState} from "pinia";
+import {useLocalesStore} from "../../stores/l10s";
+
 export default {
   name: "UnitsRow",
   props: {
@@ -45,6 +48,9 @@ export default {
     return {
       isOpen: false,
     }
+  },
+  computed: {
+    ...mapState(useLocalesStore,['locale']),
   },
   methods: {
     toggle() {

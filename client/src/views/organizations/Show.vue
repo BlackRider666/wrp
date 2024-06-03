@@ -62,28 +62,10 @@
                       <div class="text-caption">К-ть</div>
                     </v-list-item-title>
                   </v-list-item>
-                  <v-list-item class="pa-0">
+                  <v-list-item class="px-0" v-for="(item,key) in organization.indexes" :key="key">
                     <v-list-item-title class="justify-space-between text-body-1 d-flex">
-                      <span class="text-body-1">Faculty</span>
-                      <span class="text-body-1">24</span>
-                    </v-list-item-title>
-                  </v-list-item>
-                  <v-list-item class="pa-0">
-                    <v-list-item-title class="justify-space-between text-body-1 d-flex">
-                      <span class="text-body-1">Faculty</span>
-                      <span class="text-body-1">24</span>
-                    </v-list-item-title>
-                  </v-list-item>
-                  <v-list-item class="pa-0">
-                    <v-list-item-title class="justify-space-between text-body-1 d-flex">
-                      <span class="text-body-1">Faculty</span>
-                      <span class="text-body-1">24</span>
-                    </v-list-item-title>
-                  </v-list-item>
-                  <v-list-item class="pa-0">
-                    <v-list-item-title class="justify-space-between text-body-1 d-flex">
-                      <span class="text-body-1">Faculty</span>
-                      <span class="text-body-1">24</span>
+                      <span>{{$t('organization.type.' + key,key.toUpperCase())}}</span>
+                      <span>{{item}}</span>
                     </v-list-item-title>
                   </v-list-item>
                 </v-list>
@@ -134,39 +116,10 @@
             <div class="text-body-1 mt-6" v-if="organization && organization.desc" v-html="organization.desc[locale.iso_code]"></div>
           </v-window-item>
           <v-window-item>
-            <div class="text-body-1 warning--text py-5">Оберіть структурну одиницю, щоб побачити тільки ті одиниці які їй належать</div>
-            <v-row justify="space-between" v-if="organization">
-              <v-col cols="4">
-                <div class="text-h5 font-weight-medium">
-                  <template v-for="(key, index) in unitTitles(organization.units)">
-                    {{$t('organization.type.' + key,key.toUpperCase())}}{{index < unitTitles(organization.units).length - 1 ? '/' : '' }}</template>
-                </div>
-              </v-col>
-              <v-col cols="4" class="d-flex justify-end">
-                <template v-for="key in unitTitles(organization.units)">
-                  <v-btn
-                    class="font-weight-bold"
-                    variant="text"
-                    color="secondary"
-                    :value="key"
-                  >{{$t('organization.type.' + key,key.toUpperCase())}}</v-btn>
-                </template>
-                <v-btn
-                  class="font-weight-bold"
-                  variant="text"
-                  value="all"
-                  color="primary"
-                >{{$t('organization.type.all','All')}}</v-btn>
-              </v-col>
-            </v-row>
-            <v-row v-if="organization">
-              <v-col cols="2" v-for="unit in organization.units" :key="unit.id">
-                <div class="d-flex flex-column align-center cursor-pointer" @click="selectUnit(unit)">
-                  <v-avatar justify-self="center" size="64" class="mb-2" color="primary">U</v-avatar>
-                  <span class="text-caption">{{unit.name}}</span>
-                </div>
-              </v-col>
-            </v-row>
+            <RecursiveItem
+                v-if="organization"
+                :units="organization.units"
+            />
           </v-window-item>
           <v-window-item>
             Contacts
@@ -193,9 +146,11 @@
 import {mapActions, mapState} from "pinia";
 import {useOrganizationStore} from "@/stores/organization";
 import {useLocalesStore} from "@/stores/l10s";
+import RecursiveItem from "./structuralUnit/RecursiveItem.vue";
 
 export default {
   name: "Show",
+  components: {RecursiveItem},
   data() {
     return {
         selectedItem: null,
@@ -210,16 +165,6 @@ export default {
     this.getOrganization(this.$route.params.organization_id);
   },
   methods: {
-    unitTitles(units) {
-      return units.map((item) => {
-        return item.type;
-      }).filter((value, index, array) => {
-        return array.indexOf(value) === index;
-      });
-    },
-    selectUnit(unit) {
-      this.selectedItem = unit;
-    },
     ...mapActions(useOrganizationStore,['getOrganization']),
   },
 }

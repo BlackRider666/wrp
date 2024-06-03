@@ -6,10 +6,10 @@
   >
     <v-card v-if="item">
       <v-card-title class="text-h5">
-        Delete {{item.name}}
+        Delete {{item.name[locale.iso_code]}}
       </v-card-title>
       <v-card-text>
-        You really want to delete {{item.name}} ?
+        You really want to delete {{item.name[locale.iso_code]}} ?
       </v-card-text>
       <v-card-actions>
         <v-btn
@@ -33,8 +33,9 @@
 </template>
 
 <script>
-import {mapActions} from "pinia";
+import {mapActions, mapState} from "pinia";
 import {useOrganizationStore} from "../../../stores/organization";
+import {useLocalesStore} from "../../../stores/l10s";
 
 export default {
   name: "DeleteDialog",
@@ -47,6 +48,9 @@ export default {
       type: Object,
       default: null,
     }
+  },
+  computed: {
+    ...mapState(useLocalesStore,['locale'])
   },
   methods: {
     deleteItem(item) {

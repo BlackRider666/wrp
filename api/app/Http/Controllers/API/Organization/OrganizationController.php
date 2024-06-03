@@ -42,11 +42,19 @@ class OrganizationController extends Controller
      */
     public function show(int $id): JsonResponse
     {
-        if (!$organization = $this->repo->findWith($id, ['country','city','staff','user', 'units', 'units.child',])) {
+        if (!$organization = $this->repo->findWith($id, [
+            'country',
+            'city',
+            'staff',
+            'user',
+            'units',
+            'units.child',
+            ])) {
             return new JsonResponse([
                 'message'   =>  'Not Found!'
             ],404);
         }
+
         return new JsonResponse([
             'organization'   =>  $organization,
         ]);

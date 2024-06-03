@@ -11,13 +11,30 @@
           Update unit
         </v-card-title>
         <v-card-text>
-          <v-text-field
-              v-model="form.name"
-              :label="$t('units.placeholder.name','Name')"
-              variant="outlined"
-              prepend-inner-icon="mdi-card-text-outline"
-              :rules="[rules.required]"
-          />
+          <v-tabs v-model="activeTitleTab" align-tabs="end" class="pb-1" selected-class="text-primary">
+            <v-tab key="en">English</v-tab>
+            <v-tab key="uk">Українська</v-tab>
+          </v-tabs>
+          <v-window v-model="activeTitleTab" class="pt-2">
+            <v-window-item key="en">
+              <v-text-field
+                  v-model="form.name.en"
+                  :label="$t('units.placeholder.name','Name')"
+                  variant="outlined"
+                  prepend-inner-icon="mdi-card-text-outline"
+                  :rules="[rules.required]"
+              />
+            </v-window-item>
+            <v-window-item key="uk">
+              <v-text-field
+                  v-model="form.name.uk"
+                  :label="$t('units.placeholder.name','Name')"
+                  variant="outlined"
+                  prepend-inner-icon="mdi-card-text-outline"
+                  :rules="[rules.required]"
+              />
+            </v-window-item>
+          </v-window>
           <v-select
               v-model="form.parent_id"
               :label="$t('units.placeholder.parent_id','Parent')"
@@ -85,12 +102,16 @@ export default {
       form: {
         organization_id: '',
         parent_id: '',
-        name: '',
+        name: {
+          en:'',
+          uk:'',
+        },
         type:'',
       },
       rules: {
         required: value => !!value || 'Required.',
       },
+      activeTitleTab:'en',
     };
   },
   computed: {

@@ -21,6 +21,7 @@ class BaseOrganizationResource extends JsonResource
             'country' => $this->country,
             'city'    => $this->city,
             'rate'    => $this->rate,
+            'indexes' => $this->indexes,
         ];
     }
 }
