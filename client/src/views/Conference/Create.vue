@@ -31,13 +31,30 @@
                     variant="outlined"
                     :rules="[rules.required]"
                 ></v-select>
-                <v-text-field
-                    v-model="newItem.title"
-                    :label="$t('conference.placeholder.title','Title')"
-                    variant="outlined"
-                    prepend-inner-icon="mdi-card-text-outline"
-                    :rules="[rules.required]"
-                />
+                <v-tabs v-model="activeTitleTab" align-tabs="end" class="pb-1" selected-class="text-primary">
+                  <v-tab key="en">English</v-tab>
+                  <v-tab key="uk">Українська</v-tab>
+                </v-tabs>
+                <v-window v-model="activeTitleTab" class="pt-2">
+                  <v-window-item key="en">
+                    <v-text-field
+                        v-model="newItem.title.en"
+                        :label="$t('conference.placeholder.title','Title')"
+                        variant="outlined"
+                        prepend-inner-icon="mdi-card-text-outline"
+                        :rules="[rules.required]"
+                    />
+                  </v-window-item>
+                  <v-window-item key="uk">
+                    <v-text-field
+                        v-model="newItem.title.uk"
+                        :label="$t('conference.placeholder.title','Title')"
+                        variant="outlined"
+                        prepend-inner-icon="mdi-card-text-outline"
+                        :rules="[rules.required]"
+                    />
+                  </v-window-item>
+                </v-window>
                 <v-menu ref="menu"
                         v-model="menuDate"
                         :close-on-content-click="false"
@@ -127,7 +144,10 @@ export default {
       newItem: {
         country_id: null,
         city_id:null,
-        title:'',
+        title: {
+          en: '',
+          uk: '',
+        },
         date: null,
         organizers:[],
         organizations:[],
@@ -141,6 +161,7 @@ export default {
       },
       menuDate: false,
       pdf: null,
+      activeTitleTab: 'en',
     };
   },
   computed: {
@@ -174,7 +195,8 @@ export default {
         }
         form.append('country_id', this.newItem.country_id);
         form.append('city_id', this.newItem.city_id);
-        form.append('title', this.newItem.title);
+        form.append('title[en]', this.newItem.title.en);
+        form.append('title[uk]', this.newItem.title.uk);
         form.append('date', this.formatedDate);
         this.newItem.organizers.forEach((value, key) => form.append(`organizers[${key}]`, value));
         this.newItem.organizations.forEach((value, key) => form.append(`organizations[${key}]`, value));

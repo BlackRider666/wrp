@@ -16,12 +16,13 @@ use BlackParadise\LaravelAdmin\Core\PathManager;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Spatie\Translatable\HasTranslations;
 use Znck\Eloquent\Relations\BelongsToThrough as BelongsToThroughZnck;
 use Znck\Eloquent\Traits\BelongsToThrough;
 
 class Conference extends Model
 {
-    use BelongsToThrough;
+    use BelongsToThrough, HasTranslations;
     public const PDF_FILE_PATH = 'conference_files';
 
     protected $table = 'conferences';
@@ -43,6 +44,10 @@ class Conference extends Model
     protected $casts = [
         'city_id' => 'integer',
         'date'    => 'date:d-m-Y',
+    ];
+
+    public $translatable = [
+        'title',
     ];
 
     /**

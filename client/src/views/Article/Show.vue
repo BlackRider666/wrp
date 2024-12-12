@@ -30,7 +30,7 @@
             <div class="d-inline-flex py-8">
               <div class="pr-12">
                 <div class="text-subtitle-2 pb-2">{{$t('articles.placeholder.city', 'City')}}, {{$t('articles.placeholder.country', 'Country')}}</div>
-                <div class="text-body-1">{{article.city.name}}, {{article.country.name}}</div>
+                <div class="text-body-1">{{article.city.name[locale.iso_code]}}, {{article.country.name[locale.iso_code]}}</div>
               </div>
               <div class="px-12">
                 <div class="text-subtitle-2  pb-2">{{$t('articles.placeholder.published_at', 'Published at')}}</div>

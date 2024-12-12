@@ -1,13 +1,18 @@
 <template>
   <v-col cols="12">
-    <v-toolbar dense dark :class="fillProject?'blink':''" color="primary"  class="pl-2">
+    <v-toolbar dense dark color="primary"  class="pl-2">
+<!--      <v-toolbar dense dark :class="fillProject?'blink':''" color="primary"  class="pl-2">-->
       {{$t('projects.title','Projects')}}
       <v-spacer/>
       <v-btn
           icon="mdi-plus"
           @click="openProjectCreate"
-          :class="fillProject?'blink':''"
       ></v-btn>
+<!--      <v-btn-->
+<!--          icon="mdi-plus"-->
+<!--          @click="openProjectCreate"-->
+<!--          :class="fillProject?'blink':''"-->
+<!--      ></v-btn>-->
       <v-btn :icon="projectsSheet?'mdi-chevron-up':'mdi-chevron-down'" @click="showProjectsSheet"></v-btn>
     </v-toolbar>
     <v-sheet v-if="projectsSheet" outlined>

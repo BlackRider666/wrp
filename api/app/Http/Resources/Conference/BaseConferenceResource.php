@@ -16,7 +16,7 @@ class BaseConferenceResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'title' => $this->title,
+            'title' => $this->getTranslations('title'),
             'date'  => $this->date->format('d-m-Y'),
         ];
     }

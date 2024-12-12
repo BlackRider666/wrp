@@ -9,7 +9,8 @@
         <v-card-text>
           <v-row>
             <v-col cols="6">
-              <v-toolbar dense dark color="primary" :class="fillCommon?'blink':''"  class="pl-2">
+              <v-toolbar dense dark color="primary" class="pl-2">
+<!--              <v-toolbar dense dark color="primary" :class="fillCommon?'blink':''"  class="pl-2">-->
                 {{$t('account.common-title','Common')}}
                 <v-spacer/>
                 <v-btn :icon="showCommon?'mdi-chevron-up':'mdi-chevron-down'" @click="showCommonSheet"></v-btn>
@@ -109,7 +110,8 @@
                   </v-card-text>
                   <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="primary" :class="fillCommon?'blink':''" type="submit">{{$t('btn.update','Update')}}</v-btn>
+                    <v-btn color="primary" type="submit">{{$t('btn.update','Update')}}</v-btn>
+<!--                    <v-btn color="primary" :class="fillCommon?'blink':''" type="submit">{{$t('btn.update','Update')}}</v-btn>-->
                   </v-card-actions>
                 </v-card>
                 </v-form>
@@ -118,12 +120,14 @@
             <v-col cols="6">
               <v-row>
                 <v-col cols="12">
-                  <v-toolbar dense dark :class="fillAvatar?'blink':''" color="primary"  class="pl-2">
+                  <v-toolbar dense dark color="primary"  class="pl-2">
+<!--                  <v-toolbar dense dark :class="fillAvatar?'blink':''" color="primary"  class="pl-2">-->
                     {{$t('avatar.title','Avatar')}}
                     <v-spacer/>
                     <v-btn icon @click="showAvatarSheet">
                       <v-icon v-if="showAvatar">mdi-chevron-up</v-icon>
-                      <v-icon v-else :class="fillAvatar?'blink':''">mdi-chevron-down</v-icon>
+                      <v-icon v-else>mdi-chevron-down</v-icon>
+<!--                      <v-icon v-else :class="fillAvatar?'blink':''">mdi-chevron-down</v-icon>-->
                     </v-btn>
                   </v-toolbar>
 
@@ -139,8 +143,12 @@
                         <v-avatar
                             size="128"
                             class="my-2"
-                            :class="fillAvatar?'blink':''"
                         >
+<!--                        <v-avatar-->
+<!--                            size="128"-->
+<!--                            class="my-2"-->
+<!--                            :class="fillAvatar?'blink':''"-->
+<!--                        >-->
                           <v-img :src="user.avatar_url" />
                         </v-avatar>
                         <v-file-input
@@ -157,7 +165,8 @@
                       </v-card-text>
                       <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="primary" :class="fillAvatar?'blink':''" type="submit">{{$t('btn.update','Update')}}</v-btn>
+                        <v-btn color="primary" type="submit">{{$t('btn.update','Update')}}</v-btn>
+<!--                        <v-btn color="primary" :class="fillAvatar?'blink':''" type="submit">{{$t('btn.update','Update')}}</v-btn>-->
                       </v-card-actions>
                     </v-card>
                     </v-form>

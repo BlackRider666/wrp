@@ -17,7 +17,7 @@
         <v-col :cols="detailed?6:12" class="pa-0">
           <v-card-title class="text-h6 organization__title" >
             <template v-if="org.name[locale.iso_code]">
-              {{org.name[locale.iso_code].length > 106 ? org.name[locale.iso_code].substring(0,103)+'...':org.name[locale.iso_code] }}
+              {{org.name[locale.iso_code].length > 60 ? org.name[locale.iso_code].substring(0,57)+'...':org.name[locale.iso_code] }}
             </template>
           </v-card-title>
 
@@ -110,7 +110,8 @@ export default {
   }
   &__title {
     hyphens: auto;
-    min-height: 48px;
+    min-height: 80px;
+    white-space: normal;
   }
   &__img.detailed{
     border-top-left-radius: 4px;

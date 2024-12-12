@@ -37,6 +37,9 @@
                 </v-card>
               </v-dialog>
             </template>
+            <template v-slot:item.title="{ item }">
+              {{item.title[locale.iso_code]}}
+            </template>
             <template v-slot:item.actions="{ item }">
                 <v-btn
                     variant="text"
@@ -74,6 +77,7 @@
 import {mapActions, mapState} from "pinia";
 import {useConferenceStore} from "@/stores/conference";
 import {useAccountStore} from "@/stores/account";
+import {useLocalesStore} from "@/stores/l10s";
 
 export default {
 name: "Index",
@@ -90,6 +94,7 @@ name: "Index",
   },
   computed: {
     ...mapState(useConferenceStore,['conferences','total']),
+    ...mapState(useLocalesStore,['locale']),
   },
   methods: {
     deleteItem (item) {

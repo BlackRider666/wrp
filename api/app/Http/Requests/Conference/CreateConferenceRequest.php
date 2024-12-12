@@ -15,7 +15,8 @@ class CreateConferenceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title'     =>  'required|string|max:255',
+            'title'      =>  'required|array',
+            'title.*'     =>  'required|string|max:255',
             'date'      =>  'required|date',
             'city_id'   =>  'required|int|exists:cities,id',
             'file'      =>  'nullable|sometimes|file|mimes:pdf',

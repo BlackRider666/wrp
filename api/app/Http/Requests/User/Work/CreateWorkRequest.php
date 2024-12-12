@@ -26,11 +26,10 @@ class CreateWorkRequest extends FormRequest
         return [
             'start' =>  'required|date',
             'finish'    =>  'nullable|date|after:start',
-            'position'  =>  'required|string|max:255',
-            'organization' => 'required',
-            'organization.id' => 'required',
-            'structure_unit'    => 'required',
-            'structure_unit.id' => 'required',
+            'position'      =>  'required|array',
+            'position.*'     =>  'required|string|max:255',
+            'organization_id' => 'required|integer',
+            'structural_unit_id' => 'required|integer',
         ];
     }
 }

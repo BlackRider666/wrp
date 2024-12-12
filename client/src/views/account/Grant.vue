@@ -1,13 +1,18 @@
 <template>
   <v-col cols="12">
-    <v-toolbar dense dark :class="fillGrant?'blink':''" color="primary"  class="pl-2">
+    <v-toolbar dense dark color="primary"  class="pl-2">
+<!--      <v-toolbar dense dark :class="fillGrant?'blink':''" color="primary"  class="pl-2">-->
       {{$t('grants.title','Grants')}}
       <v-spacer/>
       <v-btn
           icon="mdi-plus"
           @click="openGrantCreate"
-          :class="fillGrant?'blink':''"
       ></v-btn>
+<!--      <v-btn-->
+<!--          icon="mdi-plus"-->
+<!--          @click="openGrantCreate"-->
+<!--          :class="fillGrant?'blink':''"-->
+<!--      ></v-btn>-->
       <v-btn :icon="grantsSheet?'mdi-chevron-up':'mdi-chevron-down'" @click="showGrantsSheet"></v-btn>
     </v-toolbar>
     <v-sheet v-if="grantsSheet" outlined>

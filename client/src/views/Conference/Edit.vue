@@ -33,13 +33,30 @@
                   variant="outlined"
                   :rules="[rules.required]"
               ></v-select>
-              <v-text-field
-                  v-model="selectedItem.title"
-                  :label="$t('conference.placeholder.title','Title')"
-                  variant="outlined"
-                  prepend-inner-icon="mdi-card-text-outline"
-                  :rules="[rules.required]"
-              />
+              <v-tabs v-model="activeTitleTab" align-tabs="end" class="pb-1" selected-class="text-primary">
+                <v-tab key="en">English</v-tab>
+                <v-tab key="uk">Українська</v-tab>
+              </v-tabs>
+              <v-window v-model="activeTitleTab" class="pt-2">
+                <v-window-item key="en">
+                  <v-text-field
+                      v-model="selectedItem.title.en"
+                      :label="$t('conference.placeholder.title','Title')"
+                      variant="outlined"
+                      prepend-inner-icon="mdi-card-text-outline"
+                      :rules="[rules.required]"
+                  />
+                </v-window-item>
+                <v-window-item key="uk">
+                  <v-text-field
+                      v-model="selectedItem.title.uk"
+                      :label="$t('conference.placeholder.title','Title')"
+                      variant="outlined"
+                      prepend-inner-icon="mdi-card-text-outline"
+                      :rules="[rules.required]"
+                  />
+                </v-window-item>
+              </v-window>
               <v-menu ref="menu"
               v-model="menuDate"
               :close-on-content-click="false"
@@ -117,6 +134,7 @@ export default {
   data() {
     return {
       selectedItem:null,
+      activeTitleTab: 'en',
       rules: {
         required: value => !!value || 'Required.',
         requiredOneOf: () => {

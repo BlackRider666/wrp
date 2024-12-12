@@ -6,9 +6,12 @@ use App\Models\Organization\StructuralUnit\StructuralUnit;
 use App\Models\User\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\Translatable\HasTranslations;
 
 class Work extends Model
 {
+    use  HasTranslations;
+
     protected $table = 'works';
 
     protected $fillable = [
@@ -28,6 +31,10 @@ class Work extends Model
         'finish' => 'date:Y-m-d',
     ];
 
+    public $translatable = [
+        'position',
+    ];
+
     /**
      * @return BelongsTo
      */
@@ -45,10 +52,18 @@ class Work extends Model
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getTitleAttribute(): string
+    public function getTitleAttribute(): array
     {
-        return $this->unit->organization->name.'-'.$this->unit->name.'-'.$this->position;
+        $unitNames = $this->unit->getTranslations('name');
+        $orgNames =$this->unit->organization->getTranslations('name');
+        $positions = $this->getTranslations('position');
+        $titles = [];
+        foreach ($positions as $tKey => $tValue) {
+            $titles[$tKey] = $orgNames[$tKey].'-'.$unitNames[$tKey].'-'.$tValue;
+        }
+
+        return $titles;
     }
 }

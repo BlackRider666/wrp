@@ -25,27 +25,27 @@ class WorkRepo extends CoreRepo
      */
     public function create(array $data)
     {
-        $organizationRepo = new OrganizationRepo();
-        $structureUnitRepo = new StructureUnitRepo();
-        if ($data['organization']['id'] === 'new') {
-            $organization = $organizationRepo->create([
-                'name' => $data['organization']['name'],
-            ]);
-            $structureUnit = $structureUnitRepo->create([
-                'name' => $data['structure_unit']['name'],
-                'organization_id' => $organization->getKey(),
-            ]);
-            $data['structure_unit']['id'] = $structureUnit->getKey();
-        }
-        if ($data['structure_unit']['id'] === 'new') {
-            $structureUnit = $structureUnitRepo->create([
-                'name' => $data['structure_unit']['name'],
-                'organization_id' => $data['organization']['id'],
-            ]);
-            $data['structure_unit']['id'] = $structureUnit->getKey();
-        }
-
-        $data['structural_unit_id'] = $data['structure_unit']['id'];
+//        $organizationRepo = new OrganizationRepo();
+//        $structureUnitRepo = new StructureUnitRepo();
+//        if ($data['organization']['id'] === 'new') {
+//            $organization = $organizationRepo->create([
+//                'name' => $data['organization']['name'],
+//            ]);
+//            $structureUnit = $structureUnitRepo->create([
+//                'name' => $data['structure_unit']['name'],
+//                'organization_id' => $organization->getKey(),
+//            ]);
+//            $data['structure_unit']['id'] = $structureUnit->getKey();
+//        }
+//        if ($data['structure_unit']['id'] === 'new') {
+//            $structureUnit = $structureUnitRepo->create([
+//                'name' => $data['structure_unit']['name'],
+//                'organization_id' => $data['organization']['id'],
+//            ]);
+//            $data['structure_unit']['id'] = $structureUnit->getKey();
+//        }
+//
+//        $data['structural_unit_id'] = $data['structure_unit']['id'];
 
         if (!$work = $this->query()->create($data)) {
             throw new RuntimeException('Error on creating work!',500);

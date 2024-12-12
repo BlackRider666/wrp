@@ -71,10 +71,13 @@
       ></v-select>
       <v-text-field
           v-model="article.year"
+          type="number"
+          :min="1950"
+          :max="new Date().getFullYear()"
           :label="$t('articles.placeholder.year', 'Year')"
           variant="outlined"
           prepend-inner-icon="mdi-calendar-range"
-          :rules="[rules.required]"
+          :rules="[rules.required, rules.year]"
           :disabled="article.category && article.category.tech_name === 'conference'"
       ></v-text-field>
       <v-select
@@ -265,7 +268,7 @@ export default {
           uk: '',
         },
         category_id: null,
-        year: '',
+        year: new Date().getFullYear(),
         authors: [],
         journal: null,
         part: null,
@@ -290,6 +293,7 @@ export default {
       file: null,
       rules: {
         required: value => !!value || 'Required.',
+        year: value => (value >= 1950 && value <= new Date().getFullYear()) || 'Incorrect Year',
       },
       tagSearch: null,
       articleSearch: null,
