@@ -110,7 +110,7 @@ export default {
   }
   &__title {
     hyphens: auto;
-    min-height: 80px;
+    height: 108px;
     white-space: normal;
   }
   &__img.detailed{
