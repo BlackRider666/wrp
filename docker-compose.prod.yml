@@ -54,6 +54,18 @@ services:
       - wrp_network
     links:
       - db_wrp
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    restart: unless-stopped
+    volumes:
+      - ./docker/certs:/etc/letsencrypt
+      - ./docker/certs-data:/var/lib/letsencrypt
+      - ./docker/nginx/${APP_ENV}:/etc/nginx/conf.d
+      - ./api:/var/www/api
+    entrypoint: [ "/etc/letsencrypt/renew.sh" ]
+    networks:
+      - wrp_network
 volumes:
   db_data:
 
