@@ -24,7 +24,7 @@
                       <v-img :src="user.avatar_url"></v-img>
                     </v-avatar>
                     <div class="text-h4 pt-4 font-weight-medium">
-                      {{user.full_name}}
+                      {{user.full_name[locale.iso_code]}}
                     </div>
                     <div class="text-subtitle-1 pt-1">ID: {{user.id}}</div>
                   </v-col>
@@ -32,13 +32,13 @@
                     <div v-if="user.degree" class="pb-4">
                       <div class="text-subtitle-1">{{$t('placeholder.degree','Degree')}}</div>
                       <div class="text-h6 font-weight-regular">
-                        {{user.degree}}
+                        {{$t('placeholder.degree.'+user.degree,user.degree)}}
                       </div>
                     </div>
                     <div v-if="user.city_id" class="pb-4">
                       <div class="text-subtitle-1">{{$t('placeholder.country','Country')}}, {{ $t('placeholder.city', 'City') }}</div>
                       <div class="text-h6 font-weight-regular">
-                        {{user.country.name}},{{user.city.name}}
+                        {{user.country.name[locale.iso_code]}},{{user.city.name[locale.iso_code]}}
                       </div>
                     </div>
                     <div>
@@ -163,7 +163,7 @@
                       </div>
                     </div>
                   </v-col>
-                  <v-col cols="12" v-html="user.desc"></v-col>
+                  <v-col cols="12" v-html="user.desc[locale.iso_code]"></v-col>
                 </v-row>
               </v-window-item>
               <v-window-item>
@@ -174,6 +174,9 @@
                     class="elevation-1"
                     hide-default-footer
                 >
+                  <template v-slot:item.title="{ item }">
+                    {{item.title[locale.iso_code]}}
+                  </template>
                   <template v-slot:item.finish="{ item }">
                     {{item.finish?item.finish: $t('works.now','Now')}}
                   </template>
@@ -266,7 +269,11 @@
                     :items-per-page="5"
                     class="elevation-1"
                     hide-default-footer
-                ></v-data-table>
+                >
+                  <template v-slot:item.name="{ item }">
+                    {{item.name[locale.iso_code]}}
+                  </template>
+                </v-data-table>
               </v-window-item>
             </v-window>
             <v-row justify="end" v-if="user.id === account.id">

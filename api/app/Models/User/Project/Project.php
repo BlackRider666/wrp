@@ -5,9 +5,12 @@ namespace App\Models\User\Project;
 use App\Models\User\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\Translatable\HasTranslations;
 
 class Project extends Model
 {
+    use HasTranslations;
+
     protected $table = 'projects';
 
     protected $fillable = [
@@ -15,6 +18,9 @@ class Project extends Model
         'user_id',
     ];
 
+    public $translatable = [
+        'name'
+    ];
     /**
      * @return BelongsTo
      */

@@ -9,10 +9,9 @@
   >
     <template v-slot:activator="{ props }">
       <div :data-v-step="dataStep" class="cursor-pointer mx-2"
-           :class="options.iconsType"
            v-bind="props">
         <v-avatar size="42">
-          <v-img :src="account.avatar_url" :alt="account.full_name"/>
+          <v-img :src="options.titleImage"/>
         </v-avatar>
       </div>
     </template>
@@ -63,7 +62,6 @@
 
 <script>
 import {mapState} from "pinia";
-import {useAccountStore} from "@/stores/account";
 
 export default {
   name: "MenuList",
@@ -160,9 +158,6 @@ export default {
           // && this.$store.state.tutorial.step === 1
           // && this.$store.state.tutorial.tutorialCategory === 'article';
     },
-    ...mapState(useAccountStore,{
-      account: 'user',
-    })
   }
 }
 </script>

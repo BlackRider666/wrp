@@ -5,6 +5,7 @@ namespace App\Models\Article;
 use App\Models\Article\ArticleAuthor\ArticleAuthor;
 use App\Models\Article\Category\Category;
 use App\Models\Article\Citation\Citation;
+use App\Models\Article\Direction\Direction;
 use App\Models\Conference\Conference;
 use App\Models\Conference\ConferenceArticle\ConferenceArticle;
 use App\Models\Country\City\City;
@@ -40,7 +41,8 @@ class Article extends Model
         'app_number',
         'desc',
         'full_text',
-        'file'
+        'file',
+        'direction_id',
     ];
 
     protected $casts = [
@@ -111,11 +113,13 @@ class Article extends Model
      */
     public function getFullTitleAttribute(): array
     {
-        $authors = implode('', $this->authors()->get(['first_name','second_name','surname'])->pluck('full_name')->toArray());
+        $authors = $this->authors()->get(['first_name','second_name','surname'])->pluck('full_name');
         $titles = $this->getTranslations('title');
         $fullTitles = [];
         foreach ($titles as $tKey => $tValue) {
-            $fullTitles[$tKey] = $tValue.' - ('.$authors.')';
+            $fullTitles[$tKey] = $tValue.' - ('.$authors->map(static function ($item) use($tKey){
+                    return $item[$tKey];
+                })->implode(' ').')';
         }
         return $fullTitles;
     }
@@ -159,5 +163,13 @@ class Article extends Model
     {
         return $this->belongsToMany(Conference::class,'conference_articles')
             ->using(ConferenceArticle::class);
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function direction(): BelongsTo
+    {
+        return $this->belongsTo(Direction::class);
     }
 }

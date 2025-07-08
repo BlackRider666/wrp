@@ -21,6 +21,7 @@ return [
         'countries' => \App\Models\Country\Country::class,
         'cities' => \App\Models\Country\City\City::class,
         'page' => \App\Models\Pages\Page::class,
+        'directions' => \App\Models\Article\Direction\Direction::class,
     ],
     'menu' => [
         'users' => [
@@ -37,7 +38,7 @@ return [
         'articles' => [
             'icon' => 'mdi-newspaper',
             'items' => [
-                'categories' => [
+                'directions' => [
                     'icon' => 'mdi-shape',
                 ],
                 'articles' => [

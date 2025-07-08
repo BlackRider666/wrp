@@ -32,12 +32,28 @@
             <v-card>
               <v-card-title>{{$t('projects.edit.title','Edit')}}</v-card-title>
               <v-card-text v-if="selectedProject">
-                <v-text-field
-                    v-model="selectedProject.name"
-                    :label="$t('projects.placeholder.name','Name')"
-                    outlined
-                    prepend-inner-icon="mdi-card-text-outline"
-                />
+                <v-tabs v-model="activePositionTab" align-tabs="end" class="pb-1" selected-class="text-primary">
+                  <v-tab key="en">English</v-tab>
+                  <v-tab key="uk">Українська</v-tab>
+                </v-tabs>
+                <v-window v-model="activePositionTab" class="pt-2">
+                  <v-window-item key="en">
+                    <v-text-field
+                        v-model="selectedProject.name.en"
+                        :label="$t('projects.placeholder.name','Name')"
+                        outlined
+                        prepend-inner-icon="mdi-card-text-outline"
+                    />
+                  </v-window-item>
+                  <v-window-item key="uk">
+                    <v-text-field
+                        v-model="selectedProject.name.uk"
+                        :label="$t('projects.placeholder.name','Name')"
+                        outlined
+                        prepend-inner-icon="mdi-card-text-outline"
+                    />
+                  </v-window-item>
+                </v-window>
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
@@ -60,6 +76,9 @@
             </v-card>
           </v-dialog>
         </template>
+        <template v-slot:item.name="{ item }">
+          {{item.name[locale.iso_code]}}
+        </template>
         <template v-slot:item.actions="{ item }">
           <v-icon
               small
@@ -81,12 +100,28 @@
       <v-card v-if="newProject">
         <v-card-title>{{$t('projects.create.title','Create')}}</v-card-title>
         <v-card-text>
-          <v-text-field
-              v-model="newProject.name"
-              :label="$t('projects.placeholder.name','Name')"
-              outlined
-              prepend-inner-icon="mdi-card-text-outline"
-          />
+          <v-tabs v-model="activePositionTab" align-tabs="end" class="pb-1" selected-class="text-primary">
+            <v-tab key="en">English</v-tab>
+            <v-tab key="uk">Українська</v-tab>
+          </v-tabs>
+          <v-window v-model="activePositionTab" class="pt-2">
+            <v-window-item key="en">
+              <v-text-field
+                  v-model="newProject.name.en"
+                  :label="$t('projects.placeholder.name','Name')"
+                  outlined
+                  prepend-inner-icon="mdi-card-text-outline"
+              />
+            </v-window-item>
+            <v-window-item key="uk">
+              <v-text-field
+                  v-model="newProject.name.uk"
+                  :label="$t('projects.placeholder.name','Name')"
+                  outlined
+                  prepend-inner-icon="mdi-card-text-outline"
+              />
+            </v-window-item>
+          </v-window>
         </v-card-text>
         <v-card-actions>
           <v-btn color="darken-1" variant="text" @click="closeProjectCreate">{{$t('btn.cancel','Cancel')}}</v-btn>
@@ -101,14 +136,10 @@
 <script>
 import {mapActions, mapState} from "pinia";
 import {useProjectStore} from "@/stores/project";
+import {useLocalesStore} from "@/stores/l10s";
 
 export default {
   name: "Project",
-  props: {
-    user_id: {
-      type: Number,
-    },
-  },
   data() {
     return {
       projectsSheet: false,
@@ -122,10 +153,12 @@ export default {
       newProject: null,
       selectedProject: null,
       options: {},
+      activePositionTab:'en',
     };
   },
   computed: {
     ...mapState(useProjectStore,['projects','total']),
+    ...mapState(useLocalesStore,['locale']),
     // fillProject() {
     //   return this.$store.state.tutorial.step === 6 && this.$store.state.tutorial.tutorialCategory === 'account' && this.createProjectDialog === false;
     // },
@@ -133,11 +166,15 @@ export default {
   methods: {
     showProjectsSheet() {
       this.projectsSheet = !this.projectsSheet;
+      if (this.projectsSheet) this.getData();
     },
     openProjectCreate() {
       this.createProjectDialog = true;
       this.newProject = {
-        name: null,
+        name: {
+          en:'',
+          uk:'',
+        },
       };
     },
     closeProjectCreate() {
@@ -201,7 +238,6 @@ export default {
     getData() {
       this.$loading()
       this.downloadProjects({
-        user_id:this.user_id,
         ...this.options,
       }).then(() => {
         this.$loadingClose();

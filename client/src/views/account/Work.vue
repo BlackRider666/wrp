@@ -452,7 +452,6 @@ export default {
     getData() {
       this.$loading()
       this.downloadWorks({
-        user_id:this.user_id,
         ...this.options,
       }).then(() => {
         this.$loadingClose();

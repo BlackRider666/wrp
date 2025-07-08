@@ -6,6 +6,7 @@ export const useUserStore = defineStore('user',{
         users: [],
         total: 0,
         user: null,
+        degrees:[],
     }),
     getters: {
         getUsers: (state) => state.users,
@@ -73,6 +74,21 @@ export const useUserStore = defineStore('user',{
                     .then(res => {
                         this.users.push(res.data.user);
                         resolve(res.data.user)
+                    })
+                    .catch(errors => {
+                        reject(errors.response.data)
+                    })
+            }))
+        },
+        downloadDegrees() {
+            return new Promise(((resolve, reject) => {
+                axios.get('degrees/')
+                    .then(res => {
+                        this.degrees = res.data.degrees.map((item) => {
+                            return {
+                                value: item
+                            }
+                        });
                     })
                     .catch(errors => {
                         reject(errors.response.data)

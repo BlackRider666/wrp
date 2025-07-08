@@ -50,28 +50,60 @@
                       @submit="nextStep"
                       aria-autocomplete="none"
                   >
-                    <v-text-field
-                        v-model="user.first_name"
-                        :label="$t('placeholder.first_name', 'First Name')"
-                        variant="outlined"
-                        prepend-inner-icon="mdi-account-outline"
-                        :rules="[rules.required]"
-                    />
-                    <v-text-field
-                        v-model="user.second_name"
-                        :label="$t('placeholder.second_name', 'Second Name')"
-                        variant="outlined"
-                        prepend-inner-icon="mdi-account-outline"
-                        :rules="[rules.required]"
-                        aria-autocomplete="none"
-                    />
-                    <v-text-field
-                        v-model="user.surname"
-                        :label="$t('placeholder.surname', 'Surname')"
-                        variant="outlined"
-                        prepend-inner-icon="mdi-account-outline"
-                        :rules="[rules.required]"
-                    />
+                    <v-tabs v-model="activePositionTab" align-tabs="end" class="pb-1" selected-class="text-primary">
+                      <v-tab key="en">English</v-tab>
+                      <v-tab key="uk">Українська</v-tab>
+                    </v-tabs>
+                    <v-window v-model="activePositionTab" class="pt-2">
+                      <v-window-item key="en">
+                        <v-text-field
+                            v-model="user.first_name.en"
+                            :label="$t('placeholder.first_name', 'First Name')"
+                            variant="outlined"
+                            prepend-inner-icon="mdi-account-outline"
+                            :rules="[rules.required]"
+                        />
+                        <v-text-field
+                            v-model="user.second_name.en"
+                            :label="$t('placeholder.second_name', 'Second Name')"
+                            variant="outlined"
+                            prepend-inner-icon="mdi-account-outline"
+                            :rules="[rules.required]"
+                            aria-autocomplete="none"
+                        />
+                        <v-text-field
+                            v-model="user.surname.en"
+                            :label="$t('placeholder.surname', 'Surname')"
+                            variant="outlined"
+                            prepend-inner-icon="mdi-account-outline"
+                            :rules="[rules.required]"
+                        />
+                      </v-window-item>
+                      <v-window-item key="uk">
+                        <v-text-field
+                            v-model="user.first_name.uk"
+                            :label="$t('placeholder.first_name', 'First Name')"
+                            variant="outlined"
+                            prepend-inner-icon="mdi-account-outline"
+                            :rules="[rules.required]"
+                        />
+                        <v-text-field
+                            v-model="user.second_name.uk"
+                            :label="$t('placeholder.second_name', 'Second Name')"
+                            variant="outlined"
+                            prepend-inner-icon="mdi-account-outline"
+                            :rules="[rules.required]"
+                            aria-autocomplete="none"
+                        />
+                        <v-text-field
+                            v-model="user.surname.uk"
+                            :label="$t('placeholder.surname', 'Surname')"
+                            variant="outlined"
+                            prepend-inner-icon="mdi-account-outline"
+                            :rules="[rules.required]"
+                        />
+                      </v-window-item>
+                    </v-window>
                     <v-btn
                         color="primary"
                         block
@@ -215,9 +247,18 @@ export default {
   data: function () {
     return {
       user: {
-        first_name:'',
-        second_name:'',
-        surname:'',
+        first_name: {
+          en:'',
+          uk:'',
+        },
+        second_name: {
+          en:'',
+          uk:'',
+        },
+        surname: {
+          en:'',
+          uk:'',
+        },
         email:'',
         phone:'',
         password:'',
@@ -240,6 +281,7 @@ export default {
           return pattern.test(value) || 'Invalid phone'
         }
       },
+      activePositionTab:'en',
     }
   },
   methods: {

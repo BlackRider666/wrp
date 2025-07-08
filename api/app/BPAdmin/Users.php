@@ -14,15 +14,15 @@ class Users extends BPModel
 
     protected array $fieldTypes = [
         'first_name' => [
-            'type' => 'string',
+            'type' => 'translatable',
             'required' => true,
         ],
         'second_name' => [
-            'type' => 'string',
+            'type' => 'translatable',
             'required' => true,
         ],
         'surname' => [
-            'type' => 'string',
+            'type' => 'translatable',
             'required' => true,
         ],
         'avatar' => [
@@ -42,7 +42,7 @@ class Users extends BPModel
             'required' => false,
         ],
         'desc' => [
-            'type' => 'string',
+            'type' => 'translatableEditor',
             'required' => false,
         ],
         'degree' => [

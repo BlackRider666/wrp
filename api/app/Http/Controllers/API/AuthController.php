@@ -60,7 +60,6 @@ class AuthController extends Controller
         $data = $request->validated();
         $data['password'] = Hash::make('');
         $role = env('APP_DEFAULT_ROLE');
-        $data['desc'] = '';//todo fix me
 
         try {
             $this->repository->create($data, $role);

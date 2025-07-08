@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\API\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\User\Project\SearchProjectRequest;
 use App\Http\Requests\User\Project\StoreProjectRequest;
 use App\Http\Requests\User\Project\UpdateProjectRequest;
 use App\Repo\ProjectRepo;
 use Exception;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
@@ -21,13 +21,15 @@ class ProjectController extends Controller
     {
         $this->repo = $repo;
     }
+
     /**
-     * @param Request $request
+     * @param SearchProjectRequest $request
      * @return JsonResponse
      */
-    public function index(Request $request): JsonResponse
+    public function index(SearchProjectRequest $request): JsonResponse
     {
-        $data = $request->only(['user_id']);
+        $data = $request->validated();
+
         return new JsonResponse($this->repo->search($data));
     }
 

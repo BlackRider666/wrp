@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\API\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\User\Grant\SearchGrantRequest;
 use App\Http\Requests\User\Grant\StoreGrantRequest;
 use App\Http\Requests\User\Grant\UpdateGrantRequest;
 use App\Repo\GrantRepo;
 use Exception;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class GrantController extends Controller
 {
@@ -23,12 +23,12 @@ class GrantController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param SearchGrantRequest $request
      * @return JsonResponse
      */
-    public function index(Request $request): JsonResponse
+    public function index(SearchGrantRequest $request): JsonResponse
     {
-        $data = $request->only(['user_id']);
+        $data = $request->validated();
 
         return new JsonResponse($this->repo->search($data));
     }

@@ -25,12 +25,17 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Spatie\Translatable\HasTranslations;
 use Znck\Eloquent\Relations\BelongsToThrough;
 use Znck\Eloquent\Traits\BelongsToThrough as BelongsToThroughTrait;
 
 class User extends Authenticatable
 {
-    use Notifiable, HasApiTokens, HasRoles, BelongsToThroughTrait;
+    use Notifiable;
+    use HasApiTokens;
+    use HasRoles;
+    use BelongsToThroughTrait;
+    use HasTranslations;
 
     /**
      * The attributes that are mass assignable.
@@ -79,12 +84,27 @@ class User extends Authenticatable
 //        'avatar'            => 'file'
     ];
 
+    public $translatable = [
+        'first_name',
+        'second_name',
+        'surname',
+        'desc'
+    ];
+
     /**
-     * @return string
+     * @return array
+     *
      */
-    public function getFullNameAttribute(): string
+    public function getFullNameAttribute(): array
     {
-        return $this->first_name.' '.$this->second_name.' '.$this->surname;
+        $names = [];
+        $first_name_array = $this->getTranslations('first_name');
+        $second_name_array = $this->getTranslations('second_name');
+        $surname_array = $this->getTranslations('surname');
+        foreach ($first_name_array as $key => $first_name) {
+            $names[$key] = $first_name.' '.$second_name_array[$key].' '.$surname_array[$key];
+        }
+        return $names;
     }
 
     /**
@@ -170,14 +190,14 @@ class User extends Authenticatable
      */
     public function getIsPremiumAttribute()
     {
-        $now = Carbon::now()->format('Y-m-d');
-        $prem = $this->premiums()
-            ->where('start','<=',Carbon::now()->format('Y-m-d'))
-            ->where('finish','>=',$now)
-            ->get('finish');
-        if ($prem->count() > 0) {
-            return Carbon::parse($prem->first()->finish)->format('d-m-Y');
-        }
+//        $now = Carbon::now()->format('Y-m-d');
+//        $prem = $this->premiums()
+//            ->where('start','<=',Carbon::now()->format('Y-m-d'))
+//            ->where('finish','>=',$now)
+//            ->get('finish');
+//        if ($prem->count() > 0) {
+//            return Carbon::parse($prem->first()->finish)->format('d-m-Y');
+//        }
         return false;
     }
 

@@ -56,28 +56,60 @@
                                   align="center"
                                   @submit.prevent="addAuthorConfirm">
                             <v-card-text>
-                              <v-text-field
-                                  v-model="newAuthor.first_name"
-                                  :label="$t('placeholder.first_name', 'First Name')"
-                                  variant="outlined"
-                                  prepend-inner-icon="mdi-account-outline"
-                                  :rules="[rules.required]"
-                              />
-                              <v-text-field
-                                  v-model="newAuthor.second_name"
-                                  :label="$t('placeholder.second_name', 'Second Name')"
-                                  variant="outlined"
-                                  prepend-inner-icon="mdi-account-outline"
-                                  :rules="[rules.required]"
-                                  aria-autocomplete="none"
-                              />
-                              <v-text-field
-                                  v-model="newAuthor.surname"
-                                  :label="$t('placeholder.surname', 'Surname')"
-                                  variant="outlined"
-                                  prepend-inner-icon="mdi-account-outline"
-                                  :rules="[rules.required]"
-                              />
+                              <v-tabs v-model="activePositionTab" align-tabs="end" class="pb-1" selected-class="text-primary">
+                                <v-tab key="en">English</v-tab>
+                                <v-tab key="uk">Українська</v-tab>
+                              </v-tabs>
+                              <v-window v-model="activePositionTab" class="pt-2">
+                                <v-window-item key="en">
+                                  <v-text-field
+                                      v-model="newAuthor.first_name.en"
+                                      :label="$t('placeholder.first_name', 'First Name')"
+                                      variant="outlined"
+                                      prepend-inner-icon="mdi-account-outline"
+                                      :rules="[rules.required]"
+                                  />
+                                  <v-text-field
+                                      v-model="newAuthor.second_name.en"
+                                      :label="$t('placeholder.second_name', 'Second Name')"
+                                      variant="outlined"
+                                      prepend-inner-icon="mdi-account-outline"
+                                      :rules="[rules.required]"
+                                      aria-autocomplete="none"
+                                  />
+                                  <v-text-field
+                                      v-model="newAuthor.surname.en"
+                                      :label="$t('placeholder.surname', 'Surname')"
+                                      variant="outlined"
+                                      prepend-inner-icon="mdi-account-outline"
+                                      :rules="[rules.required]"
+                                  />
+                                </v-window-item>
+                                <v-window-item key="uk">
+                                  <v-text-field
+                                      v-model="newAuthor.first_name.uk"
+                                      :label="$t('placeholder.first_name', 'First Name')"
+                                      variant="outlined"
+                                      prepend-inner-icon="mdi-account-outline"
+                                      :rules="[rules.required]"
+                                  />
+                                  <v-text-field
+                                      v-model="newAuthor.second_name.uk"
+                                      :label="$t('placeholder.second_name', 'Second Name')"
+                                      variant="outlined"
+                                      prepend-inner-icon="mdi-account-outline"
+                                      :rules="[rules.required]"
+                                      aria-autocomplete="none"
+                                  />
+                                  <v-text-field
+                                      v-model="newAuthor.surname.uk"
+                                      :label="$t('placeholder.surname', 'Surname')"
+                                      variant="outlined"
+                                      prepend-inner-icon="mdi-account-outline"
+                                      :rules="[rules.required]"
+                                  />
+                                </v-window-item>
+                              </v-window>
                               <v-text-field
                                   v-model="newAuthor.email"
                                   variant="outlined"
@@ -154,13 +186,23 @@ export default {
       },
       addAuthorsDialog:false,
       newAuthor: {
-        first_name:'',
-        second_name:'',
-        surname:'',
+        first_name:{
+          en:'',
+          uk:'',
+        },
+        second_name:{
+          en:'',
+          uk:'',
+        },
+        surname:{
+          en:'',
+          uk:'',
+        },
         email:'',
       },
       emailError: [],
       activeTitleTab:'en',
+      activePositionTab:'en',
     };
   },
   computed: {

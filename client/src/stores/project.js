@@ -19,7 +19,7 @@ export const useProjectStore = defineStore('project',{
                 let page = payload.page ? payload.page : 1;
                 let byUser = payload.user_id ? `&user_id=${payload.user_id}` : ''
                 let search = `perPage=${perPage}&page=${page}`;
-                axios.get('auth/user/project?perPage=10' + search + byUser)
+                axios.get('auth/user/project?' + search + byUser)
                     .then(res => {
                         this.UPDATE_PROJECTS(res.data.data);
                         this.UPDATE_TOTAL(res.data.total);

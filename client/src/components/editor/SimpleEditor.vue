@@ -68,8 +68,6 @@ export default {
   border-color: #9e9e9e;
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
-}
-.simpleEditor-container .ql-container .ql-blank {
   min-height: 200px;
 }
 .simpleEditor-container:hover .ql-container {

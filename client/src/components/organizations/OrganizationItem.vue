@@ -37,7 +37,7 @@
               </v-list-item>
             </v-list>
             <v-row>
-              <v-col>
+              <v-col class="organization__city-title">
                 <span>{{org.city? org.city.name[locale.iso_code] : ''}}</span>
                 <br>
                 <span>{{org.country? org.country.name[locale.iso_code]: ''}}</span>
@@ -110,8 +110,11 @@ export default {
   }
   &__title {
     hyphens: auto;
-    height: 108px;
+    height: 4.5rem;
     white-space: normal;
+  }
+  &__city-title {
+    height: 4rem;
   }
   &__img.detailed{
     border-top-left-radius: 4px;

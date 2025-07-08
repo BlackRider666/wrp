@@ -32,12 +32,28 @@
             <v-card>
               <v-card-title>{{$t('grants.edit.title','Edit')}}</v-card-title>
               <v-card-text v-if="selectedGrant">
-                <v-text-field
-                    v-model="selectedGrant.name"
-                    :label="$t('grants.placeholder.name','Name')"
-                    outlined
-                    prepend-inner-icon="mdi-card-text-outline"
-                />
+                <v-tabs v-model="activePositionTab" align-tabs="end" class="pb-1" selected-class="text-primary">
+                  <v-tab key="en">English</v-tab>
+                  <v-tab key="uk">Українська</v-tab>
+                </v-tabs>
+                <v-window v-model="activePositionTab" class="pt-2">
+                  <v-window-item key="en">
+                    <v-text-field
+                        v-model="selectedGrant.name.en"
+                        :label="$t('grants.placeholder.name','Name')"
+                        outlined
+                        prepend-inner-icon="mdi-card-text-outline"
+                    />
+                  </v-window-item>
+                  <v-window-item key="uk">
+                    <v-text-field
+                        v-model="selectedGrant.name.uk"
+                        :label="$t('grants.placeholder.name','Name')"
+                        outlined
+                        prepend-inner-icon="mdi-card-text-outline"
+                    />
+                  </v-window-item>
+                </v-window>
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
@@ -60,6 +76,9 @@
             </v-card>
           </v-dialog>
         </template>
+        <template v-slot:item.name="{ item }">
+          {{item.name[locale.iso_code]}}
+        </template>
         <template v-slot:item.actions="{ item }">
           <v-icon
               small
@@ -81,12 +100,28 @@
       <v-card v-if="newGrant">
         <v-card-title>{{$t('grants.create.title','Create')}}</v-card-title>
         <v-card-text>
-          <v-text-field
-              v-model="newGrant.name"
-              :label="$t('grants.placeholder.name','Name')"
-              outlined
-              prepend-inner-icon="mdi-card-text-outline"
-          />
+          <v-tabs v-model="activePositionTab" align-tabs="end" class="pb-1" selected-class="text-primary">
+            <v-tab key="en">English</v-tab>
+            <v-tab key="uk">Українська</v-tab>
+          </v-tabs>
+          <v-window v-model="activePositionTab" class="pt-2">
+            <v-window-item key="en">
+              <v-text-field
+                  v-model="newGrant.name.en"
+                  :label="$t('grants.placeholder.name','Name')"
+                  outlined
+                  prepend-inner-icon="mdi-card-text-outline"
+              />
+            </v-window-item>
+            <v-window-item key="uk">
+              <v-text-field
+                  v-model="newGrant.name.uk"
+                  :label="$t('grants.placeholder.name','Name')"
+                  outlined
+                  prepend-inner-icon="mdi-card-text-outline"
+              />
+            </v-window-item>
+          </v-window>
         </v-card-text>
         <v-card-actions>
           <v-btn color="darken-1" variant="text"  @click="closeGrantCreate">{{$t('btn.cancel','Cancel')}}</v-btn>
@@ -101,14 +136,10 @@
 <script>
 import {mapActions, mapState} from "pinia";
 import {useGrantStore} from "@/stores/grant";
+import {useLocalesStore} from "@/stores/l10s";
 
 export default {
   name: "Grant",
-  props: {
-    user_id: {
-      type: Number,
-    },
-  },
   data() {
     return {
       grantsSheet: false,
@@ -122,10 +153,12 @@ export default {
       newGrant: null,
       selectedGrant: null,
       options: {},
+      activePositionTab:'en',
     };
   },
   computed: {
     ...mapState(useGrantStore,['grants','total']),
+    ...mapState(useLocalesStore,['locale']),
     // fillGrant() {
     //   return this.$store.state.tutorial.step === 5 && this.$store.state.tutorial.tutorialCategory === 'account' && this.createGrantDialog === false;
     // },
@@ -133,11 +166,15 @@ export default {
   methods: {
     showGrantsSheet() {
       this.grantsSheet = !this.grantsSheet;
+      if (this.grantsSheet) this.getData();
     },
     openGrantCreate() {
       this.createGrantDialog = true;
       this.newGrant = {
-        name: null,
+        name: {
+          en:'',
+          uk:'',
+        },
       };
     },
     closeGrantCreate() {
@@ -201,7 +238,6 @@ export default {
     getData() {
       this.$loading()
       this.downloadGrants({
-        user_id:this.user_id,
         ...this.options,
       }).then(() => {
         this.$loadingClose();

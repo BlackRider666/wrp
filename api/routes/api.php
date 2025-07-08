@@ -1,23 +1,23 @@
 <?php
 
-use App\Http\Controllers\API\Article\ArticleController;
-use App\Http\Controllers\API\Article\CategoryController;
+use App\Http\Controllers\API\Article\{ArticleController, CategoryController};
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\Conference\ConferenceController;
 use App\Http\Controllers\API\Locale\LocaleController;
 use App\Http\Controllers\API\NewsController;
-use App\Http\Controllers\API\Organization\CityController;
-use App\Http\Controllers\API\Organization\CountryController;
-use App\Http\Controllers\API\Organization\OrganizationController;
-use App\Http\Controllers\API\Organization\StructuralUnitController;
+use App\Http\Controllers\API\Organization\{CityController,
+    CountryController,
+    OrganizationController,
+    StructuralUnitController};
 use App\Http\Controllers\API\OrganizerController;
 use App\Http\Controllers\API\PageController;
 use App\Http\Controllers\API\PartnerController;
 use App\Http\Controllers\API\TagController;
-use App\Http\Controllers\API\User\GrantController;
-use App\Http\Controllers\API\User\PremiumController;
-use App\Http\Controllers\API\User\ProjectController;
-use App\Http\Controllers\API\User\SocialLinkController;
+use App\Http\Controllers\API\User\{DegreeController,
+    GrantController,
+    PremiumController,
+    ProjectController,
+    SocialLinkController};
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\UserWorkController;
 use Illuminate\Support\Facades\Route;
@@ -126,3 +126,4 @@ Route::get('/get-free-premium', [PremiumController::class, 'getFreePremium'])->m
 
 Route::get('/contact-info',[PageController::class,'contacts']);
 Route::get('/rules-and-condition',[PageController::class,'rules']);
+Route::get('/degrees', [DegreeController::class,'index']);

@@ -23,10 +23,10 @@
     <v-btn :to="{name:'Create Article'}" color="primary" variant="text" class="mx-2"><v-icon>mdi-plus</v-icon> Add new article</v-btn>
     <v-divider vertical inset></v-divider>
     <template v-if="isLoggedIn">
-      <v-btn icon class="mx-2">
-        <v-icon>mdi-bell</v-icon>
-        <v-badge color="primary" content="6"></v-badge>
-      </v-btn>
+<!--      <v-btn icon class="mx-2">-->
+<!--        <v-icon>mdi-bell</v-icon>-->
+<!--        <v-badge color="primary" content="6"></v-badge>-->
+<!--      </v-btn>-->
       <MenuList :options="accountOptions" @itemClicked="goToPage" />
     </template>
     <template v-else>
@@ -42,6 +42,7 @@ import LanguageSwitcher from "./LanguageSwitcher.vue";
 import {mapState} from "pinia";
 import {useAccountStore} from "@/stores/account";
 import {useAuthStore} from "@/stores/auth";
+import {useLocalesStore} from "@/stores/l10s";
 
 export default {
   name: "AppHeader",
@@ -70,6 +71,7 @@ export default {
       account: 'user',
     }),
     ...mapState(useAuthStore,['token']),
+    ...mapState(useLocalesStore,['locale']),
     accountOptions() {
       let items = [];
       let account = this.account;
@@ -80,10 +82,16 @@ export default {
       ) {
          items = [
           {
-            title: this.account.full_name || '',
+            title: this.account.full_name[this.locale.iso_code] || '',
             divider: true,
             subtitleClass: 'text-center font-weight-bold',
             image: this.account.avatar_url || null,
+            to: {
+              name:'User',
+              params: {
+                user_id: this.account.id,
+              }
+            }
           },
           {
             titleTKey: "header.menu.premium",
@@ -135,10 +143,16 @@ export default {
       } else {
         items = [
           {
-            title: this.account.full_name || '',
+            title: this.account.full_name[this.locale.iso_code]  || '',
             divider: true,
             subtitleClass: 'text-center font-weight-bold',
             image: this.account.avatar_url || null,
+            to: {
+              name:'User',
+              params: {
+                user_id: this.account.id,
+              }
+            }
           },
           {
             titleTKey: "header.menu.premium",
@@ -179,11 +193,10 @@ export default {
           },
         ]
       }
-      
+
       return {
         items: items,
-        titleClass: "v-avatar _max-h-46 _w-auto",
-        titleIcon: "mdi-account-outline",
+        titleImage: this.account.avatar_url,
         showArrow: true,
         openOnHover: false,
         badgeContent: null,

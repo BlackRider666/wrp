@@ -1,6 +1,6 @@
 <template>
   <v-row>
-    <Occupancy/>
+<!--    <Occupancy/>-->
     <v-col cols="12">
       <v-card>
         <v-card-title>
@@ -25,27 +25,60 @@
                     flat
                 >
                   <v-card-text>
-                    <v-text-field
-                        v-model="user.first_name"
-                        :label="$t('placeholder.first_name', 'First Name')"
-                        variant="outlined"
-                        prepend-inner-icon="mdi-account-outline"
-                        :rules="[rules.required]"
-                    />
-                    <v-text-field
-                        v-model="user.second_name"
-                        :label="$t('placeholder.second_name', 'Second Name')"
-                        variant="outlined"
-                        prepend-inner-icon="mdi-account-outline"
-                        :rules="[rules.required]"
-                    />
-                    <v-text-field
-                        v-model="user.surname"
-                        :label="$t('placeholder.surname', 'Surname')"
-                        variant="outlined"
-                        prepend-inner-icon="mdi-account-outline"
-                        :rules="[rules.required]"
-                    />
+                    <v-tabs v-model="activePositionTab" align-tabs="end" class="pb-1" selected-class="text-primary">
+                      <v-tab key="en">English</v-tab>
+                      <v-tab key="uk">Українська</v-tab>
+                    </v-tabs>
+                    <v-window v-model="activePositionTab" class="pt-2">
+                      <v-window-item key="en">
+                        <v-text-field
+                            v-model="user.first_name.en"
+                            :label="$t('placeholder.first_name', 'First Name')"
+                            variant="outlined"
+                            prepend-inner-icon="mdi-account-outline"
+                            :rules="[rules.required]"
+                        />
+                        <v-text-field
+                            v-model="user.second_name.en"
+                            :label="$t('placeholder.second_name', 'Second Name')"
+                            variant="outlined"
+                            prepend-inner-icon="mdi-account-outline"
+                            :rules="[rules.required]"
+                            aria-autocomplete="none"
+                        />
+                        <v-text-field
+                            v-model="user.surname.en"
+                            :label="$t('placeholder.surname', 'Surname')"
+                            variant="outlined"
+                            prepend-inner-icon="mdi-account-outline"
+                            :rules="[rules.required]"
+                        />
+                      </v-window-item>
+                      <v-window-item key="uk">
+                        <v-text-field
+                            v-model="user.first_name.uk"
+                            :label="$t('placeholder.first_name', 'First Name')"
+                            variant="outlined"
+                            prepend-inner-icon="mdi-account-outline"
+                            :rules="[rules.required]"
+                        />
+                        <v-text-field
+                            v-model="user.second_name.uk"
+                            :label="$t('placeholder.second_name', 'Second Name')"
+                            variant="outlined"
+                            prepend-inner-icon="mdi-account-outline"
+                            :rules="[rules.required]"
+                            aria-autocomplete="none"
+                        />
+                        <v-text-field
+                            v-model="user.surname.uk"
+                            :label="$t('placeholder.surname', 'Surname')"
+                            variant="outlined"
+                            prepend-inner-icon="mdi-account-outline"
+                            :rules="[rules.required]"
+                        />
+                      </v-window-item>
+                    </v-window>
                     <v-text-field
                         v-model="user.email"
                         variant="outlined"
@@ -61,16 +94,33 @@
                         prepend-inner-icon="mdi-phone"
                         :rules="[rules.required, rules.phone]"
                     />
-                    <simple-editor
-                        v-model="user.desc"
-                        :placeholder="$t('placeholder.desc', 'Desc')"
-                    ></simple-editor>
-                    <v-text-field
+                    <v-tabs v-model="activePositionTab" align-tabs="end" class="pb-1" selected-class="text-primary">
+                      <v-tab key="en">English</v-tab>
+                      <v-tab key="uk">Українська</v-tab>
+                    </v-tabs>
+                    <v-window v-model="activePositionTab" class="pt-2">
+                      <v-window-item key="en">
+                        <simple-editor
+                            v-model="user.desc.en"
+                            :placeholder="$t('placeholder.desc', 'Desc')"
+                        ></simple-editor>
+                      </v-window-item>
+                      <v-window-item key="uk">
+                        <simple-editor
+                            v-model="user.desc.uk"
+                            :placeholder="$t('placeholder.desc', 'Desc')"
+                        ></simple-editor>
+                      </v-window-item>
+                    </v-window>
+                    <v-select
                         v-model="user.degree"
                         :label="$t('placeholder.degree', 'Degree')"
                         variant="outlined"
                         prepend-inner-icon="mdi-account"
-                    />
+                        :items="degrees"
+                        :item-title="item => item.value ? $t('placeholder.degree.'+ item.value, item.value): null"
+
+                    ></v-select>
                     <v-text-field
                         v-model="user.position"
                         :label="$t('placeholder.position', 'Position')"
@@ -226,8 +276,8 @@
               </v-row>
               </v-col>
             <Work/>
-            <Grant :user_id="user.id"/>
-            <Project :user_id="user.id"/>
+            <Grant/>
+            <Project/>
             <SocialLink/>
           </v-row>
         </v-card-text>
@@ -249,6 +299,7 @@ import {useCityStore} from "@/stores/city";
 import {useOrganizationStore} from "@/stores/organization";
 import {useAccountStore} from "@/stores/account";
 import {useLocalesStore} from "@/stores/l10s";
+import {useUserStore} from "@/stores/user";
 
 export default {
   name: "Account",
@@ -267,13 +318,25 @@ export default {
       changePassword: false,
       organizationSearch:'',
       user: {
-        first_name: '',
-        second_name: '',
-        surname: '',
+        first_name: {
+          en:'',
+          uk:'',
+        },
+        second_name: {
+          en:'',
+          uk:'',
+        },
+        surname: {
+          en:'',
+          uk:'',
+        },
         email: '',
         phone: '',
-        desc: '',
-        degree:'',
+        desc: {
+          en:'',
+          uk:'',
+        },
+        degree:null,
         position:'',
         country_id: null,
         city_id:null,
@@ -294,13 +357,19 @@ export default {
         min: v => v.length >= 8 || 'Min 8 characters',
         confirmation: v => v === this.changePasswordRequest.password || 'Password mismatch',
       },
+      activePositionTab: 'en',
     }
   },
-  mounted() {
+  created() {
     this.user = useAccountStore().user;
+    if (!this.user.desc) this.user.desc = {
+      en:'',
+      uk:'',
+    };
     this.user.country_id = this.user.country?this.user.country.id:null;
     this.downloadCountries();
     this.downloadOrganizations();
+    this.downloadDegrees();
   },
   computed: {
     // fillCommon() {
@@ -312,7 +381,8 @@ export default {
     ...mapState(useCountryStore,['countries']),
     ...mapState(useCityStore,['cities']),
     ...mapState(useOrganizationStore,['organizations']),
-    ...mapState(useLocalesStore,['locale'])
+    ...mapState(useLocalesStore,['locale']),
+    ...mapState(useUserStore,['degrees']),
   },
   methods: {
     showCommonSheet() {
@@ -385,6 +455,7 @@ export default {
     ...mapActions(useCityStore,['downloadCities']),
     ...mapActions(useOrganizationStore,['downloadOrganizations']),
     ...mapActions(useAccountStore,['downloadAccount','update','updatePhoto','updatePassword']),
+    ...mapActions(useUserStore,['downloadDegrees'])
   },
   watch: {
     'user.country_id': {

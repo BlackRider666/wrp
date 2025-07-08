@@ -70,8 +70,6 @@ export default {
   border-color: #9e9e9e;
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
-}
-.fullEditor-container .ql-container .ql-blank {
   min-height: 200px;
 }
 .ql-toolbar.ql-snow{

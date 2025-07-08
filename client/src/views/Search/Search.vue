@@ -117,6 +117,9 @@
                   class="elevation-1"
                   @update:options="getData"
               >
+                <template v-slot:item.full_name="{ item }">
+                  {{item.full_name[locale.iso_code]}}
+                </template>
                 <template v-slot:item.actions="{ item }">
                   <v-icon
                       small

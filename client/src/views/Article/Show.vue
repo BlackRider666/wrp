@@ -22,7 +22,7 @@
                   <v-avatar class="d-flex my-2 mx-auto" size="70">
                     <v-img :src="author.avatar_url"></v-img>
                   </v-avatar>
-                  <span>{{author.full_name}}</span>
+                  <span>{{author.full_name[locale.iso_code]}}</span>
                 </div>
               </div>
             </div>
@@ -132,7 +132,15 @@ export default {
       }
     },
     copyLink() {
-      console.log('Copy');
+      const url = window.location.href;
+
+      navigator.clipboard.writeText(url)
+          .then(() => {
+            this.$notify('','success', this.$t('messages.copied','Copied'));
+          })
+          .catch(err => {
+            this.$notify('','error', err);
+          });
     },
     ...mapActions(useArticleStore,['getArticle'])
   },

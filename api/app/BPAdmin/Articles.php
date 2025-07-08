@@ -25,6 +25,11 @@ class Articles extends BPModel
             'method' => 'category',
             'required' => true,
         ],
+        'direction_id' => [
+            'type' => 'BelongsTo',
+            'method' => 'direction',
+            'required' => true,
+        ],
         'year' => [
             'type' => 'date:Y',
             'required' => true,

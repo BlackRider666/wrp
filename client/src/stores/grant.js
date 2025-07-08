@@ -18,8 +18,8 @@ export const useGrantStore = defineStore('grant',{
                 let perPage = payload.itemsPerPage?payload.itemsPerPage:10;
                 let page = payload.page?payload.page:1;
                 let byUser = payload.user_id?`&user_id=${payload.user_id}`:'';
-                let search = `perPage=${perPage}&page=${page}&user_id=${payload.user_id}`;
-                axios.get('auth/user/grant?perPage=10'+search+byUser)
+                let search = `perPage=${perPage}&page=${page}`;
+                axios.get('auth/user/grant?'+search+byUser)
                     .then(res => {
                         this.UPDATE_GRANTS(res.data.data);
                         this.UPDATE_TOTAL(res.data.total);
