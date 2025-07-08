@@ -23,10 +23,10 @@ return new class extends Migration
         if (Schema::hasColumns('users',['first_name', 'second_name', 'surname', 'desc'])) {
             DB::statement("
             UPDATE users SET
-                first_name_json = JSON_OBJECT('en', first_name),
-                second_name_json = JSON_OBJECT('en', second_name),
-                surname_json = JSON_OBJECT('en', surname),
-                desc_json = JSON_OBJECT('en', `desc`)
+                first_name_json = JSON_OBJECT('en', first_name, 'uk', first_name),
+                second_name_json = JSON_OBJECT('en', second_name, 'uk', second_name),
+                surname_json = JSON_OBJECT('en', surname, 'uk', surname),
+                desc_json = JSON_OBJECT('en', `desc`, 'uk', `desc`)
             ");
 
             Schema::table('users', static function (Blueprint $table) {
