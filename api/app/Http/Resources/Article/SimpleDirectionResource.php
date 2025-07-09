@@ -5,7 +5,7 @@ namespace App\Http\Resources\Article;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class SimpleArticleResource extends JsonResource
+class SimpleDirectionResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,11 +16,7 @@ class SimpleArticleResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'full_title' => $this->full_title,
-            'category' => new ArticleCategoryResource($this->category),
-            'direction' => $this->direction?->getTranslations('name'),
-            'year'     => $this->year->format('Y'),
-            'citation_this_count' => $this->citation_this_count,
+            'name' => $this->getTranslations('name'),
         ];
     }
 }

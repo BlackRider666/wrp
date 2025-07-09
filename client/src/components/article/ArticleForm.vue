@@ -67,7 +67,16 @@
           item-value="id"
           :item-props="disabledCategory"
           :disabled="article.category && article.category.tech_name === 'conference'"
-
+      ></v-select>
+      <v-select
+          v-model="article.direction_id"
+          :label="$t('articles.placeholder.direction','Direction')"
+          variant="outlined"
+          prepend-inner-icon="mdi-shape-outline"
+          :rules="[rules.required]"
+          :items="sortedDirections"
+          :item-title="`name[${locale.iso_code}]`"
+          item-value="id"
       ></v-select>
       <v-text-field
           v-model="article.year"
@@ -268,6 +277,7 @@ export default {
           uk: '',
         },
         category_id: null,
+        direction_id: null,
         year: new Date().getFullYear(),
         authors: [],
         journal: null,
@@ -304,7 +314,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(useArticleStore,['categories','articles']),
+    ...mapState(useArticleStore,['categories','articles','directions']),
     ...mapState(useUserStore,{
       authors:'users',
     }),
@@ -316,6 +326,11 @@ export default {
         ...item,
         disabled: item.tech_name === 'conference'
       }));
+    },
+    sortedDirections() {
+      return this.directions.sort((a,b) => {
+        return a.name[this.locale.iso_code].localeCompare(b.name[this.locale.iso_code],this.locale.iso_code);
+      });
     }
   },
   mounted() {
@@ -329,6 +344,7 @@ export default {
       this.article.authors.push(user_id);
     }
     this.downloadCategories();
+    this.downloadDirections();
     this.downloadAuthors();
     this.downloadCountries();
     this.downloadTags().then( (tags) => {
@@ -390,7 +406,7 @@ export default {
     changeArticles() {
       this.articleSearch = '';
     },
-    ...mapActions(useArticleStore,['downloadCategories','searchForSelect']),
+    ...mapActions(useArticleStore,['downloadCategories','searchForSelect','downloadDirections']),
     ...mapActions(useUserStore,['downloadAuthors']),
     ...mapActions(useCountryStore,['downloadCountries']),
     ...mapActions(useCityStore,['downloadCities']),

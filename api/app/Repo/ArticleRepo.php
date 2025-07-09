@@ -110,11 +110,16 @@ class ArticleRepo extends CoreRepo
                $sub->where('conference_id',$data['conference_id']);
             });
         }
+
+        if (array_key_exists('direction_id',$data) && $data['direction_id']) {
+            $query->where('direction_id',$data['direction_id']);
+        }
+
         if (array_key_exists('forSelect',$data) && $data['forSelect']) {
             return $query->select(['title', 'id'])->paginate(20);
         }
 
-        return $query->with(['category','authors'])->orderBy($sortBy,$sortDesc?'desc':'asc')->paginate($perPage);
+        return $query->with(['category','authors','direction'])->orderBy($sortBy,$sortDesc?'desc':'asc')->paginate($perPage);
     }
 
     public function update(int $id, array $data)
@@ -157,7 +162,7 @@ class ArticleRepo extends CoreRepo
      */
     public function findWithCategory(int $id)
     {
-        return $this->query()->with(['category','country','city','authors', 'tags'])->find($id);
+        return $this->query()->with(['category','country','city','authors', 'tags','direction'])->find($id);
     }
 
     /**

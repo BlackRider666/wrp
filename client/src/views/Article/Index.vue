@@ -69,6 +69,7 @@ export default {
       headers: [
         { title: this.$t('articles.placeholder.title','Title'), value: 'full_title' },
         { title: this.$t('articles.placeholder.category','Category'), value: 'category.title' },
+        { title: this.$t('articles.placeholder.direction','Direction'), value: 'direction' },
         { title: this.$t('articles.placeholder.year','Year'), value: 'year' },
         { title: this.$t('articles.placeholder.citation','Citation this article'), value: 'citation_this_count' },
         { title: this.$t('articles.placeholder.actions','Actions'), value: 'actions', sortable: false },

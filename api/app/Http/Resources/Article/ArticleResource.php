@@ -19,6 +19,7 @@ class ArticleResource extends JsonResource
         return [
             'id' => $this->id,
             'category_id' => $this->category_id,
+            'direction'   => $this->direction?->getTranslations('name'),
             'year'        => $this->year->format('Y'),
             'journal'     => $this->journal,
             'part'        => $this->part,

@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\API\Article\{ArticleController, CategoryController};
+use App\Http\Controllers\API\Article\{ArticleController, CategoryController, DirectionController};
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\Conference\ConferenceController;
 use App\Http\Controllers\API\Locale\LocaleController;
@@ -68,6 +68,7 @@ Route::get('organizers/{organizer_id}',[OrganizerController::class, 'show']);
 Route::get('partners',[PartnerController::class, 'index']);
 Route::get('partners/{partner_id}',[PartnerController::class, 'show']);
 Route::get('article-categories',[CategoryController::class, 'index'])->middleware('auth:sanctum');
+Route::get('article-directions',[DirectionController::class,'index']);
 Route::get('users',[UserController::class, 'index']);
 Route::post('users',[UserController::class, 'store']);
 Route::get('users/{user_id}',[UserController::class, 'show']);

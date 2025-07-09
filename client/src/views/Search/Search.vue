@@ -41,6 +41,18 @@
                     </v-col>
                     <v-col cols="12">
                       <v-select
+                          v-model="articleFilters.direction_id"
+                          :items="sortedDirections"
+                          :item-title="`name[${locale.iso_code}]`"
+                          item-value="id"
+                          :label="$t('search.placeholder.direction','Direction')"
+                          :placeholder="$t('search.placeholder.direction','Direction')"
+                          prepend-inner-icon="mdi-database-search"
+                          variant="outlined"
+                      ></v-select>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-select
                           v-model="articleFilters.country_id"
                           :items="countries"
                           item-title="name"
@@ -153,6 +165,7 @@ export default {
       articleHeaders: [
         { title: this.$t('articles.placeholder.title','Title'), value: 'full_title' },
         { title: this.$t('articles.placeholder.category','Category'), value: 'category.title' },
+        { title: this.$t('articles.placeholder.direction','Direction'), value: 'direction' },
         { title: this.$t('articles.placeholder.year','Year'), value: 'year' },
         { title: this.$t('articles.placeholder.actions','Actions'), value: 'actions', sortable: false },
       ],
@@ -169,6 +182,7 @@ export default {
         country_id:null,
         city_id: null,
         title: null,
+        direction_id: null,
       },
       searchType: {
         all: {
@@ -189,6 +203,7 @@ export default {
   computed: {
     ...mapState(useArticleStore,{
       articles:'articles',
+      directions: 'directions',
       totalArticles: 'total',
     }),
     ...mapState(useUserStore,{
@@ -211,10 +226,16 @@ export default {
         }
       }
       return 'all';
+    },
+    sortedDirections() {
+      return this.directions.sort((a,b) => {
+        return a.name[this.locale.iso_code].localeCompare(b.name[this.locale.iso_code],this.locale.iso_code);
+      });
     }
   },
   mounted() {
     this.downloadCountries();
+    this.downloadDirections();
     this.articleFilters.title = this.$route.query.title;
   },
   methods: {
@@ -248,7 +269,7 @@ export default {
     showArticleFiltersSheet() {
       this.articleFiltersSheet = !this.articleFiltersSheet;
     },
-    ...mapActions(useArticleStore,['downloadArticles']),
+    ...mapActions(useArticleStore,['downloadArticles', 'downloadDirections']),
     ...mapActions(useUserStore,['downloadUsers']),
     ...mapActions(useCountryStore,['downloadCountries']),
     ...mapActions(useCityStore,['downloadCities'])

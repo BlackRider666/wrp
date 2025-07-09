@@ -40,6 +40,10 @@
                 <div class="text-subtitle-2 pb-2">{{$t('articles.placeholder.category', 'Category')}}</div>
                 <div class="text-body-1">{{article.category.title}}</div>
               </div>
+              <div class="px-12">
+                <div class="text-subtitle-2 pb-2">{{$t('articles.placeholder.direction', 'Direction')}}</div>
+                <div class="text-body-1">{{article.direction[locale.iso_code]}}</div>
+              </div>
             </div>
             <v-divider/>
             <div class="py-8">

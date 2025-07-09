@@ -4,6 +4,7 @@ import {defineStore} from "pinia";
 export const useArticleStore = defineStore('article',{
     state:() => ({
         categories: [],
+        directions: [],
         articles: [],
         article:null,
         total:0,
@@ -34,8 +35,9 @@ export const useArticleStore = defineStore('article',{
                 let search = `perPage=${perPage}${page}${sortBy}${sortDesc}`;
                 let NonApproved = payload.nonApproved ? '&nonApproved=1' : '';
                 let byCategoryName = payload.category_name ? '&category_name=' + payload.category_name : '';
+                let byDirection = payload.direction_id? `&direction_id=${payload.direction_id}` : '';
                 let byConference = payload.conference_id ? '&conference_id='+payload.conference_id : '';
-                axios.get('article?' + search + byUser + byTitle + country + city + NonApproved + byCategoryName + byConference)
+                axios.get('article?' + search + byUser + byTitle + country + city + NonApproved + byCategoryName + byConference + byDirection)
                     .then(res => {
                         this.UPDATE_ARTICLES(res.data.data);
                         this.UPDATE_TOTAL(res.data.meta.total);
@@ -116,6 +118,17 @@ export const useArticleStore = defineStore('article',{
                         reject(errors.response.data)
                     })
             }))
+        },
+        downloadDirections() {
+            return new Promise(((resolve, reject) => {
+                axios.get('article-directions')
+                    .then(res => {
+                        this.directions = res.data.data;
+                    })
+                    .catch(errors => {
+                        reject(errors.response.data)
+                    })
+            }));
         },
         UPDATE_CATEGORIES(categories) {
             this.categories = categories

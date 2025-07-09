@@ -19,6 +19,7 @@ class UpdateArticleRequest extends FormRequest
             'title'      =>  'required|array',
             'title.*'     =>  'required|string|max:255',
             'category_id' => 'required|int|exists:categories,id',
+            'direction_id' => 'required|int|exists:directions,id',
             'year'        => 'required|date_format:Y',
             'authors'     => 'required|array',
             'authors.*'   => 'required|int|exists:users,id',
